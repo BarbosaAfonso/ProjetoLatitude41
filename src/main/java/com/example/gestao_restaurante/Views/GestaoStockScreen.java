@@ -16,11 +16,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -37,18 +37,6 @@ public class GestaoStockScreen {
     private static final String UNIDADE_PESO = "kg/g";
     private static final String UNIDADE_LITRO = "l";
     private static final String UNIDADE_UNIDADE = "unidade";
-
-    @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
 
     @FXML
     private TableView<JsonNode> tabela;
@@ -76,7 +64,6 @@ public class GestaoStockScreen {
 
     @FXML
     private void initialize() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel, "Pedidos a fornecedor e rececao de ingredientes");
         configurarColunas();
 
         SortedList<JsonNode> dadosOrdenados = new SortedList<>(dadosFiltrados);

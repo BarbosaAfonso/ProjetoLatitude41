@@ -75,23 +75,28 @@
     -fx-background-color: #f1f4f7;
 }
 
+.workspace-shell {
+    -fx-background-color: transparent;
+}
+
 .top-header {
     -fx-background-color: linear-gradient(to right, #163a5d 0%, #1d466f 55%, #1b4064 100%);
     -fx-border-color: transparent transparent rgba(14, 36, 58, 0.38) transparent;
     -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 0;
 }
 
 .header-title {
     -fx-text-fill: #d1af50;
     -fx-font-family: "Georgia";
-    -fx-font-size: 35px;
+    -fx-font-size: 42px;
     -fx-font-weight: 700;
 }
 
 .header-subtitle {
     -fx-text-fill: rgba(218, 226, 236, 0.8);
     -fx-font-family: "Segoe UI";
-    -fx-font-size: 17px;
+    -fx-font-size: 18px;
 }
 
 .user-label {
@@ -101,9 +106,27 @@
 }
 
 .dashboard-user-card {
-    -fx-padding: 8 10 8 16;
+    -fx-padding: 10 12 10 18;
     -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-background-radius: 999;
+}
+
+.header-alert-button {
+    -fx-min-width: 48;
+    -fx-min-height: 48;
+    -fx-pref-width: 48;
+    -fx-pref-height: 48;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 999;
+    -fx-border-color: rgba(209, 175, 80, 0.55);
+    -fx-border-width: 1;
+    -fx-border-radius: 999;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.header-alert-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
 }
 
 .header-role {

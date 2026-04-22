@@ -44,18 +44,6 @@ public class GestaoReservasScreen {
     private static final DateTimeFormatter DATA_HORA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
-
-    @FXML
     private TableView<JsonNode> tabela;
 
     @FXML
@@ -97,7 +85,6 @@ public class GestaoReservasScreen {
 
     @FXML
     private void initialize() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel, "Planeamento e estados de reserva");
         configurarColunas();
         configurarFiltrosEstado();
         configurarOrdenacao();
