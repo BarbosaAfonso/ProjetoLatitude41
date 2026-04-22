@@ -32,18 +32,6 @@ public class GestaoMesasScreen {
     private FlowPane mesasFlowPane;
 
     @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
-
-    @FXML
     private Label ocupacaoLabel;
 
     @FXML
@@ -53,7 +41,6 @@ public class GestaoMesasScreen {
 
     @FXML
     private void initialize() {
-        preencherCabecalho();
         carregarMesas();
     }
 
@@ -104,10 +91,6 @@ public class GestaoMesasScreen {
     @FXML
     private void onVoltar() {
         DesktopAppContext.showMenuPrincipal();
-    }
-
-    private void preencherCabecalho() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel, "Visao geral do salao e ocupacao");
     }
 
     private void carregarMesas() {

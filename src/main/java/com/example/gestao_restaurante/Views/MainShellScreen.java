@@ -3,6 +3,7 @@ package com.example.gestao_restaurante.Views;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import java.util.LinkedHashMap;
@@ -12,6 +13,21 @@ public class MainShellScreen {
 
     @FXML
     private StackPane contentArea;
+
+    @FXML
+    private Label headerTitleLabel;
+
+    @FXML
+    private Label headerSubtitleLabel;
+
+    @FXML
+    private Label utilizadorLabel;
+
+    @FXML
+    private Label cargoLabel;
+
+    @FXML
+    private Label avatarLabel;
 
     @FXML
     private Button btnDashboard;
@@ -42,6 +58,7 @@ public class MainShellScreen {
     @FXML
     private void initialize() {
         validateInjectedNodes();
+        ViewUtils.preencherCabecalho(headerSubtitleLabel, utilizadorLabel, cargoLabel, avatarLabel, null);
 
         botoesNavegacao.put("dashboard", btnDashboard);
         botoesNavegacao.put("mesas", btnGestaoMesas);
@@ -115,8 +132,19 @@ public class MainShellScreen {
         }
     }
 
+    public void setHeaderTitle(String title) {
+        if (headerTitleLabel != null) {
+            headerTitleLabel.setText(title == null || title.isBlank() ? "Dashboard" : title);
+        }
+    }
+
     private void validateInjectedNodes() {
         if (contentArea == null
+                || headerTitleLabel == null
+                || headerSubtitleLabel == null
+                || utilizadorLabel == null
+                || cargoLabel == null
+                || avatarLabel == null
                 || btnDashboard == null
                 || btnGestaoMesas == null
                 || btnGestaoProdutos == null

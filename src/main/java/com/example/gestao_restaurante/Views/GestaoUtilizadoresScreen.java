@@ -15,7 +15,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -27,18 +26,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class GestaoUtilizadoresScreen {
-
-    @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
 
     @FXML
     private TableView<JsonNode> tabela;
@@ -69,7 +56,6 @@ public class GestaoUtilizadoresScreen {
 
     @FXML
     private void initialize() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel, "Permissoes, cargos e estados de conta");
         configurarColunas();
 
         SortedList<JsonNode> dadosOrdenados = new SortedList<>(dadosFiltrados);

@@ -35,18 +35,6 @@ import java.util.Optional;
 public class GestaoProdutosScreen {
 
     @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
-
-    @FXML
     private TableView<JsonNode> tabela;
 
     @FXML
@@ -85,7 +73,6 @@ public class GestaoProdutosScreen {
 
     @FXML
     private void initialize() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel, "Catalogo e disponibilidade da carta");
         configurarColunas();
         configurarFiltrosCategoria();
         configurarOrdenacao();
