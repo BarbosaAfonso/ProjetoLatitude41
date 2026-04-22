@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="820.0" prefWidth="1000.0" styleClass="main-shell"
+            stylesheets="@/css/menu-principal.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.gestao_restaurante.Views.MenuPrincipalScreen">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="top-header" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="16.0" left="26.0" right="26.0" top="22.0"/>
+            </padding>
+            <children>
+                <VBox spacing="4.0">
+                    <children>
+                        <Label styleClass="header-title" text="Dashboard"/>
+                        <Label fx:id="turnoLabel" styleClass="header-subtitle" text="Sessao de hoje"/>
+                    </children>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="dashboard-user-card">
+                    <children>
+                        <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                            <children>
+                                <Label fx:id="bemVindoLabel" styleClass="user-label" text="Bem-vindo"/>
+                                <Label fx:id="cargoPerfilLabel" styleClass="header-role" text="ADMINISTRADOR"/>
+                            </children>
+                        </VBox>
+                        <StackPane styleClass="dashboard-avatar">
+                            <children>
+                                <Label fx:id="avatarLabel" styleClass="dashboard-avatar-text" text="A"/>
+                            </children>
+                        </StackPane>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="dashboard-scroll" BorderPane.alignment="CENTER">
+            <content>
+                <VBox spacing="18.0" styleClass="dashboard-content">
+                    <padding>
+                        <Insets bottom="24.0" left="26.0" right="26.0" top="20.0"/>
+                    </padding>
+                    <children>
+                        <GridPane hgap="16.0" vgap="16.0">
+                            <children>
+                                <VBox styleClass="kpi-card">
+                                    <children>
+                                        <Label styleClass="kpi-title" text="Produtos Ativos"/>
+                                        <Label fx:id="kpiProdutosValue" styleClass="kpi-value" text="--"/>
+                                        <Label fx:id="kpiProdutosSub" styleClass="kpi-sub" text="--"/>
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="kpi-card" GridPane.columnIndex="1">
+                                    <children>
+                                        <Label styleClass="kpi-title" text="Reservas Hoje"/>
+                                        <Label fx:id="kpiReservasValue" styleClass="kpi-value" text="--"/>
+                                        <Label fx:id="kpiReservasSub" styleClass="kpi-sub" text="--"/>
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="kpi-card" GridPane.columnIndex="2">
+                                    <children>
+                                        <Label styleClass="kpi-title" text="Pedidos em Curso"/>
+                                        <Label fx:id="kpiPedidosValue" styleClass="kpi-value" text="--"/>
+                                        <Label fx:id="kpiPedidosSub" styleClass="kpi-sub" text="--"/>
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="kpi-card" GridPane.columnIndex="3">
+                                    <children>
+                                        <Label styleClass="kpi-title" text="Ocupacao Mesas"/>
+                                        <Label fx:id="kpiOcupacaoValue" styleClass="kpi-value" text="--"/>
+                                        <Label fx:id="kpiOcupacaoSub" styleClass="kpi-sub" text="--"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <HBox spacing="16.0">
+                            <children>
+                                <VBox spacing="8.0" styleClass="panel-card" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="panel-title" text="Estado de Mesas"/>
+                                        <Label fx:id="mesasResumoLabel" styleClass="panel-text" text="A carregar..."/>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="8.0" styleClass="panel-card" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="panel-title" text="Resumo Operacional"/>
+                                        <Label fx:id="resumoOperacionalLabel" styleClass="panel-text" text="A carregar..."/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

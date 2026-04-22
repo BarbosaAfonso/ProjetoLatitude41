@@ -1,0 +1,198 @@
+.dashboard-root {
+    -fx-background-color: linear-gradient(to bottom right, #071626 0%, #0a2340 42%, #08192d 100%);
+}
+
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #032344 0%, #041b33 100%);
+    -fx-border-color: rgba(122, 150, 186, 0.22);
+    -fx-border-width: 0 1 0 0;
+}
+
+.brand-box {
+    -fx-padding: 8 4 22 4;
+}
+
+.brand-name {
+    -fx-text-fill: #f2f6fb;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+}
+
+.brand-subtitle {
+    -fx-text-fill: #c6a74f;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 12px;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: #c8d4e2;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 17px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 14 16 14 16;
+    -fx-background-radius: 8;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: #ffffff;
+}
+
+.nav-button-active {
+    -fx-background-color: #1a2f4a;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: transparent transparent transparent #c9ac50;
+    -fx-border-width: 0 0 0 3;
+    -fx-background-insets: 0;
+}
+
+.nav-button-active:hover {
+    -fx-background-color: #203955;
+    -fx-text-fill: #ffffff;
+}
+
+.logout-button {
+    -fx-background-color: linear-gradient(to right, #7c1111, #a81818);
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 15px;
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: linear-gradient(to right, #911717, #bb1f1f);
+}
+
+.main-shell {
+    -fx-background-color: #f1f4f7;
+}
+
+.top-header {
+    -fx-background-color: linear-gradient(to right, #163a5d 0%, #1d466f 55%, #1b4064 100%);
+    -fx-border-color: transparent transparent rgba(14, 36, 58, 0.38) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-text-fill: #d1af50;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 35px;
+    -fx-font-weight: 700;
+}
+
+.header-subtitle {
+    -fx-text-fill: rgba(218, 226, 236, 0.8);
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 17px;
+}
+
+.user-label {
+    -fx-text-fill: #f2f6fb;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 21px;
+}
+
+.dashboard-user-card {
+    -fx-padding: 8 10 8 16;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 999;
+}
+
+.header-role {
+    -fx-text-fill: #d1af50;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 12px;
+}
+
+.dashboard-avatar {
+    -fx-pref-width: 46;
+    -fx-pref-height: 46;
+    -fx-min-width: 46;
+    -fx-min-height: 46;
+    -fx-max-width: 46;
+    -fx-max-height: 46;
+    -fx-background-color: linear-gradient(to bottom right, #3a6da0, #1f4c76);
+    -fx-background-radius: 999;
+    -fx-border-color: #d2b053;
+    -fx-border-width: 2;
+    -fx-border-radius: 999;
+}
+
+.dashboard-avatar-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 17px;
+}
+
+.dashboard-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dashboard-content {
+    -fx-background-color: transparent;
+}
+
+.kpi-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(38, 82, 122, 0.12);
+    -fx-border-radius: 12;
+    -fx-padding: 16 18 16 18;
+    -fx-spacing: 6;
+    -fx-pref-width: 232;
+    -fx-effect: dropshadow(gaussian, rgba(12, 30, 49, 0.12), 16, 0.2, 0, 4);
+}
+
+.kpi-title {
+    -fx-text-fill: #57718b;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 15px;
+}
+
+.kpi-value {
+    -fx-text-fill: #102943;
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 34px;
+}
+
+.kpi-sub {
+    -fx-text-fill: #6f859b;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+.panel-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(38, 82, 122, 0.12);
+    -fx-border-radius: 12;
+    -fx-padding: 16 18 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(12, 30, 49, 0.1), 12, 0.2, 0, 3);
+}
+
+.panel-title {
+    -fx-text-fill: #173758;
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 20px;
+}
+
+.panel-text {
+    -fx-text-fill: #4f6680;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 16px;
+    -fx-line-spacing: 6px;
+}
