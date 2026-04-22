@@ -13,10 +13,14 @@ public final class DesktopAppContext {
     private static final String BASE_TITLE = "Gestao Restaurante";
     private static final String FXML_BASE_PATH = "/fxml/";
     private static final String MAIN_SHELL_FXML = "MainView.fxml";
+    private static final boolean MAXIMIZE_ON_START = true;
+    private static final double DEFAULT_WIDTH = 1280;
+    private static final double DEFAULT_HEIGHT = 820;
 
     private static Stage primaryStage;
     private static final ApiService apiService = new ApiService();
     private static UtilizadorSessao utilizadorSessao = UtilizadorSessao.empty();
+    private static boolean stageLayoutConfigured;
 
     private static Parent mainShellRoot;
     private static MainShellScreen mainShellController;
@@ -128,9 +132,15 @@ public final class DesktopAppContext {
             throw new IllegalStateException("Primary stage ainda nao foi inicializado.");
         }
 
+        boolean wasShowing = primaryStage.isShowing();
+        boolean wasMaximized = primaryStage.isMaximized();
+        double previousWidth = primaryStage.getWidth();
+        double previousHeight = primaryStage.getHeight();
+
         Scene scene = new Scene(root);
         primaryStage.setTitle(windowTitle);
         primaryStage.setScene(scene);
+        configureStageLayout(wasShowing, wasMaximized, previousWidth, previousHeight);
         primaryStage.show();
     }
 
@@ -201,6 +211,33 @@ public final class DesktopAppContext {
     private static RuntimeException buildFxmlLoadException(String fxmlFile, IOException e) {
         String details = rootCauseSummary(e);
         return new RuntimeException("Erro ao carregar interface grafica: " + fxmlFile + ". Causa raiz: " + details, e);
+    }
+
+    private static void configureStageLayout(boolean wasShowing,
+                                             boolean wasMaximized,
+                                             double previousWidth,
+                                             double previousHeight) {
+        primaryStage.setResizable(true);
+
+        if (!stageLayoutConfigured) {
+            primaryStage.setWidth(DEFAULT_WIDTH);
+            primaryStage.setHeight(DEFAULT_HEIGHT);
+            if (MAXIMIZE_ON_START) {
+                primaryStage.setMaximized(true);
+            } else {
+                primaryStage.centerOnScreen();
+            }
+            stageLayoutConfigured = true;
+            return;
+        }
+
+        if (wasShowing && !wasMaximized && !primaryStage.isMaximized()) {
+            if (previousWidth > 0 && previousHeight > 0) {
+                primaryStage.setWidth(previousWidth);
+                primaryStage.setHeight(previousHeight);
+            }
+            primaryStage.centerOnScreen();
+        }
     }
 
     private static String rootCauseSummary(Throwable throwable) {

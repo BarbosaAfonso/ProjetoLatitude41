@@ -4,11 +4,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="820.0" prefWidth="1000.0" styleClass="main-shell"
+<BorderPane styleClass="main-shell"
             stylesheets="@/css/menu-principal.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.gestao_restaurante.Views.MenuPrincipalScreen">
@@ -16,14 +17,18 @@
     <center>
         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="dashboard-scroll" BorderPane.alignment="CENTER">
             <content>
-                <VBox spacing="18.0" styleClass="dashboard-content">
+                <VBox fillWidth="true" spacing="18.0" styleClass="dashboard-content">
                     <padding>
                         <Insets bottom="24.0" left="26.0" right="26.0" top="26.0"/>
                     </padding>
                     <children>
                         <GridPane hgap="16.0" vgap="16.0">
+                            <columnConstraints>
+                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="50.0" />
+                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="50.0" />
+                            </columnConstraints>
                             <children>
-                                <VBox styleClass="kpi-card">
+                                <VBox maxWidth="1.7976931348623157E308" styleClass="kpi-card" GridPane.hgrow="ALWAYS">
                                     <children>
                                         <Label styleClass="kpi-title" text="Produtos Ativos"/>
                                         <Label fx:id="kpiProdutosValue" styleClass="kpi-value" text="--"/>
@@ -31,7 +36,7 @@
                                     </children>
                                 </VBox>
 
-                                <VBox styleClass="kpi-card" GridPane.columnIndex="1">
+                                <VBox maxWidth="1.7976931348623157E308" styleClass="kpi-card" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                                     <children>
                                         <Label styleClass="kpi-title" text="Reservas Hoje"/>
                                         <Label fx:id="kpiReservasValue" styleClass="kpi-value" text="--"/>
@@ -39,7 +44,7 @@
                                     </children>
                                 </VBox>
 
-                                <VBox styleClass="kpi-card" GridPane.columnIndex="2">
+                                <VBox maxWidth="1.7976931348623157E308" styleClass="kpi-card" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                                     <children>
                                         <Label styleClass="kpi-title" text="Pedidos em Curso"/>
                                         <Label fx:id="kpiPedidosValue" styleClass="kpi-value" text="--"/>
@@ -47,7 +52,7 @@
                                     </children>
                                 </VBox>
 
-                                <VBox styleClass="kpi-card" GridPane.columnIndex="3">
+                                <VBox maxWidth="1.7976931348623157E308" styleClass="kpi-card" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                                     <children>
                                         <Label styleClass="kpi-title" text="Ocupacao Mesas"/>
                                         <Label fx:id="kpiOcupacaoValue" styleClass="kpi-value" text="--"/>

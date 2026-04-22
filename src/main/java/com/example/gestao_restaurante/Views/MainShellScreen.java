@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 import java.util.LinkedHashMap;
@@ -119,6 +120,10 @@ public class MainShellScreen {
     }
 
     public void setContent(Node node) {
+        if (node instanceof Region region) {
+            region.setMinSize(0, 0);
+            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
         contentArea.getChildren().setAll(node);
     }
 

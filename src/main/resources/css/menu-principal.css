@@ -6,6 +6,9 @@
     -fx-background-color: linear-gradient(to bottom, #032344 0%, #041b33 100%);
     -fx-border-color: rgba(122, 150, 186, 0.22);
     -fx-border-width: 0 1 0 0;
+    -fx-padding: 22 18 28 18;
+    -fx-min-height: 0;
+    -fx-max-height: infinity;
 }
 
 .brand-box {
@@ -176,7 +179,7 @@
     -fx-border-radius: 12;
     -fx-padding: 16 18 16 18;
     -fx-spacing: 6;
-    -fx-pref-width: 232;
+    -fx-min-width: 0;
     -fx-effect: dropshadow(gaussian, rgba(12, 30, 49, 0.12), 16, 0.2, 0, 4);
 }
 

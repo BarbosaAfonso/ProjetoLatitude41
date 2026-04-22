@@ -5,24 +5,34 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="760.0" prefWidth="1140.0" styleClass="login-root" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gestao_restaurante.Views.LoginScreen">
+<StackPane styleClass="login-root" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gestao_restaurante.Views.LoginScreen">
     <children>
-        <Region styleClass="login-overlay" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="login-overlay" />
 
-        <Region layoutX="740.0" layoutY="82.0" prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-top-right" />
-        <Region layoutX="60.0" layoutY="330.0" prefHeight="220.0" prefWidth="200.0" styleClass="blob blob-mid-left" />
-        <Region layoutX="820.0" layoutY="540.0" prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-bottom-right" />
+        <Region prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-top-right" StackPane.alignment="TOP_RIGHT">
+            <StackPane.margin>
+                <Insets right="60.0" top="78.0" />
+            </StackPane.margin>
+        </Region>
+        <Region prefHeight="220.0" prefWidth="200.0" styleClass="blob blob-mid-left" StackPane.alignment="CENTER_LEFT">
+            <StackPane.margin>
+                <Insets left="58.0" top="70.0" />
+            </StackPane.margin>
+        </Region>
+        <Region prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-bottom-right" StackPane.alignment="BOTTOM_RIGHT">
+            <StackPane.margin>
+                <Insets bottom="70.0" right="84.0" />
+            </StackPane.margin>
+        </Region>
 
-        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <children>
-                <VBox alignment="CENTER" spacing="22.0">
+                <VBox alignment="CENTER" fillWidth="true" maxWidth="460.0" spacing="22.0">
                     <children>
                         <VBox alignment="CENTER" spacing="4.0">
                             <children>
@@ -31,26 +41,26 @@
                             </children>
                         </VBox>
 
-                        <VBox maxWidth="420.0" prefWidth="420.0" spacing="20.0" styleClass="login-card">
+                        <VBox fillWidth="true" maxWidth="420.0" spacing="20.0" styleClass="login-card">
                             <padding>
                                 <Insets bottom="30.0" left="34.0" right="34.0" top="30.0" />
                             </padding>
                             <children>
                                 <VBox spacing="6.0" styleClass="input-group">
                                     <children>
-                                        <Label styleClass="field-label" text="ID DE FUNCIONÁRIO" />
-                                        <TextField fx:id="emailField" promptText="Digite seu ID" styleClass="login-input" />
+                                        <Label styleClass="field-label" text="ID DE FUNCIONARIO" />
+                                        <TextField fx:id="emailField" maxWidth="1.7976931348623157E308" promptText="Digite seu ID" styleClass="login-input" />
                                     </children>
                                 </VBox>
 
                                 <VBox spacing="6.0" styleClass="input-group">
                                     <children>
                                         <Label styleClass="field-label" text="PASSWORD" />
-                                        <PasswordField fx:id="passwordField" promptText="••••" styleClass="login-input" />
+                                        <PasswordField fx:id="passwordField" maxWidth="1.7976931348623157E308" promptText="********" styleClass="login-input" />
                                     </children>
                                 </VBox>
 
-                                <Button defaultButton="true" mnemonicParsing="false" onAction="#onEntrar" prefHeight="46.0" prefWidth="352.0" styleClass="login-button" text="ENTRAR" />
+                                <Button defaultButton="true" maxWidth="1.7976931348623157E308" minHeight="46.0" mnemonicParsing="false" onAction="#onEntrar" styleClass="login-button" text="ENTRAR" />
 
                                 <HBox alignment="CENTER_LEFT" spacing="22.0">
                                     <children>
@@ -61,9 +71,11 @@
                             </children>
                         </VBox>
                     </children>
+                    <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                    </padding>
                 </VBox>
             </children>
         </StackPane>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
     </children>
-</AnchorPane>
+</StackPane>

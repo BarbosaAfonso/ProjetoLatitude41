@@ -10,11 +10,10 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="760.0" prefWidth="1200.0" styleClass="gestao-root"
+<BorderPane minHeight="0.0" minWidth="0.0" styleClass="gestao-root"
             stylesheets="@/css/gestao-produtos.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.gestao_restaurante.Views.GestaoPedidosScreen">
@@ -38,97 +37,101 @@
     </top>
 
     <center>
-        <HBox spacing="18.0" styleClass="pedido-shell">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="18.0"/>
-            </padding>
-            <children>
-                <VBox spacing="16.0" styleClass="pedido-catalogo-panel" HBox.hgrow="ALWAYS">
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="pedido-scroll" BorderPane.alignment="CENTER">
+            <content>
+                <HBox minHeight="0.0" spacing="18.0" styleClass="pedido-shell">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="18.0"/>
+                    </padding>
                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                        <VBox minHeight="0.0" spacing="16.0" styleClass="pedido-catalogo-panel" HBox.hgrow="ALWAYS">
                             <children>
-                                <VBox spacing="4.0">
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
                                     <children>
-                                        <Label styleClass="pedido-section-title" text="Catalogo de Produtos"/>
-                                        <Label fx:id="categoriaAtivaLabel" styleClass="pedido-section-subtitle" text="Categoria: Todos os produtos"/>
-                                    </children>
-                                </VBox>
-                                <Region HBox.hgrow="ALWAYS"/>
-                                <Label fx:id="resultadosLabel" styleClass="pedido-resultados-label" text="0 produtos disponiveis"/>
-                            </children>
-                        </HBox>
-
-                        <FlowPane fx:id="filtrosTipoBox" hgap="10.0" vgap="10.0"/>
-
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="pedido-scroll" VBox.vgrow="ALWAYS">
-                            <content>
-                                <TilePane fx:id="produtosGrid" hgap="16.0" prefColumns="2" prefTileWidth="280.0" vgap="16.0"/>
-                            </content>
-                        </ScrollPane>
-                    </children>
-                </VBox>
-
-                <VBox spacing="16.0" styleClass="pedido-resumo-panel" prefWidth="340.0" minWidth="340.0" maxWidth="340.0">
-                    <children>
-                        <VBox spacing="10.0" styleClass="pedido-reserva-card">
-                            <children>
-                                <Label fx:id="mesaLabel" styleClass="pedido-reserva-titulo" text="Mesa -"/>
-                                <Label fx:id="reservaLabel" styleClass="pedido-reserva-subtitulo" text="Reserva nao selecionada"/>
-                                <Label fx:id="clienteLabel" styleClass="pedido-reserva-meta" text="Sem cliente associado"/>
-                                <Label fx:id="estadoPedidoLabel" styleClass="pedido-reserva-estado" text="Estado inicial: Em Preparacao"/>
-                            </children>
-                        </VBox>
-
-                        <VBox spacing="10.0" styleClass="pedido-resumo-card" VBox.vgrow="ALWAYS">
-                            <children>
-                                <HBox alignment="CENTER_LEFT">
-                                    <children>
-                                        <Label styleClass="pedido-section-title" text="Resumo do Pedido"/>
+                                        <VBox spacing="4.0">
+                                            <children>
+                                                <Label styleClass="pedido-section-title" text="Catalogo de Produtos"/>
+                                                <Label fx:id="categoriaAtivaLabel" styleClass="pedido-section-subtitle" text="Categoria: Todos os produtos"/>
+                                            </children>
+                                        </VBox>
                                         <Region HBox.hgrow="ALWAYS"/>
-                                        <Label fx:id="itensResumoLabel" styleClass="pedido-resultados-label" text="0 itens no pedido"/>
+                                        <Label fx:id="resultadosLabel" styleClass="pedido-resultados-label" text="0 produtos disponiveis"/>
                                     </children>
                                 </HBox>
 
+                                <FlowPane fx:id="filtrosTipoBox" hgap="10.0" vgap="10.0"/>
+
                                 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="pedido-scroll" VBox.vgrow="ALWAYS">
                                     <content>
-                                        <VBox fx:id="itensPedidoBox" spacing="12.0"/>
+                                        <TilePane fx:id="produtosGrid" hgap="16.0" prefColumns="2" prefTileWidth="280.0" vgap="16.0"/>
                                     </content>
                                 </ScrollPane>
+                            </children>
+                        </VBox>
 
-                                <VBox spacing="8.0" styleClass="pedido-totais-box">
+                        <VBox minHeight="0.0" spacing="16.0" styleClass="pedido-resumo-panel" prefWidth="340.0" minWidth="340.0" maxWidth="340.0">
+                            <children>
+                                <VBox spacing="10.0" styleClass="pedido-reserva-card">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT">
-                                            <children>
-                                                <Label styleClass="pedido-total-label" text="Subtotal"/>
-                                                <Region HBox.hgrow="ALWAYS"/>
-                                                <Label fx:id="subtotalLabel" styleClass="pedido-total-valor" text="0,00 €"/>
-                                            </children>
-                                        </HBox>
-                                        <HBox alignment="CENTER_LEFT">
-                                            <children>
-                                                <Label styleClass="pedido-total-label" text="IVA (23%)"/>
-                                                <Region HBox.hgrow="ALWAYS"/>
-                                                <Label fx:id="ivaLabel" styleClass="pedido-total-valor" text="0,00 €"/>
-                                            </children>
-                                        </HBox>
-                                        <HBox alignment="CENTER_LEFT" styleClass="pedido-total-final-row">
-                                            <children>
-                                                <Label styleClass="pedido-total-final-label" text="TOTAL"/>
-                                                <Region HBox.hgrow="ALWAYS"/>
-                                                <Label fx:id="totalLabel" styleClass="pedido-total-final-valor" text="0,00 €"/>
-                                            </children>
-                                        </HBox>
+                                        <Label fx:id="mesaLabel" styleClass="pedido-reserva-titulo" text="Mesa -"/>
+                                        <Label fx:id="reservaLabel" styleClass="pedido-reserva-subtitulo" text="Reserva nao selecionada"/>
+                                        <Label fx:id="clienteLabel" styleClass="pedido-reserva-meta" text="Sem cliente associado"/>
+                                        <Label fx:id="estadoPedidoLabel" styleClass="pedido-reserva-estado" text="Estado inicial: Em Preparacao"/>
                                     </children>
                                 </VBox>
 
-                                <Button fx:id="confirmarPedidoButton" disable="true" mnemonicParsing="false" onAction="#onConfirmarPedido" styleClass="pedido-confirmar-button" text="Confirmar Pedido"/>
-                                <Button fx:id="limparPedidoButton" disable="true" mnemonicParsing="false" onAction="#onLimparPedido" styleClass="pedido-limpar-button" text="Limpar Pedido"/>
+                                <VBox spacing="10.0" styleClass="pedido-resumo-card" VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT">
+                                            <children>
+                                                <Label styleClass="pedido-section-title" text="Resumo do Pedido"/>
+                                                <Region HBox.hgrow="ALWAYS"/>
+                                                <Label fx:id="itensResumoLabel" styleClass="pedido-resultados-label" text="0 itens no pedido"/>
+                                            </children>
+                                        </HBox>
+
+                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="pedido-scroll" VBox.vgrow="ALWAYS">
+                                            <content>
+                                                <VBox fx:id="itensPedidoBox" spacing="12.0"/>
+                                            </content>
+                                        </ScrollPane>
+
+                                        <VBox spacing="8.0" styleClass="pedido-totais-box">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT">
+                                                    <children>
+                                                        <Label styleClass="pedido-total-label" text="Subtotal"/>
+                                                        <Region HBox.hgrow="ALWAYS"/>
+                                                        <Label fx:id="subtotalLabel" styleClass="pedido-total-valor" text="0,00 €"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT">
+                                                    <children>
+                                                        <Label styleClass="pedido-total-label" text="IVA (23%)"/>
+                                                        <Region HBox.hgrow="ALWAYS"/>
+                                                        <Label fx:id="ivaLabel" styleClass="pedido-total-valor" text="0,00 €"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" styleClass="pedido-total-final-row">
+                                                    <children>
+                                                        <Label styleClass="pedido-total-final-label" text="TOTAL"/>
+                                                        <Region HBox.hgrow="ALWAYS"/>
+                                                        <Label fx:id="totalLabel" styleClass="pedido-total-final-valor" text="0,00 €"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <Button fx:id="confirmarPedidoButton" disable="true" mnemonicParsing="false" onAction="#onConfirmarPedido" styleClass="pedido-confirmar-button" text="Confirmar Pedido"/>
+                                        <Button fx:id="limparPedidoButton" disable="true" mnemonicParsing="false" onAction="#onLimparPedido" styleClass="pedido-limpar-button" text="Limpar Pedido"/>
+                                    </children>
+                                </VBox>
                             </children>
                         </VBox>
                     </children>
-                </VBox>
-            </children>
-        </HBox>
+                </HBox>
+            </content>
+        </ScrollPane>
     </center>
 
     <bottom>

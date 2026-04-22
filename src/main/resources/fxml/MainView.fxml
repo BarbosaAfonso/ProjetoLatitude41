@@ -11,16 +11,13 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="820.0" prefWidth="1280.0" styleClass="dashboard-root"
+<BorderPane styleClass="dashboard-root"
             stylesheets="@/css/menu-principal.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.gestao_restaurante.Views.MainShellScreen">
 
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="20.0" left="18.0" right="18.0" top="22.0"/>
-            </padding>
+        <VBox minHeight="0.0" minWidth="220.0" maxHeight="1.7976931348623157E308" styleClass="sidebar" BorderPane.alignment="CENTER">
             <children>
                 <VBox spacing="6.0" styleClass="brand-box">
                     <children>
@@ -29,7 +26,7 @@
                     </children>
                 </VBox>
 
-                <VBox spacing="10.0">
+                <VBox spacing="10.0" VBox.vgrow="ALWAYS">
                     <children>
                         <Button fx:id="btnDashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDashboard" styleClass="nav-button" text="Dashboard"/>
                         <Button fx:id="btnGestaoMesas" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestaoMesas" styleClass="nav-button" text="Gestao de Mesas"/>
@@ -49,7 +46,7 @@
     </left>
 
     <center>
-        <VBox spacing="18.0" styleClass="main-shell" BorderPane.alignment="CENTER">
+        <VBox minHeight="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="18.0" styleClass="main-shell" BorderPane.alignment="CENTER">
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="top-header">
                     <padding>
@@ -97,7 +94,7 @@
                     </children>
                 </HBox>
 
-                <StackPane fx:id="contentArea" styleClass="workspace-shell" VBox.vgrow="ALWAYS">
+                <StackPane fx:id="contentArea" minHeight="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="workspace-shell" VBox.vgrow="ALWAYS">
                     <VBox.margin>
                         <Insets bottom="18.0" left="20.0" right="20.0" top="0.0"/>
                     </VBox.margin>
