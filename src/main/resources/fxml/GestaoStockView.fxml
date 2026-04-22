@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="760.0" prefWidth="1000.0" styleClass="gestao-root"
@@ -17,62 +16,22 @@
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.gestao_restaurante.Views.GestaoStockScreen">
     <top>
-        <VBox spacing="16.0">
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="gestao-toolbar-card" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="0.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
             <children>
-                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="floor-header" BorderPane.alignment="CENTER">
-                    <padding>
-                        <Insets bottom="14.0" left="24.0" right="24.0" top="20.0"/>
-                    </padding>
+                <VBox spacing="2.0">
                     <children>
-                        <VBox spacing="3.0">
-                            <children>
-                                <Label styleClass="floor-title" text="Stock"/>
-                                <Label fx:id="sessaoLabel" styleClass="floor-subtitle" text="Sessao da Noite"/>
-                            </children>
-                        </VBox>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                            <children>
-                                <VBox alignment="CENTER_RIGHT" spacing="1.0">
-                                    <children>
-                                        <Label fx:id="utilizadorLabel" styleClass="user-name" text="Admin"/>
-                                        <Label fx:id="cargoLabel" styleClass="user-role" text="ADMINISTRADOR"/>
-                                    </children>
-                                </VBox>
-
-                                <StackPane styleClass="user-avatar">
-                                    <children>
-                                        <Label fx:id="avatarLabel" styleClass="user-avatar-text" text="A"/>
-                                    </children>
-                                </StackPane>
-
-                                <Label styleClass="header-pill" text="ALERTAS"/>
-                                <Label styleClass="header-pill" text="SALAO"/>
-                            </children>
-                        </HBox>
+                        <Label styleClass="toolbar-caption" text="Pesquisa e encomendas"/>
+                        <Label styleClass="toolbar-hint" text="Regista pedidos ao fornecedor e confirma a chegada dos ingredientes."/>
                     </children>
-                </HBox>
-
-                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="gestao-toolbar-card" BorderPane.alignment="CENTER">
-                    <padding>
-                        <Insets bottom="0.0" left="20.0" right="20.0" top="0.0"/>
-                    </padding>
-                    <children>
-                        <VBox spacing="2.0">
-                            <children>
-                                <Label styleClass="toolbar-caption" text="Pesquisa e encomendas"/>
-                                <Label styleClass="toolbar-hint" text="Regista pedidos ao fornecedor e confirma a chegada dos ingredientes."/>
-                            </children>
-                        </VBox>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar stock..." styleClass="pesquisa-field"/>
-                        <Button fx:id="btnNovoStock" mnemonicParsing="false" onAction="#onNovoStock" styleClass="novo-registo-button" text="+ Nova Encomenda"/>
-                    </children>
-                </HBox>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar stock..." styleClass="pesquisa-field"/>
+                <Button fx:id="btnNovoStock" mnemonicParsing="false" onAction="#onNovoStock" styleClass="novo-registo-button" text="+ Nova Encomenda"/>
             </children>
-        </VBox>
+        </HBox>
     </top>
     <center>
         <VBox styleClass="table-shell" BorderPane.alignment="CENTER">

@@ -93,34 +93,34 @@ public final class DesktopAppContext {
     }
 
     public static void showMenuPrincipal() {
-        navigateInsideShell("MenuPrincipalView.fxml", BASE_TITLE + " - Dashboard", "dashboard");
+        navigateInsideShell("MenuPrincipalView.fxml", BASE_TITLE + " - Dashboard", "dashboard", "Dashboard");
     }
 
     public static void showGestaoProdutos() {
-        navigateInsideShell("GestaoProdutosView.fxml", BASE_TITLE + " - Produtos", "produtos");
+        navigateInsideShell("GestaoProdutosView.fxml", BASE_TITLE + " - Produtos", "produtos", "Gestao de Produtos");
     }
 
     public static void showGestaoMesas() {
-        navigateInsideShell("GestaoMesasView.fxml", BASE_TITLE + " - Mesas", "mesas");
+        navigateInsideShell("GestaoMesasView.fxml", BASE_TITLE + " - Mesas", "mesas", "Gestao de Mesas");
     }
 
     public static void showGestaoReservas() {
-        navigateInsideShell("GestaoReservasView.fxml", BASE_TITLE + " - Reservas", "reservas");
+        navigateInsideShell("GestaoReservasView.fxml", BASE_TITLE + " - Reservas", "reservas", "Gestao de Reservas");
     }
 
     public static void showGestaoPedidos() {
-        navigateInsideShell("GestaoPedidosView.fxml", BASE_TITLE + " - Pedidos", "pedidos");
+        navigateInsideShell("GestaoPedidosView.fxml", BASE_TITLE + " - Pedidos", "pedidos", "Gestao de Pedidos");
     }
 
     public static void showGestaoStock() {
-        navigateInsideShell("GestaoStockView.fxml", BASE_TITLE + " - Stock", "stock");
+        navigateInsideShell("GestaoStockView.fxml", BASE_TITLE + " - Stock", "stock", "Gestao de Stock");
     }
 
     public static void showGestaoUtilizadores() {
         if (!isAdmin()) {
             throw new IllegalStateException("A gestao de utilizadores esta disponivel apenas para administradores.");
         }
-        navigateInsideShell("GestaoUtilizadoresView.fxml", BASE_TITLE + " - Utilizadores", "utilizadores");
+        navigateInsideShell("GestaoUtilizadoresView.fxml", BASE_TITLE + " - Utilizadores", "utilizadores", "Gestao de Utilizadores");
     }
 
     public static void showScene(Parent root, String windowTitle) {
@@ -143,7 +143,7 @@ public final class DesktopAppContext {
         }
     }
 
-    private static void navigateInsideShell(String contentFxml, String windowTitle, String activeMenuKey) {
+    private static void navigateInsideShell(String contentFxml, String windowTitle, String activeMenuKey, String headerTitle) {
         if (primaryStage == null) {
             throw new IllegalStateException("Primary stage ainda nao foi inicializado.");
         }
@@ -153,6 +153,7 @@ public final class DesktopAppContext {
             Parent content = loadFxml(contentFxml);
             mainShellController.setContent(content);
             mainShellController.setActiveMenu(activeMenuKey);
+            mainShellController.setHeaderTitle(headerTitle);
 
             primaryStage.setTitle(windowTitle);
             if (primaryStage.getScene() == null || primaryStage.getScene().getRoot() != mainShellRoot) {

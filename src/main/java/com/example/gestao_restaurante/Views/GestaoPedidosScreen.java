@@ -46,18 +46,6 @@ public class GestaoPedidosScreen {
     private static final NumberFormat MOEDA_FORMATTER = NumberFormat.getCurrencyInstance(new Locale("pt", "PT"));
 
     @FXML
-    private Label sessaoLabel;
-
-    @FXML
-    private Label utilizadorLabel;
-
-    @FXML
-    private Label cargoLabel;
-
-    @FXML
-    private Label avatarLabel;
-
-    @FXML
     private TextField pesquisaField;
 
     @FXML
@@ -116,8 +104,6 @@ public class GestaoPedidosScreen {
 
     @FXML
     private void initialize() {
-        ViewUtils.preencherCabecalho(sessaoLabel, utilizadorLabel, cargoLabel, avatarLabel,
-                "Lancamento de pedidos com produtos ligados por linha de pedido");
         configurarComboReserva();
         configurarPesquisa();
         carregarReservas();
