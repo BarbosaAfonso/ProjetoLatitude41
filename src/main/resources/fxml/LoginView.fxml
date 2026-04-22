@@ -51,7 +51,6 @@
                                 </VBox>
 
                                 <Button defaultButton="true" mnemonicParsing="false" onAction="#onEntrar" prefHeight="46.0" prefWidth="352.0" styleClass="login-button" text="ENTRAR" />
-                                <Button mnemonicParsing="false" onAction="#onRegistar" prefHeight="46.0" prefWidth="352.0" styleClass="login-button" text="REGISTAR" />
 
                                 <HBox alignment="CENTER_LEFT" spacing="22.0">
                                     <children>
