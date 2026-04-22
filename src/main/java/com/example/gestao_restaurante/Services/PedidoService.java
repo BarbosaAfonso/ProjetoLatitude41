@@ -6,14 +6,20 @@ import com.example.gestao_restaurante.Dtos.PedidoLinhaRequest;
 import com.example.gestao_restaurante.Dtos.PedidoLinhaResumo;
 import com.example.gestao_restaurante.Modules.LinhaPedido;
 import com.example.gestao_restaurante.Modules.LinhaPedidoId;
+import com.example.gestao_restaurante.Modules.Mesa;
 import com.example.gestao_restaurante.Modules.Pedido;
 import com.example.gestao_restaurante.Modules.Produto;
 import com.example.gestao_restaurante.Modules.Reserva;
+import com.example.gestao_restaurante.Modules.Utilizador;
 import com.example.gestao_restaurante.Repositories.LinhaPedidoRepository;
+import com.example.gestao_restaurante.Repositories.MesaRepository;
 import com.example.gestao_restaurante.Repositories.PedidoRepository;
 import com.example.gestao_restaurante.Repositories.ProdutoRepository;
 import com.example.gestao_restaurante.Repositories.ReservaRepository;
+import com.example.gestao_restaurante.Repositories.UtilizadorRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,24 +29,43 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class PedidoService {
 
+    private static final long MARGEM_DATA_HORA_SEGUNDOS = 30;
+    private static final Set<String> ESTADOS_PEDIDO_ATIVOS = Set.of("REGISTADO", "PREPARACAO", "PRONTO", "EM_PREPARACAO", "EM PREPARACAO");
+    private static final Set<String> ESTADOS_RESERVA_ATIVOS = Set.of("CONFIRMADA", "OCUPADA", "EM_CURSO", "ATIVA");
+    private static final Set<String> ESTADOS_MESA_PERMITIDOS = Set.of("RESERVADA", "OCUPADA");
+    private static final Pattern PATTERN_CONSTRAINT = Pattern.compile("constraint\\s+\"?([\\w\\d_]+)\"?", Pattern.CASE_INSENSITIVE);
+
     private final PedidoRepository pedidoRepository;
     private final ReservaRepository reservaRepository;
+    private final MesaRepository mesaRepository;
+    private final UtilizadorRepository utilizadorRepository;
     private final ProdutoRepository produtoRepository;
     private final LinhaPedidoRepository linhaPedidoRepository;
+    private final EntityManager entityManager;
 
     public PedidoService(PedidoRepository pedidoRepository,
                          ReservaRepository reservaRepository,
+                         MesaRepository mesaRepository,
+                         UtilizadorRepository utilizadorRepository,
                          ProdutoRepository produtoRepository,
-                         LinhaPedidoRepository linhaPedidoRepository) {
+                         LinhaPedidoRepository linhaPedidoRepository,
+                         EntityManager entityManager) {
         this.pedidoRepository = pedidoRepository;
         this.reservaRepository = reservaRepository;
+        this.mesaRepository = mesaRepository;
+        this.utilizadorRepository = utilizadorRepository;
         this.produtoRepository = produtoRepository;
         this.linhaPedidoRepository = linhaPedidoRepository;
+        this.entityManager = entityManager;
     }
 
     public List<Pedido> listarTodos() {
@@ -74,73 +99,289 @@ public class PedidoService {
 
     @Transactional
     public PedidoCompletoResponse criarCompleto(PedidoCompletoRequest request) {
-        if (request == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido invalido.");
+        try {
+            if (request == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido invalido.");
+            }
+            if (request.getLinhas() == null || request.getLinhas().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adicione pelo menos um produto ao pedido.");
+            }
+
+            Integer mesaId = resolverMesaId(request);
+            Mesa mesa = procurarMesa(mesaId);
+            validarMesaParaPedido(mesa);
+            Reserva reserva = resolverReservaParaPedido(request, mesa);
+
+            Pedido pedidoGuardado = procurarPedidoAtivoOuCriarPorMesa(mesa.getId(), reserva, request);
+
+            int indiceLinha = 0;
+            for (PedidoLinhaRequest linhaRequest : request.getLinhas()) {
+                indiceLinha++;
+                if (linhaRequest == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Linha " + indiceLinha + " do pedido esta vazia.");
+                }
+
+                Produto produto = procurarProduto(linhaRequest);
+                int quantidade = validarQuantidade(linhaRequest);
+                BigDecimal precoUnitario = validarPrecoUnitario(linhaRequest, produto);
+                String observacoes = normalizarObservacoes(linhaRequest.getObservacoes());
+                adicionarOuAtualizarLinha(pedidoGuardado, produto, quantidade, precoUnitario, observacoes);
+            }
+
+            // Forca validacao imediata de FK/UNIQUE no fim da transacao de negocio.
+            entityManager.flush();
+
+            List<LinhaPedido> linhasPersistidas = linhaPedidoRepository.findByIdIdPedidoOrderByIdIdProdutoAsc(pedidoGuardado.getId());
+            List<PedidoLinhaResumo> linhasResumo = new ArrayList<>();
+            BigDecimal subtotal = BigDecimal.ZERO;
+            int quantidadeItens = 0;
+
+            for (LinhaPedido linhaPersistida : linhasPersistidas) {
+                PedidoLinhaResumo resumo = paraResumo(linhaPersistida);
+                linhasResumo.add(resumo);
+                subtotal = subtotal.add(resumo.getSubtotal());
+                quantidadeItens += resumo.getQuantidade() == null ? 0 : resumo.getQuantidade();
+            }
+
+            PedidoCompletoResponse response = new PedidoCompletoResponse();
+            response.setId(pedidoGuardado.getId());
+            response.setDataHora(pedidoGuardado.getDataHora());
+            response.setEstado(pedidoGuardado.getEstado());
+            response.setReservaId(reserva.getId());
+            response.setMesaId(mesa.getId());
+            response.setQuantidadeItens(quantidadeItens);
+            response.setSubtotal(subtotal);
+            response.setLinhas(linhasResumo);
+            return response;
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    resolverMensagemConflitoIntegridade(e),
+                    e
+            );
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Falha interna ao processar o pedido completo. Verifique os dados da reserva e dos produtos.",
+                    e
+            );
         }
-        if (request.getReservaId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selecione uma reserva valida.");
-        }
-        if (request.getLinhas() == null || request.getLinhas().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adicione pelo menos um produto ao pedido.");
+    }
+
+    private Pedido procurarPedidoAtivoOuCriarPorMesa(Integer mesaId, Reserva reserva, PedidoCompletoRequest request) {
+        Optional<Pedido> pedidoAtivo = pedidoRepository.findTopByMesaIdAndStatusInOrderByDataHoraDesc(
+                mesaId,
+                ESTADOS_PEDIDO_ATIVOS
+        );
+        if (pedidoAtivo.isPresent()) {
+            Pedido existente = pedidoAtivo.get();
+            if ("REGISTADO".equalsIgnoreCase(normalizarEstado(existente.getEstado(), ""))) {
+                existente.setEstado("PREPARACAO");
+            }
+            return pedidoRepository.save(existente);
         }
 
-        Reserva reserva = reservaRepository.findById(request.getReservaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reserva nao encontrada."));
+        // Fallback para cenarios em que a BD imponha unicidade por reserva.
+        Optional<Pedido> ultimoPedidoReserva = pedidoRepository.findFirstByIdReservaIdOrderByDataHoraDesc(reserva.getId());
+        if (ultimoPedidoReserva.isPresent()) {
+            Pedido existente = ultimoPedidoReserva.get();
+            if (!"CANCELADO".equalsIgnoreCase(normalizarEstado(existente.getEstado(), ""))) {
+                existente.setEstado("PREPARACAO");
+            }
+            return pedidoRepository.save(existente);
+        }
 
         Pedido pedido = new Pedido();
         pedido.setDataHora(request.getDataHora() == null ? Instant.now() : request.getDataHora());
         pedido.setEstado(normalizarEstado(request.getEstado(), "PREPARACAO"));
         validarDataHora(pedido.getDataHora(), pedido.getEstado(), null);
         pedido.setIdReserva(reserva);
-        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+        return pedidoRepository.save(pedido);
+    }
 
-        List<PedidoLinhaResumo> linhasResumo = new ArrayList<>();
-        BigDecimal subtotal = BigDecimal.ZERO;
-        int quantidadeItens = 0;
+    private Integer resolverMesaId(PedidoCompletoRequest request) {
+        if (request.getMesaId() != null) {
+            return request.getMesaId();
+        }
+        if (request.getReservaId() != null) {
+            Reserva reserva = reservaRepository.findById(request.getReservaId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reserva nao encontrada."));
+            if (reserva.getNumMesa() == null || reserva.getNumMesa().getId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A reserva selecionada nao esta associada a uma mesa valida.");
+            }
+            return reserva.getNumMesa().getId();
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selecione uma mesa valida.");
+    }
 
-        for (PedidoLinhaRequest linhaRequest : request.getLinhas()) {
-            Produto produto = procurarProduto(linhaRequest);
-            int quantidade = validarQuantidade(linhaRequest);
-            BigDecimal precoUnitario = validarPrecoUnitario(linhaRequest, produto);
-            BigDecimal subtotalLinha = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    private Mesa procurarMesa(Integer mesaId) {
+        return mesaRepository.findById(mesaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mesa nao encontrada."));
+    }
 
-            LinhaPedido linhaPedido = new LinhaPedido();
-            LinhaPedidoId id = new LinhaPedidoId();
-            id.setIdPedido(pedidoGuardado.getId());
-            id.setIdProduto(produto.getId());
-
-            linhaPedido.setId(id);
-            linhaPedido.setIdPedido(pedidoGuardado);
-            linhaPedido.setIdProduto(produto);
-            linhaPedido.setQuantidade(quantidade);
-            linhaPedido.setPrecoUnitVenda(precoUnitario);
-            linhaPedido.setObservacoes(normalizarObservacoes(linhaRequest.getObservacoes()));
-            linhaPedidoRepository.save(linhaPedido);
-
-            PedidoLinhaResumo resumo = new PedidoLinhaResumo();
-            resumo.setProdutoId(produto.getId());
-            resumo.setNomeProduto(produto.getNome());
-            resumo.setTipoProduto(produto.getTipo());
-            resumo.setQuantidade(quantidade);
-            resumo.setPrecoUnitVenda(precoUnitario);
-            resumo.setObservacoes(linhaPedido.getObservacoes());
-            resumo.setSubtotal(subtotalLinha);
-            linhasResumo.add(resumo);
-
-            subtotal = subtotal.add(subtotalLinha);
-            quantidadeItens += quantidade;
+    private Reserva resolverReservaParaPedido(PedidoCompletoRequest request, Mesa mesa) {
+        if (request.getReservaId() != null) {
+            Reserva reserva = reservaRepository.findById(request.getReservaId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reserva nao encontrada."));
+            validarReservaParaPedido(reserva, mesa.getId());
+            return reserva;
         }
 
-        PedidoCompletoResponse response = new PedidoCompletoResponse();
-        response.setId(pedidoGuardado.getId());
-        response.setDataHora(pedidoGuardado.getDataHora());
-        response.setEstado(pedidoGuardado.getEstado());
-        response.setReservaId(reserva.getId());
-        response.setMesaId(reserva.getNumMesa() == null ? null : reserva.getNumMesa().getId());
-        response.setQuantidadeItens(quantidadeItens);
-        response.setSubtotal(subtotal);
-        response.setLinhas(linhasResumo);
-        return response;
+        Optional<Reserva> reservaAtiva = reservaRepository.findFirstByNumMesaIdAndEstadoInOrderByDataHoraDesc(
+                mesa.getId(),
+                ESTADOS_RESERVA_ATIVOS
+        );
+        if (reservaAtiva.isPresent()) {
+            validarReservaParaPedido(reservaAtiva.get(), mesa.getId());
+            return reservaAtiva.get();
+        }
+
+        return criarReservaDeServico(mesa, request.getUtilizadorId());
+    }
+
+    private Reserva criarReservaDeServico(Mesa mesa, Integer utilizadorId) {
+        Utilizador utilizador = resolverUtilizadorPedido(utilizadorId);
+
+        Reserva reserva = new Reserva();
+        reserva.setDataHora(Instant.now());
+        reserva.setEstado("CONFIRMADA");
+        reserva.setNumMesa(mesa);
+        reserva.setIdUtilizador(utilizador);
+        return reservaRepository.save(reserva);
+    }
+
+    private Utilizador resolverUtilizadorPedido(Integer utilizadorId) {
+        if (utilizadorId != null) {
+            return utilizadorRepository.findById(utilizadorId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Utilizador nao encontrado para associar ao pedido."));
+        }
+
+        for (Utilizador utilizador : utilizadorRepository.findAll()) {
+            if (utilizador != null && utilizador.getId() != null) {
+                return utilizador;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nao existe utilizador disponivel para criar pedido sem reserva.");
+    }
+
+    private void adicionarOuAtualizarLinha(Pedido pedido,
+                                           Produto produto,
+                                           int quantidade,
+                                           BigDecimal precoUnitario,
+                                           String observacoes) {
+        LinhaPedidoId id = new LinhaPedidoId();
+        id.setIdPedido(pedido.getId());
+        id.setIdProduto(produto.getId());
+
+        Optional<LinhaPedido> linhaExistenteOpt = linhaPedidoRepository.findById(id);
+        if (linhaExistenteOpt.isPresent()) {
+            LinhaPedido existente = linhaExistenteOpt.get();
+            int quantidadeAtual = existente.getQuantidade() == null ? 0 : existente.getQuantidade();
+            existente.setQuantidade(quantidadeAtual + quantidade);
+            existente.setPrecoUnitVenda(precoUnitario);
+            existente.setObservacoes(agregarObservacoes(existente.getObservacoes(), observacoes));
+            linhaPedidoRepository.save(existente);
+            return;
+        }
+
+        LinhaPedido linhaPedido = new LinhaPedido();
+        linhaPedido.setId(id);
+        linhaPedido.setIdPedido(pedido);
+        linhaPedido.setIdProduto(produto);
+        linhaPedido.setQuantidade(quantidade);
+        linhaPedido.setPrecoUnitVenda(precoUnitario);
+        linhaPedido.setObservacoes(observacoes);
+        linhaPedidoRepository.save(linhaPedido);
+    }
+
+    private PedidoLinhaResumo paraResumo(LinhaPedido linhaPedido) {
+        Produto produto = linhaPedido.getIdProduto();
+        Integer produtoId = produto == null ? linhaPedido.getId().getIdProduto() : produto.getId();
+        String nomeProduto = produto == null ? null : produto.getNome();
+        String tipoProduto = produto == null ? null : produto.getTipo();
+        Integer quantidade = linhaPedido.getQuantidade() == null ? 0 : linhaPedido.getQuantidade();
+        BigDecimal precoUnitario = linhaPedido.getPrecoUnitVenda() == null ? BigDecimal.ZERO : linhaPedido.getPrecoUnitVenda();
+
+        PedidoLinhaResumo resumo = new PedidoLinhaResumo();
+        resumo.setProdutoId(produtoId);
+        resumo.setNomeProduto(normalizarNomeProduto(nomeProduto, produtoId));
+        resumo.setTipoProduto(normalizarTipoProduto(tipoProduto));
+        resumo.setQuantidade(quantidade);
+        resumo.setPrecoUnitVenda(precoUnitario);
+        resumo.setObservacoes(linhaPedido.getObservacoes());
+        resumo.setSubtotal(precoUnitario.multiply(BigDecimal.valueOf(quantidade)));
+        return resumo;
+    }
+
+    private String agregarObservacoes(String existentes, String novas) {
+        String base = normalizarObservacoes(existentes);
+        String extra = normalizarObservacoes(novas);
+
+        if (base == null) {
+            return extra;
+        }
+        if (extra == null) {
+            return base;
+        }
+        if (base.equals(extra)) {
+            return base;
+        }
+        return base + " | " + extra;
+    }
+
+    private String resolverMensagemConflitoIntegridade(DataIntegrityViolationException e) {
+        String detalhe = extrairDetalheIntegridade(e);
+        String detalheNormalizado = detalhe.toLowerCase(Locale.ROOT);
+        String constraint = extrairNomeConstraint(detalhe);
+
+        if (detalheNormalizado.contains("linha_pedido")
+                && (detalheNormalizado.contains("id_pedido") || detalheNormalizado.contains("id_produto"))) {
+            return montarMensagemComConstraint(
+                    "Conflito ao anexar produtos ao pedido existente. Tente novamente para consolidar as linhas do pedido.",
+                    constraint
+            );
+        }
+
+        if (detalheNormalizado.contains("pedido")
+                && (detalheNormalizado.contains("id_reserva") || detalheNormalizado.contains("reserva"))) {
+            return montarMensagemComConstraint(
+                    "Ja existe um pedido associado a esta mesa/reserva. O sistema deve reutilizar o pedido ativo para anexar novas linhas.",
+                    constraint
+            );
+        }
+
+        return montarMensagemComConstraint(
+                "Conflito de dados ao gravar o pedido. A reserva/mesa ou algum produto pode ter sido alterado por outro utilizador.",
+                constraint
+        );
+    }
+
+    private String extrairDetalheIntegridade(DataIntegrityViolationException e) {
+        Throwable causa = e.getMostSpecificCause();
+        if (causa != null && causa.getMessage() != null && !causa.getMessage().isBlank()) {
+            return causa.getMessage();
+        }
+        return e.getMessage() == null ? "" : e.getMessage();
+    }
+
+    private String extrairNomeConstraint(String detalhe) {
+        if (detalhe == null || detalhe.isBlank()) {
+            return "";
+        }
+        Matcher matcher = PATTERN_CONSTRAINT.matcher(detalhe);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
+    private String montarMensagemComConstraint(String mensagem, String constraint) {
+        if (constraint == null || constraint.isBlank()) {
+            return mensagem;
+        }
+        return mensagem + " (constraint: " + constraint + ")";
     }
 
     private void aplicarDados(Pedido destino, Pedido origem, boolean preservarReservaAtual, Instant dataHoraAnterior) {
@@ -189,6 +430,45 @@ public class PedidoService {
         return produto;
     }
 
+    private void validarReservaParaPedido(Reserva reserva, Integer mesaId) {
+        if (reserva == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reserva invalida.");
+        }
+        if (reserva.getNumMesa() == null || reserva.getNumMesa().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A reserva selecionada nao esta associada a uma mesa valida.");
+        }
+        if (!Objects.equals(reserva.getNumMesa().getId(), mesaId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A reserva selecionada nao pertence a mesa indicada.");
+        }
+        if ("CANCELADA".equalsIgnoreCase(reserva.getEstado())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nao e possivel criar pedidos para reservas canceladas.");
+        }
+    }
+
+    private void validarMesaParaPedido(Mesa mesa) {
+        String estadoMesa = normalizarEstado(mesa == null ? null : mesa.getEstado(), "");
+        if (!ESTADOS_MESA_PERMITIDOS.contains(estadoMesa)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Apenas e permitido lancar pedidos para mesas RESERVADA ou OCUPADA."
+            );
+        }
+    }
+
+    private String normalizarTipoProduto(String tipoProduto) {
+        if (tipoProduto == null || tipoProduto.isBlank()) {
+            return "Sem categoria";
+        }
+        return tipoProduto.trim();
+    }
+
+    private String normalizarNomeProduto(String nomeProduto, Integer produtoId) {
+        if (nomeProduto == null || nomeProduto.isBlank()) {
+            return "Produto #" + produtoId;
+        }
+        return nomeProduto.trim();
+    }
+
     private int validarQuantidade(PedidoLinhaRequest linhaRequest) {
         Integer quantidade = linhaRequest == null ? null : linhaRequest.getQuantidade();
         if (quantidade == null || quantidade <= 0) {
@@ -219,7 +499,8 @@ public class PedidoService {
             return;
         }
         boolean dataMantida = dataHoraAnterior != null && dataHoraAnterior.equals(dataHora);
-        if (dataHora.isBefore(Instant.now()) && !"CANCELADO".equalsIgnoreCase(estado) && !dataMantida) {
+        Instant limitePassado = Instant.now().minusSeconds(MARGEM_DATA_HORA_SEGUNDOS);
+        if (dataHora.isBefore(limitePassado) && !"CANCELADO".equalsIgnoreCase(estado) && !dataMantida) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nao pode criar ou alterar pedidos para datas passadas.");
         }
     }

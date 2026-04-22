@@ -62,7 +62,7 @@
                         <VBox spacing="2.0">
                             <children>
                                 <Label styleClass="toolbar-caption" text="Lancamento de Pedido"/>
-                                <Label styleClass="toolbar-hint" text="Escolha a reserva, filtre produtos e monte o pedido antes de o enviar para a cozinha."/>
+                                <Label styleClass="toolbar-hint" text="Escolha a mesa (reservada/ocupada), filtre produtos e monte o pedido antes de o enviar para a cozinha."/>
                             </children>
                         </VBox>
                         <Region HBox.hgrow="ALWAYS"/>

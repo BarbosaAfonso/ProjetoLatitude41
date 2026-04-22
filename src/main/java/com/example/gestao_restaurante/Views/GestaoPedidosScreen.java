@@ -31,7 +31,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -108,7 +110,7 @@ public class GestaoPedidosScreen {
     @FXML
     private Button confirmarPedidoButton;
 
-    private final ObservableList<JsonNode> reservas = FXCollections.observableArrayList();
+    private final ObservableList<JsonNode> mesasLancamento = FXCollections.observableArrayList();
     private final ObservableList<JsonNode> produtos = FXCollections.observableArrayList();
     private final Map<Integer, LinhaRascunho> linhasPedido = new LinkedHashMap<>();
 
@@ -120,7 +122,7 @@ public class GestaoPedidosScreen {
                 "Lancamento de pedidos com produtos ligados por linha de pedido");
         configurarComboReserva();
         configurarPesquisa();
-        carregarReservas();
+        carregarMesasDisponiveis();
         carregarProdutos();
         atualizarResumoReserva();
         atualizarResumoPedido();
@@ -152,9 +154,9 @@ public class GestaoPedidosScreen {
     @FXML
     private void onConfirmarPedido() {
         try {
-            JsonNode reservaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
-            if (reservaSelecionada == null) {
-                throw new IllegalArgumentException("Selecione uma reserva antes de confirmar o pedido.");
+            JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
+            if (mesaSelecionada == null) {
+                throw new IllegalArgumentException("Selecione uma mesa antes de confirmar o pedido.");
             }
             if (linhasPedido.isEmpty()) {
                 throw new IllegalArgumentException("Adicione pelo menos um produto ao pedido.");
@@ -163,7 +165,13 @@ public class GestaoPedidosScreen {
             ObjectNode payload = DesktopAppContext.apiService().createObject();
             payload.put("dataHora", Instant.now().toString());
             payload.put("estado", "PREPARACAO");
-            payload.put("reservaId", inteiro(ViewUtils.text(reservaSelecionada, "id")));
+            payload.put("mesaId", inteiro(ViewUtils.text(mesaSelecionada, "mesaId")));
+            if (!ViewUtils.text(mesaSelecionada, "reservaId").isBlank()) {
+                payload.put("reservaId", inteiro(ViewUtils.text(mesaSelecionada, "reservaId")));
+            }
+            if (DesktopAppContext.utilizadorId() != null) {
+                payload.put("utilizadorId", DesktopAppContext.utilizadorId());
+            }
 
             ArrayNode linhas = payload.putArray("linhas");
             for (LinhaRascunho linha : linhasPedido.values()) {
@@ -175,7 +183,7 @@ public class GestaoPedidosScreen {
             }
 
             JsonNode resposta = DesktopAppContext.apiService().post("/pedidos/completo", payload);
-            mostrarDialogoSucesso(resposta, reservaSelecionada);
+            mostrarDialogoSucesso(resposta, mesaSelecionada);
             linhasPedido.clear();
             atualizarResumoPedido();
         } catch (RuntimeException e) {
@@ -193,11 +201,11 @@ public class GestaoPedidosScreen {
             return;
         }
 
-        reservaCombo.setItems(reservas);
+        reservaCombo.setItems(mesasLancamento);
         reservaCombo.setConverter(new StringConverter<>() {
             @Override
             public String toString(JsonNode object) {
-                return object == null ? "" : descricaoReserva(object);
+                return object == null ? "" : descricaoMesaLancamento(object);
             }
 
             @Override
@@ -214,13 +222,42 @@ public class GestaoPedidosScreen {
         }
     }
 
-    private void carregarReservas() {
+    private void carregarMesasDisponiveis() {
         try {
-            reservas.clear();
-            DesktopAppContext.apiService().getArray("/reservas").forEach(reservas::add);
-            reservas.sort(Comparator.comparing(this::dataHoraReserva, Comparator.nullsLast(Comparator.naturalOrder())));
-            if (reservaCombo != null && !reservas.isEmpty()) {
-                reservaCombo.setValue(reservas.get(0));
+            mesasLancamento.clear();
+
+            ArrayNode reservasApi = DesktopAppContext.apiService().getArray("/reservas");
+            Map<Integer, JsonNode> reservaAtivaPorMesa = selecionarReservaAtivaPorMesa(reservasApi);
+
+            List<JsonNode> mesasFiltradas = new ArrayList<>();
+            for (JsonNode mesa : DesktopAppContext.apiService().getArray("/mesas")) {
+                String estado = normalizarEstadoMesa(ViewUtils.text(mesa, "estado"));
+                if (!("RESERVADA".equals(estado) || "OCUPADA".equals(estado))) {
+                    continue;
+                }
+
+                int mesaId = inteiro(ViewUtils.text(mesa, "id"));
+                ObjectNode item = DesktopAppContext.apiService().createObject();
+                item.put("mesaId", mesaId);
+                item.put("mesaEstado", estado);
+
+                JsonNode reservaAssociada = reservaAtivaPorMesa.get(mesaId);
+                if (reservaAssociada != null) {
+                    item.put("reservaId", inteiro(ViewUtils.text(reservaAssociada, "id")));
+                    item.put("reservaDataHora", ViewUtils.text(reservaAssociada, "dataHora"));
+                    String clienteNome = ViewUtils.nestedText(reservaAssociada, "idUtilizador", "nome");
+                    if (!clienteNome.isBlank()) {
+                        item.put("clienteNome", clienteNome);
+                    }
+                }
+                mesasFiltradas.add(item);
+            }
+
+            mesasFiltradas.sort(Comparator.comparing(mesa -> inteiro(ViewUtils.text(mesa, "mesaId"))));
+            mesasFiltradas.forEach(mesasLancamento::add);
+
+            if (reservaCombo != null && !mesasLancamento.isEmpty()) {
+                reservaCombo.setValue(mesasLancamento.get(0));
             }
         } catch (RuntimeException e) {
             ViewUtils.showError("Pedidos", e.getMessage());
@@ -372,19 +409,25 @@ public class GestaoPedidosScreen {
     }
 
     private void atualizarResumoReserva() {
-        JsonNode reservaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
+        JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
+        String mesaId = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "mesaId");
+        String reservaId = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "reservaId");
+        String clienteNome = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "clienteNome");
+        String estadoMesa = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "mesaEstado");
+
         if (mesaLabel != null) {
-            mesaLabel.setText(reservaSelecionada == null ? "Mesa -" : "Mesa " + ViewUtils.nestedText(reservaSelecionada, "numMesa", "id"));
+            mesaLabel.setText(mesaId.isBlank() ? "Mesa -" : "Mesa " + mesaId);
         }
         if (reservaLabel != null) {
-            reservaLabel.setText(reservaSelecionada == null ? "Reserva nao selecionada" : "Reserva #" + ViewUtils.text(reservaSelecionada, "id"));
+            reservaLabel.setText(reservaId.isBlank() ? "Sem reserva associada" : "Reserva #" + reservaId);
         }
         if (clienteLabel != null) {
-            String cliente = reservaSelecionada == null ? "" : ViewUtils.nestedText(reservaSelecionada, "idUtilizador", "nome");
-            clienteLabel.setText(cliente.isBlank() ? "Sem cliente associado" : cliente);
+            clienteLabel.setText(clienteNome.isBlank() ? "Sem cliente associado" : clienteNome);
         }
         if (estadoPedidoLabel != null) {
-            estadoPedidoLabel.setText("Estado inicial: Em Preparacao");
+            estadoPedidoLabel.setText(estadoMesa.isBlank()
+                    ? "Estado inicial: Em Preparacao"
+                    : "Mesa: " + formatarEstadoMesa(estadoMesa) + " | Estado inicial: Em Preparacao");
         }
     }
 
@@ -519,7 +562,7 @@ public class GestaoPedidosScreen {
         }
     }
 
-    private void mostrarDialogoSucesso(JsonNode resposta, JsonNode reservaSelecionada) {
+    private void mostrarDialogoSucesso(JsonNode resposta, JsonNode mesaSelecionada) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Pedido Enviado");
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
@@ -536,7 +579,7 @@ public class GestaoPedidosScreen {
         subtitulo.setWrapText(true);
 
         VBox detalhe = new VBox(8,
-                criarLinhaSucesso("Mesa", "Mesa " + ViewUtils.nestedText(reservaSelecionada, "numMesa", "id")),
+                criarLinhaSucesso("Mesa", "Mesa " + ViewUtils.text(mesaSelecionada, "mesaId")),
                 criarLinhaSucesso("Pedido", "#" + ViewUtils.text(resposta, "id")),
                 criarLinhaSucesso("Estado", formatarEstado(ViewUtils.text(resposta, "estado")))
         );
@@ -593,14 +636,61 @@ public class GestaoPedidosScreen {
                 || ViewUtils.text(produto, "tipo").toLowerCase(Locale.ROOT).contains(termo);
     }
 
-    private String descricaoReserva(JsonNode reserva) {
-        return "Mesa " + ViewUtils.nestedText(reserva, "numMesa", "id")
-                + " | Reserva #" + ViewUtils.text(reserva, "id")
-                + " | " + formatarDataHora(ViewUtils.text(reserva, "dataHora"));
+    private Map<Integer, JsonNode> selecionarReservaAtivaPorMesa(ArrayNode reservasApi) {
+        Map<Integer, JsonNode> reservaAtivaPorMesa = new HashMap<>();
+        for (JsonNode reserva : reservasApi) {
+            int mesaId = inteiro(ViewUtils.nestedText(reserva, "numMesa", "id"));
+            if (mesaId <= 0) {
+                continue;
+            }
+
+            String estadoReserva = normalizarEstadoReserva(ViewUtils.text(reserva, "estado"));
+            if ("CANCELADA".equals(estadoReserva)) {
+                continue;
+            }
+
+            JsonNode atual = reservaAtivaPorMesa.get(mesaId);
+            if (atual == null || compararDataHoraReserva(reserva, atual) > 0) {
+                reservaAtivaPorMesa.put(mesaId, reserva);
+            }
+        }
+        return reservaAtivaPorMesa;
     }
 
-    private LocalDateTime dataHoraReserva(JsonNode reserva) {
-        return parseDataHora(ViewUtils.text(reserva, "dataHora"));
+    private int compararDataHoraReserva(JsonNode atual, JsonNode outra) {
+        LocalDateTime dataAtual = parseDataHora(ViewUtils.text(atual, "dataHora"));
+        LocalDateTime dataOutra = parseDataHora(ViewUtils.text(outra, "dataHora"));
+        if (dataAtual == null && dataOutra == null) {
+            return 0;
+        }
+        if (dataAtual == null) {
+            return -1;
+        }
+        if (dataOutra == null) {
+            return 1;
+        }
+        return dataAtual.compareTo(dataOutra);
+    }
+
+    private String descricaoMesaLancamento(JsonNode mesa) {
+        String descricaoBase = "Mesa " + ViewUtils.text(mesa, "mesaId") + " - " + formatarEstadoMesa(ViewUtils.text(mesa, "mesaEstado"));
+        String reservaId = ViewUtils.text(mesa, "reservaId");
+        if (reservaId.isBlank()) {
+            return descricaoBase;
+        }
+        String dataHoraReserva = ViewUtils.text(mesa, "reservaDataHora");
+        if (dataHoraReserva.isBlank()) {
+            return descricaoBase + " | Reserva #" + reservaId;
+        }
+        return descricaoBase + " | Reserva #" + reservaId + " | " + formatarDataHora(dataHoraReserva);
+    }
+
+    private String normalizarEstadoReserva(String estado) {
+        return estado == null ? "" : estado.trim().toUpperCase(Locale.ROOT);
+    }
+
+    private String normalizarEstadoMesa(String estado) {
+        return estado == null ? "" : estado.trim().toUpperCase(Locale.ROOT);
     }
 
     private LocalDateTime parseDataHora(String valor) {
@@ -632,6 +722,15 @@ public class GestaoPedidosScreen {
             case "ENTREGUE" -> "Entregue";
             case "CANCELADO" -> "Cancelado";
             default -> estado == null ? "" : estado;
+        };
+    }
+
+    private String formatarEstadoMesa(String estadoMesa) {
+        return switch (normalizarEstadoMesa(estadoMesa)) {
+            case "RESERVADA" -> "Reservada";
+            case "OCUPADA" -> "Ocupada";
+            case "LIVRE" -> "Livre";
+            default -> estadoMesa == null || estadoMesa.isBlank() ? "-" : estadoMesa;
         };
     }
 
