@@ -34,6 +34,11 @@ public class PedidoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/mesa/{mesaId}/completos")
+    public ResponseEntity<List<PedidoCompletoResponse>> listarCompletosPorMesa(@PathVariable Integer mesaId) {
+        return ResponseEntity.ok(pedidoService.listarCompletosPorMesa(mesaId));
+    }
+
     // POST /pedidos - criar novo pedido
     @PostMapping
     public ResponseEntity<Pedido> criar(@RequestBody Pedido pedido) {

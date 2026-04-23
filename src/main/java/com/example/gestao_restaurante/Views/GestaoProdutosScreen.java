@@ -31,6 +31,7 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 public class GestaoProdutosScreen {
 
@@ -272,6 +273,7 @@ public class GestaoProdutosScreen {
             ArrayNode resposta = DesktopAppContext.apiService().getArray("/produtos");
             dados.clear();
             resposta.forEach(dados::add);
+            configurarFiltrosCategoria();
             atualizarFiltros();
             aplicarOrdenacao();
         } catch (RuntimeException e) {
@@ -285,24 +287,26 @@ public class GestaoProdutosScreen {
         }
 
         filtrosCategoriaBox.getChildren().clear();
-        List<String> filtros = List.of(
-                "Todos",
-                "Entradas",
-                "Peixe",
-                "Carne",
-                "Vinhos",
-                "Bebidas s/ alcool",
-                "Sobremesas"
-        );
+        List<String> filtros = StreamSupport.stream(dados.spliterator(), false)
+                .map(produto -> ViewUtils.text(produto, "tipo").trim())
+                .filter(tipo -> !tipo.isBlank())
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .toList();
 
+        adicionarBotaoFiltro("Todos");
         for (String filtro : filtros) {
-            Button button = new Button(filtro);
-            button.getStyleClass().add("filtro-chip");
-            button.setOnAction(event -> selecionarFiltroCategoria(filtro));
-            filtrosCategoriaBox.getChildren().add(button);
+            adicionarBotaoFiltro(filtro);
         }
 
         atualizarEstiloFiltrosCategoria();
+    }
+
+    private void adicionarBotaoFiltro(String filtro) {
+        Button button = new Button(filtro);
+        button.getStyleClass().add("filtro-chip");
+        button.setOnAction(event -> selecionarFiltroCategoria(filtro));
+        filtrosCategoriaBox.getChildren().add(button);
     }
 
     private void selecionarFiltroCategoria(String filtro) {
@@ -366,20 +370,7 @@ public class GestaoProdutosScreen {
         }
 
         String tipo = normalizarTexto(ViewUtils.text(produto, "tipo"));
-        return switch (filtroCategoriaAtivo) {
-            case "entradas" -> tipo.contains("entrada");
-            case "peixe" -> tipo.contains("peixe") || tipo.contains("marisco");
-            case "carne" -> tipo.contains("carne");
-            case "vinhos" -> tipo.contains("vinho");
-            case "bebidas s/ alcool" -> tipo.contains("bebida")
-                    || tipo.contains("sem alcool")
-                    || tipo.contains("s/ alcool")
-                    || tipo.contains("sumo")
-                    || tipo.contains("refrigerante")
-                    || tipo.contains("agua");
-            case "sobremesas" -> tipo.contains("sobremesa") || tipo.contains("doce");
-            default -> true;
-        };
+        return tipo.equals(filtroCategoriaAtivo);
     }
 
     private void aplicarOrdenacao() {

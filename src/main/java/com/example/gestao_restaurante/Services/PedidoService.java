@@ -39,10 +39,18 @@ import java.util.regex.Pattern;
 public class PedidoService {
 
     private static final long MARGEM_DATA_HORA_SEGUNDOS = 30;
-    private static final Set<String> ESTADOS_PEDIDO_ATIVOS = Set.of("REGISTADO", "PREPARACAO", "PRONTO", "EM_PREPARACAO", "EM PREPARACAO");
+    private static final String ESTADO_PEDIDO_REGISTADO = "REGISTADO";
+    private static final Set<String> ESTADOS_PEDIDO_ATIVOS = Set.of(
+            ESTADO_PEDIDO_REGISTADO,
+            "PRONTO",
+            "EM PREPARACAO",
+            "EM_PREPARACAO",
+            "PREPARACAO"
+    );
     private static final Set<String> ESTADOS_RESERVA_ATIVOS = Set.of("CONFIRMADA", "OCUPADA", "EM_CURSO", "ATIVA");
     private static final Set<String> ESTADOS_MESA_PERMITIDOS = Set.of("RESERVADA", "OCUPADA");
     private static final Pattern PATTERN_CONSTRAINT = Pattern.compile("constraint\\s+\"?([\\w\\d_]+)\"?", Pattern.CASE_INSENSITIVE);
+    private static final int LIMITE_DETALHE_ERRO = 220;
 
     private final PedidoRepository pedidoRepository;
     private final ReservaRepository reservaRepository;
@@ -74,6 +82,13 @@ public class PedidoService {
 
     public Optional<Pedido> procurarPorId(Integer id) {
         return pedidoRepository.findById(id);
+    }
+
+    public List<PedidoCompletoResponse> listarCompletosPorMesa(Integer mesaId) {
+        Mesa mesa = procurarMesa(mesaId);
+        return pedidoRepository.findByIdReservaNumMesaIdOrderByDataHoraDesc(mesa.getId()).stream()
+                .map(this::construirRespostaCompleta)
+                .toList();
     }
 
     public Pedido criar(Pedido pedido) {
@@ -131,28 +146,7 @@ public class PedidoService {
             // Forca validacao imediata de FK/UNIQUE no fim da transacao de negocio.
             entityManager.flush();
 
-            List<LinhaPedido> linhasPersistidas = linhaPedidoRepository.findByIdIdPedidoOrderByIdIdProdutoAsc(pedidoGuardado.getId());
-            List<PedidoLinhaResumo> linhasResumo = new ArrayList<>();
-            BigDecimal subtotal = BigDecimal.ZERO;
-            int quantidadeItens = 0;
-
-            for (LinhaPedido linhaPersistida : linhasPersistidas) {
-                PedidoLinhaResumo resumo = paraResumo(linhaPersistida);
-                linhasResumo.add(resumo);
-                subtotal = subtotal.add(resumo.getSubtotal());
-                quantidadeItens += resumo.getQuantidade() == null ? 0 : resumo.getQuantidade();
-            }
-
-            PedidoCompletoResponse response = new PedidoCompletoResponse();
-            response.setId(pedidoGuardado.getId());
-            response.setDataHora(pedidoGuardado.getDataHora());
-            response.setEstado(pedidoGuardado.getEstado());
-            response.setReservaId(reserva.getId());
-            response.setMesaId(mesa.getId());
-            response.setQuantidadeItens(quantidadeItens);
-            response.setSubtotal(subtotal);
-            response.setLinhas(linhasResumo);
-            return response;
+            return construirRespostaCompleta(pedidoGuardado);
         } catch (ResponseStatusException e) {
             throw e;
         } catch (DataIntegrityViolationException e) {
@@ -164,7 +158,7 @@ public class PedidoService {
         } catch (RuntimeException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Falha interna ao processar o pedido completo. Verifique os dados da reserva e dos produtos.",
+                    "Falha interna ao processar o pedido completo. " + resumirDetalheErro(e),
                     e
             );
         }
@@ -176,11 +170,7 @@ public class PedidoService {
                 ESTADOS_PEDIDO_ATIVOS
         );
         if (pedidoAtivo.isPresent()) {
-            Pedido existente = pedidoAtivo.get();
-            if ("REGISTADO".equalsIgnoreCase(normalizarEstado(existente.getEstado(), ""))) {
-                existente.setEstado("PREPARACAO");
-            }
-            return pedidoRepository.save(existente);
+            return pedidoAtivo.get();
         }
 
         // Fallback para cenarios em que a BD imponha unicidade por reserva.
@@ -188,14 +178,13 @@ public class PedidoService {
         if (ultimoPedidoReserva.isPresent()) {
             Pedido existente = ultimoPedidoReserva.get();
             if (!"CANCELADO".equalsIgnoreCase(normalizarEstado(existente.getEstado(), ""))) {
-                existente.setEstado("PREPARACAO");
+                return existente;
             }
-            return pedidoRepository.save(existente);
         }
 
         Pedido pedido = new Pedido();
         pedido.setDataHora(request.getDataHora() == null ? Instant.now() : request.getDataHora());
-        pedido.setEstado(normalizarEstado(request.getEstado(), "PREPARACAO"));
+        pedido.setEstado(normalizarEstado(request.getEstado(), ESTADO_PEDIDO_REGISTADO));
         validarDataHora(pedido.getDataHora(), pedido.getEstado(), null);
         pedido.setIdReserva(reserva);
         return pedidoRepository.save(pedido);
@@ -315,6 +304,33 @@ public class PedidoService {
         return resumo;
     }
 
+    private PedidoCompletoResponse construirRespostaCompleta(Pedido pedido) {
+        List<LinhaPedido> linhasPersistidas = linhaPedidoRepository.findByIdIdPedidoOrderByIdIdProdutoAsc(pedido.getId());
+        List<PedidoLinhaResumo> linhasResumo = new ArrayList<>();
+        BigDecimal subtotal = BigDecimal.ZERO;
+        int quantidadeItens = 0;
+
+        for (LinhaPedido linhaPersistida : linhasPersistidas) {
+            PedidoLinhaResumo resumo = paraResumo(linhaPersistida);
+            linhasResumo.add(resumo);
+            subtotal = subtotal.add(resumo.getSubtotal());
+            quantidadeItens += resumo.getQuantidade() == null ? 0 : resumo.getQuantidade();
+        }
+
+        PedidoCompletoResponse response = new PedidoCompletoResponse();
+        response.setId(pedido.getId());
+        response.setDataHora(pedido.getDataHora());
+        response.setEstado(pedido.getEstado());
+        response.setReservaId(pedido.getIdReserva() == null ? null : pedido.getIdReserva().getId());
+        response.setMesaId(pedido.getIdReserva() == null || pedido.getIdReserva().getNumMesa() == null
+                ? null
+                : pedido.getIdReserva().getNumMesa().getId());
+        response.setQuantidadeItens(quantidadeItens);
+        response.setSubtotal(subtotal);
+        response.setLinhas(linhasResumo);
+        return response;
+    }
+
     private String agregarObservacoes(String existentes, String novas) {
         String base = normalizarObservacoes(existentes);
         String extra = normalizarObservacoes(novas);
@@ -382,6 +398,27 @@ public class PedidoService {
             return mensagem;
         }
         return mensagem + " (constraint: " + constraint + ")";
+    }
+
+    private String resumirDetalheErro(Throwable throwable) {
+        Throwable causa = throwable;
+        while (causa.getCause() != null && causa.getCause() != causa) {
+            causa = causa.getCause();
+        }
+
+        String mensagem = causa.getMessage();
+        if (mensagem == null || mensagem.isBlank()) {
+            mensagem = throwable.getMessage();
+        }
+        if (mensagem == null || mensagem.isBlank()) {
+            return "Verifique a reserva selecionada e as linhas do pedido.";
+        }
+
+        String detalhe = mensagem.replaceAll("\\s+", " ").trim();
+        if (detalhe.length() > LIMITE_DETALHE_ERRO) {
+            detalhe = detalhe.substring(0, LIMITE_DETALHE_ERRO) + "...";
+        }
+        return detalhe;
     }
 
     private void aplicarDados(Pedido destino, Pedido origem, boolean preservarReservaAtual, Instant dataHoraAnterior) {

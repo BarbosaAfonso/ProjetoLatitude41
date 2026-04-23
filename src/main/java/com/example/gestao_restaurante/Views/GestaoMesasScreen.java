@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -16,17 +17,27 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.beans.property.ReadOnlyStringWrapper;
 
+import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
 
 public class GestaoMesasScreen {
+    private static final DateTimeFormatter DATA_HORA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final NumberFormat MOEDA_FORMATTER = NumberFormat.getCurrencyInstance(new Locale("pt", "PT"));
 
     @FXML
     private FlowPane mesasFlowPane;
@@ -168,6 +179,88 @@ public class GestaoMesasScreen {
         }
     }
 
+    private void verPedidosMesa(Mesa mesa) {
+        try {
+            ArrayNode pedidos = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesa.getId() + "/completos");
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Pedidos da Mesa " + mesa.getId());
+
+            ComboBox<JsonNode> pedidosCombo = new ComboBox<>();
+            pedidos.forEach(pedidosCombo.getItems()::add);
+            pedidosCombo.setMaxWidth(Double.MAX_VALUE);
+            pedidosCombo.setPromptText("Selecione um pedido");
+            pedidosCombo.setConverter(new javafx.util.StringConverter<>() {
+                @Override
+                public String toString(JsonNode pedido) {
+                    if (pedido == null || pedido.isNull()) {
+                        return "";
+                    }
+                    return "Pedido #" + ViewUtils.text(pedido, "id")
+                            + " | " + ViewUtils.text(pedido, "estado")
+                            + " | " + formatarDataHora(ViewUtils.text(pedido, "dataHora"));
+                }
+
+                @Override
+                public JsonNode fromString(String string) {
+                    return null;
+                }
+            });
+
+            TableView<JsonNode> linhasTable = criarTabelaLinhasPedido();
+            linhasTable.setPlaceholder(new Label("Sem linhas para mostrar."));
+
+            Label resumoLabel = new Label();
+            resumoLabel.getStyleClass().add("toolbar-hint");
+            resumoLabel.setWrapText(true);
+
+            pedidosCombo.valueProperty().addListener((obs, oldValue, newValue) -> {
+                linhasTable.getItems().clear();
+                if (newValue == null || newValue.isNull()) {
+                    resumoLabel.setText("Nenhum pedido selecionado.");
+                    return;
+                }
+
+                ArrayNode linhas = newValue.has("linhas") && newValue.get("linhas").isArray()
+                        ? (ArrayNode) newValue.get("linhas")
+                        : DesktopAppContext.apiService().createObject().putArray("linhas");
+                linhas.forEach(linhasTable.getItems()::add);
+
+                resumoLabel.setText(
+                        "Estado: " + ViewUtils.text(newValue, "estado")
+                                + " | Itens: " + ViewUtils.text(newValue, "quantidadeItens")
+                                + " | Subtotal: " + formatarMoeda(ViewUtils.text(newValue, "subtotal"))
+                );
+            });
+
+            if (!pedidos.isEmpty()) {
+                pedidosCombo.setValue(pedidos.get(0));
+            } else {
+                resumoLabel.setText("Esta mesa ainda nao tem pedidos.");
+            }
+
+            VBox form = new VBox(
+                    12,
+                    ViewUtils.criarCampoFormulario("Pedidos da mesa", pedidosCombo),
+                    resumoLabel,
+                    linhasTable
+            );
+            form.getStyleClass().add("app-form");
+            linhasTable.setPrefHeight(260);
+
+            dialog.getDialogPane().setContent(form);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            ViewUtils.prepararDialogo(dialog, dialog.getTitle(), "Consulte os pedidos registados para esta mesa.");
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+            if (closeButton instanceof Button button) {
+                button.setText("Fechar");
+            }
+            dialog.showAndWait();
+        } catch (RuntimeException e) {
+            ViewUtils.showError("Mesas", e.getMessage());
+        }
+    }
+
     private Optional<ObjectNode> dialogoMesa(Mesa atual) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle(atual == null ? "Adicionar Mesa" : "Editar Mesa");
@@ -216,6 +309,53 @@ public class GestaoMesasScreen {
         } catch (Exception e) {
             ViewUtils.showError("Mesas", "Dados invalidos. Verifique os campos.");
             return Optional.empty();
+        }
+    }
+
+    private TableView<JsonNode> criarTabelaLinhasPedido() {
+        TableView<JsonNode> table = new TableView<>();
+
+        TableColumn<JsonNode, String> produtoCol = new TableColumn<>("Produto");
+        produtoCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "nomeProduto")));
+        produtoCol.setPrefWidth(180);
+
+        TableColumn<JsonNode, String> tipoCol = new TableColumn<>("Tipo");
+        tipoCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "tipoProduto")));
+        tipoCol.setPrefWidth(110);
+
+        TableColumn<JsonNode, String> qtdCol = new TableColumn<>("Qtd");
+        qtdCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "quantidade")));
+        qtdCol.setPrefWidth(60);
+
+        TableColumn<JsonNode, String> precoCol = new TableColumn<>("Preco");
+        precoCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(formatarMoeda(ViewUtils.text(data.getValue(), "precoUnitVenda"))));
+        precoCol.setPrefWidth(100);
+
+        TableColumn<JsonNode, String> subtotalCol = new TableColumn<>("Subtotal");
+        subtotalCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(formatarMoeda(ViewUtils.text(data.getValue(), "subtotal"))));
+        subtotalCol.setPrefWidth(110);
+
+        TableColumn<JsonNode, String> obsCol = new TableColumn<>("Observacoes");
+        obsCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "observacoes")));
+        obsCol.setPrefWidth(220);
+
+        table.getColumns().addAll(produtoCol, tipoCol, qtdCol, precoCol, subtotalCol, obsCol);
+        return table;
+    }
+
+    private String formatarDataHora(String valor) {
+        try {
+            return DATA_HORA_FORMATTER.format(LocalDateTime.ofInstant(Instant.parse(valor), ZoneId.systemDefault()));
+        } catch (Exception e) {
+            return valor == null ? "" : valor;
+        }
+    }
+
+    private String formatarMoeda(String valor) {
+        try {
+            return MOEDA_FORMATTER.format(new java.math.BigDecimal(valor == null || valor.isBlank() ? "0" : valor));
+        } catch (Exception e) {
+            return valor == null ? "" : valor;
         }
     }
 
@@ -329,7 +469,7 @@ public class GestaoMesasScreen {
 
             setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    editarMesa(mesa);
+                    verPedidosMesa(mesa);
                 }
             });
         }

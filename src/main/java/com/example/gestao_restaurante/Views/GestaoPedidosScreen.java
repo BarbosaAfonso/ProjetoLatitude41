@@ -66,18 +66,6 @@ public class GestaoPedidosScreen {
     private Label resultadosLabel;
 
     @FXML
-    private Label mesaLabel;
-
-    @FXML
-    private Label reservaLabel;
-
-    @FXML
-    private Label clienteLabel;
-
-    @FXML
-    private Label estadoPedidoLabel;
-
-    @FXML
     private Label itensResumoLabel;
 
     @FXML
@@ -96,7 +84,7 @@ public class GestaoPedidosScreen {
     private Button limparPedidoButton;
 
     @FXML
-    private Button confirmarPedidoButton;
+    private Button registarPedidoButton;
 
     private final ObservableList<JsonNode> mesasLancamento = FXCollections.observableArrayList();
     private final ObservableList<JsonNode> produtos = FXCollections.observableArrayList();
@@ -110,7 +98,6 @@ public class GestaoPedidosScreen {
         configurarPesquisa();
         carregarMesasDisponiveis();
         carregarProdutos();
-        atualizarResumoReserva();
         atualizarResumoPedido();
     }
 
@@ -121,7 +108,6 @@ public class GestaoPedidosScreen {
 
     @FXML
     private void onReservaAlterada() {
-        atualizarResumoReserva();
         atualizarEstadoAcoes();
     }
 
@@ -138,23 +124,25 @@ public class GestaoPedidosScreen {
     }
 
     @FXML
-    private void onConfirmarPedido() {
+    private void onRegistarPedido() {
         try {
             JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
             if (mesaSelecionada == null) {
-                throw new IllegalArgumentException("Selecione uma mesa antes de confirmar o pedido.");
+                throw new IllegalArgumentException("Selecione uma mesa antes de registar o pedido.");
             }
             if (linhasPedido.isEmpty()) {
                 throw new IllegalArgumentException("Adicione pelo menos um produto ao pedido.");
             }
+            String reservaId = ViewUtils.text(mesaSelecionada, "reservaId");
+            if (reservaId.isBlank()) {
+                throw new IllegalArgumentException("Selecione uma reserva valida antes de registar o pedido.");
+            }
 
             ObjectNode payload = DesktopAppContext.apiService().createObject();
             payload.put("dataHora", Instant.now().toString());
-            payload.put("estado", "PREPARACAO");
+            payload.put("estado", "REGISTADO");
             payload.put("mesaId", inteiro(ViewUtils.text(mesaSelecionada, "mesaId")));
-            if (!ViewUtils.text(mesaSelecionada, "reservaId").isBlank()) {
-                payload.put("reservaId", inteiro(ViewUtils.text(mesaSelecionada, "reservaId")));
-            }
+            payload.put("reservaId", inteiro(reservaId));
             if (DesktopAppContext.utilizadorId() != null) {
                 payload.put("utilizadorId", DesktopAppContext.utilizadorId());
             }
@@ -164,14 +152,19 @@ public class GestaoPedidosScreen {
                 ObjectNode linhaPayload = linhas.addObject();
                 linhaPayload.put("produtoId", linha.produtoId());
                 linhaPayload.put("quantidade", linha.quantidade());
-                linhaPayload.put("precoUnitVenda", linha.preco().doubleValue());
-                linhaPayload.put("observacoes", linha.observacoes());
+                linhaPayload.put("precoUnitVenda", linha.preco());
+                if (!linha.observacoes().isBlank()) {
+                    linhaPayload.put("observacoes", linha.observacoes());
+                }
             }
 
             JsonNode resposta = DesktopAppContext.apiService().post("/pedidos/completo", payload);
-            mostrarDialogoSucesso(resposta, mesaSelecionada);
             linhasPedido.clear();
             atualizarResumoPedido();
+            ViewUtils.showInfo(
+                    "Pedidos",
+                    "Pedido #" + ViewUtils.text(resposta, "id") + " registado com sucesso. Cada produto foi gravado como linha de pedido."
+            );
         } catch (RuntimeException e) {
             ViewUtils.showError("Pedidos", e.getMessage());
         }
@@ -223,18 +216,20 @@ public class GestaoPedidosScreen {
                 }
 
                 int mesaId = inteiro(ViewUtils.text(mesa, "id"));
+                JsonNode reservaAssociada = reservaAtivaPorMesa.get(mesaId);
+                if (reservaAssociada == null) {
+                    continue;
+                }
+
                 ObjectNode item = DesktopAppContext.apiService().createObject();
                 item.put("mesaId", mesaId);
                 item.put("mesaEstado", estado);
 
-                JsonNode reservaAssociada = reservaAtivaPorMesa.get(mesaId);
-                if (reservaAssociada != null) {
-                    item.put("reservaId", inteiro(ViewUtils.text(reservaAssociada, "id")));
-                    item.put("reservaDataHora", ViewUtils.text(reservaAssociada, "dataHora"));
-                    String clienteNome = ViewUtils.nestedText(reservaAssociada, "idUtilizador", "nome");
-                    if (!clienteNome.isBlank()) {
-                        item.put("clienteNome", clienteNome);
-                    }
+                item.put("reservaId", inteiro(ViewUtils.text(reservaAssociada, "id")));
+                item.put("reservaDataHora", ViewUtils.text(reservaAssociada, "dataHora"));
+                String clienteNome = ViewUtils.nestedText(reservaAssociada, "idUtilizador", "nome");
+                if (!clienteNome.isBlank()) {
+                    item.put("clienteNome", clienteNome);
                 }
                 mesasFiltradas.add(item);
             }
@@ -242,8 +237,8 @@ public class GestaoPedidosScreen {
             mesasFiltradas.sort(Comparator.comparing(mesa -> inteiro(ViewUtils.text(mesa, "mesaId"))));
             mesasFiltradas.forEach(mesasLancamento::add);
 
-            if (reservaCombo != null && !mesasLancamento.isEmpty()) {
-                reservaCombo.setValue(mesasLancamento.get(0));
+            if (reservaCombo != null) {
+                reservaCombo.setValue(mesasLancamento.isEmpty() ? null : mesasLancamento.get(0));
             }
         } catch (RuntimeException e) {
             ViewUtils.showError("Pedidos", e.getMessage());
@@ -394,29 +389,6 @@ public class GestaoPedidosScreen {
         atualizarResumoPedido();
     }
 
-    private void atualizarResumoReserva() {
-        JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
-        String mesaId = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "mesaId");
-        String reservaId = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "reservaId");
-        String clienteNome = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "clienteNome");
-        String estadoMesa = mesaSelecionada == null ? "" : ViewUtils.text(mesaSelecionada, "mesaEstado");
-
-        if (mesaLabel != null) {
-            mesaLabel.setText(mesaId.isBlank() ? "Mesa -" : "Mesa " + mesaId);
-        }
-        if (reservaLabel != null) {
-            reservaLabel.setText(reservaId.isBlank() ? "Sem reserva associada" : "Reserva #" + reservaId);
-        }
-        if (clienteLabel != null) {
-            clienteLabel.setText(clienteNome.isBlank() ? "Sem cliente associado" : clienteNome);
-        }
-        if (estadoPedidoLabel != null) {
-            estadoPedidoLabel.setText(estadoMesa.isBlank()
-                    ? "Estado inicial: Em Preparacao"
-                    : "Mesa: " + formatarEstadoMesa(estadoMesa) + " | Estado inicial: Em Preparacao");
-        }
-    }
-
     private void atualizarResumoPedido() {
         if (itensPedidoBox != null) {
             itensPedidoBox.getChildren().clear();
@@ -548,58 +520,14 @@ public class GestaoPedidosScreen {
         }
     }
 
-    private void mostrarDialogoSucesso(JsonNode resposta, JsonNode mesaSelecionada) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Pedido Enviado");
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-
-        Label icon = new Label("\u2713");
-        icon.getStyleClass().add("pedido-sucesso-icone");
-
-        Label titulo = new Label("Pedido enviado para a cozinha com sucesso!");
-        titulo.getStyleClass().add("pedido-sucesso-titulo");
-        titulo.setWrapText(true);
-
-        Label subtitulo = new Label("O pedido foi criado com os produtos selecionados e gravado na tabela de linhas do pedido.");
-        subtitulo.getStyleClass().add("pedido-sucesso-texto");
-        subtitulo.setWrapText(true);
-
-        VBox detalhe = new VBox(8,
-                criarLinhaSucesso("Mesa", "Mesa " + ViewUtils.text(mesaSelecionada, "mesaId")),
-                criarLinhaSucesso("Pedido", "#" + ViewUtils.text(resposta, "id")),
-                criarLinhaSucesso("Estado", formatarEstado(ViewUtils.text(resposta, "estado")))
-        );
-        detalhe.getStyleClass().add("pedido-sucesso-card");
-
-        VBox content = new VBox(18, icon, titulo, subtitulo, detalhe);
-        content.getStyleClass().add("pedido-sucesso-box");
-        content.setAlignment(Pos.CENTER);
-
-        dialog.getDialogPane().setContent(content);
-        ViewUtils.prepararDialogo(dialog, dialog.getTitle(), "A cozinha pode iniciar a preparacao imediatamente.");
-        ViewUtils.estilizarBotoesDialogo(dialog, "Continuar", "Fechar");
-        dialog.showAndWait();
-    }
-
-    private VBox criarLinhaSucesso(String label, String value) {
-        Label labelNode = new Label(label.toUpperCase(Locale.ROOT));
-        labelNode.getStyleClass().add("pedido-sucesso-meta-label");
-
-        Label valueNode = new Label(value);
-        valueNode.getStyleClass().add("pedido-sucesso-meta-value");
-
-        VBox box = new VBox(2, labelNode, valueNode);
-        box.setAlignment(Pos.CENTER_LEFT);
-        return box;
-    }
-
     private void atualizarEstadoAcoes() {
-        boolean valido = reservaCombo != null && reservaCombo.getValue() != null && !linhasPedido.isEmpty();
         if (limparPedidoButton != null) {
             limparPedidoButton.setDisable(linhasPedido.isEmpty());
         }
-        if (confirmarPedidoButton != null) {
-            confirmarPedidoButton.setDisable(!valido);
+        if (registarPedidoButton != null) {
+            registarPedidoButton.setDisable(
+                    linhasPedido.isEmpty() || reservaCombo == null || reservaCombo.getValue() == null
+            );
         }
     }
 
@@ -698,17 +626,6 @@ public class GestaoPedidosScreen {
     private String formatarDataHora(String valor) {
         LocalDateTime dataHora = parseDataHora(valor);
         return dataHora == null ? valor : DATA_HORA_FORMATTER.format(dataHora);
-    }
-
-    private String formatarEstado(String estado) {
-        return switch ((estado == null ? "" : estado.trim().toUpperCase(Locale.ROOT))) {
-            case "REGISTADO" -> "Registado";
-            case "PREPARACAO" -> "Em Preparacao";
-            case "PRONTO" -> "Pronto";
-            case "ENTREGUE" -> "Entregue";
-            case "CANCELADO" -> "Cancelado";
-            default -> estado == null ? "" : estado;
-        };
     }
 
     private String formatarEstadoMesa(String estadoMesa) {

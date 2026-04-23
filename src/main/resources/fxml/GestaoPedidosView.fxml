@@ -71,15 +71,6 @@
 
                         <VBox minHeight="0.0" spacing="16.0" styleClass="pedido-resumo-panel" prefWidth="340.0" minWidth="340.0" maxWidth="340.0">
                             <children>
-                                <VBox spacing="10.0" styleClass="pedido-reserva-card">
-                                    <children>
-                                        <Label fx:id="mesaLabel" styleClass="pedido-reserva-titulo" text="Mesa -"/>
-                                        <Label fx:id="reservaLabel" styleClass="pedido-reserva-subtitulo" text="Reserva nao selecionada"/>
-                                        <Label fx:id="clienteLabel" styleClass="pedido-reserva-meta" text="Sem cliente associado"/>
-                                        <Label fx:id="estadoPedidoLabel" styleClass="pedido-reserva-estado" text="Estado inicial: Em Preparacao"/>
-                                    </children>
-                                </VBox>
-
                                 <VBox spacing="10.0" styleClass="pedido-resumo-card" VBox.vgrow="ALWAYS">
                                     <children>
                                         <HBox alignment="CENTER_LEFT">
@@ -122,7 +113,7 @@
                                             </children>
                                         </VBox>
 
-                                        <Button fx:id="confirmarPedidoButton" disable="true" mnemonicParsing="false" onAction="#onConfirmarPedido" styleClass="pedido-confirmar-button" text="Confirmar Pedido"/>
+                                        <Button fx:id="registarPedidoButton" disable="true" mnemonicParsing="false" onAction="#onRegistarPedido" styleClass="pedido-confirmar-button" text="Registar Pedido"/>
                                         <Button fx:id="limparPedidoButton" disable="true" mnemonicParsing="false" onAction="#onLimparPedido" styleClass="pedido-limpar-button" text="Limpar Pedido"/>
                                     </children>
                                 </VBox>
