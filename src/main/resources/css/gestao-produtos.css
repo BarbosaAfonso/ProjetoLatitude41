@@ -856,6 +856,24 @@
     -fx-opacity: 0.55;
 }
 
+.pedido-fechar-button {
+    -fx-background-color: linear-gradient(to right, #1d4f80 0%, #2f6ea7 100%);
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 13px;
+    -fx-padding: 14 18 14 18;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+}
+
+.pedido-fechar-button:hover {
+    -fx-background-color: linear-gradient(to right, #245c93 0%, #3c7db9 100%);
+}
+
+.pedido-fechar-button:disabled {
+    -fx-opacity: 0.55;
+}
+
 .pedido-limpar-button {
     -fx-background-color: #ffffff;
     -fx-text-fill: #3b5573;

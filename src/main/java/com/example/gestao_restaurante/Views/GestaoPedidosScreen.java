@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -26,7 +27,11 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GestaoPedidosScreen {
@@ -46,6 +52,9 @@ public class GestaoPedidosScreen {
     private static final BigDecimal TAXA_IVA = new BigDecimal("0.23");
     private static final DateTimeFormatter DATA_HORA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final NumberFormat MOEDA_FORMATTER = NumberFormat.getCurrencyInstance(new Locale("pt", "PT"));
+    private static final Set<String> ESTADOS_RESERVA_ATIVOS = Set.of("CONFIRMADA", "OCUPADA", "EM_CURSO", "ATIVA");
+    private static final Set<String> ESTADOS_PEDIDO_ATIVO = Set.of("ABERTO", "EM_PREPARACAO", "REGISTADO", "PRONTO", "PREPARACAO");
+    private static final long JANELA_RESERVA_ATUAL_MINUTOS = 120;
 
     @FXML
     private TextField pesquisaField;
@@ -86,9 +95,13 @@ public class GestaoPedidosScreen {
     @FXML
     private Button registarPedidoButton;
 
+    @FXML
+    private Button fecharContaButton;
+
     private final ObservableList<JsonNode> mesasLancamento = FXCollections.observableArrayList();
     private final ObservableList<JsonNode> produtos = FXCollections.observableArrayList();
     private final Map<Integer, LinhaRascunho> linhasPedido = new LinkedHashMap<>();
+    private final Map<Integer, LinhaRascunho> linhasBasePedidoAtivo = new LinkedHashMap<>();
 
     private String filtroTipoAtivo = "TODOS";
 
@@ -108,6 +121,7 @@ public class GestaoPedidosScreen {
 
     @FXML
     private void onReservaAlterada() {
+        carregarPedidoAtivoDaMesaSelecionada();
         atualizarEstadoAcoes();
     }
 
@@ -119,7 +133,12 @@ public class GestaoPedidosScreen {
         if (!ViewUtils.confirm("Pedidos", "Pretende limpar todos os produtos do pedido atual?")) {
             return;
         }
-        linhasPedido.clear();
+        if (linhasBasePedidoAtivo.isEmpty()) {
+            linhasPedido.clear();
+        } else {
+            linhasPedido.clear();
+            linhasPedido.putAll(linhasBasePedidoAtivo);
+        }
         atualizarResumoPedido();
     }
 
@@ -133,22 +152,26 @@ public class GestaoPedidosScreen {
             if (linhasPedido.isEmpty()) {
                 throw new IllegalArgumentException("Adicione pelo menos um produto ao pedido.");
             }
-            String reservaId = ViewUtils.text(mesaSelecionada, "reservaId");
-            if (reservaId.isBlank()) {
-                throw new IllegalArgumentException("Selecione uma reserva valida antes de registar o pedido.");
+
+            List<LinhaRascunho> linhasParaRegisto = construirLinhasParaRegisto();
+            if (linhasParaRegisto.isEmpty()) {
+                throw new IllegalArgumentException("Nao existem novos itens para registar neste pedido.");
             }
 
             ObjectNode payload = DesktopAppContext.apiService().createObject();
             payload.put("dataHora", Instant.now().toString());
             payload.put("estado", "REGISTADO");
             payload.put("mesaId", inteiro(ViewUtils.text(mesaSelecionada, "mesaId")));
-            payload.put("reservaId", inteiro(reservaId));
+            String reservaId = ViewUtils.text(mesaSelecionada, "reservaAtualId");
+            if (!reservaId.isBlank()) {
+                payload.put("reservaId", inteiro(reservaId));
+            }
             if (DesktopAppContext.utilizadorId() != null) {
                 payload.put("utilizadorId", DesktopAppContext.utilizadorId());
             }
 
             ArrayNode linhas = payload.putArray("linhas");
-            for (LinhaRascunho linha : linhasPedido.values()) {
+            for (LinhaRascunho linha : linhasParaRegisto) {
                 ObjectNode linhaPayload = linhas.addObject();
                 linhaPayload.put("produtoId", linha.produtoId());
                 linhaPayload.put("quantidade", linha.quantidade());
@@ -159,11 +182,50 @@ public class GestaoPedidosScreen {
             }
 
             JsonNode resposta = DesktopAppContext.apiService().post("/pedidos/completo", payload);
-            linhasPedido.clear();
-            atualizarResumoPedido();
+            carregarPedidoAtivoDaMesaSelecionada();
             ViewUtils.showInfo(
                     "Pedidos",
                     "Pedido #" + ViewUtils.text(resposta, "id") + " registado com sucesso. Cada produto foi gravado como linha de pedido."
+            );
+        } catch (RuntimeException e) {
+            ViewUtils.showError("Pedidos", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onFecharConta() {
+        try {
+            JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
+            if (mesaSelecionada == null) {
+                throw new IllegalArgumentException("Selecione uma mesa antes de fechar conta.");
+            }
+
+            Optional<String> metodoOpt = escolherMetodoPagamento();
+            if (metodoOpt.isEmpty()) {
+                return;
+            }
+
+            int mesaId = inteiro(ViewUtils.text(mesaSelecionada, "mesaId"));
+            JsonNode pedidoAberto = encontrarPedidoAbertoDaMesa(mesaId);
+            if (pedidoAberto == null) {
+                throw new IllegalArgumentException("Nao foi encontrado nenhum pedido aberto para esta mesa.");
+            }
+
+            long pedidoId = Long.parseLong(ViewUtils.text(pedidoAberto, "id"));
+            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            payload.put("pedidoId", pedidoId);
+            payload.put("metodoPagamento", metodoOpt.get());
+
+            JsonNode resposta = DesktopAppContext.apiService().post("/faturas/gerar", payload);
+            String avisoAberturaPdf = abrirPdfGerado(ViewUtils.text(resposta, "caminhoPdf"));
+            atualizarPosFechoConta();
+            String mensagem = "Pedido Finalizado. Mesa " + mesaId + " agora esta disponivel.";
+            if (!avisoAberturaPdf.isBlank()) {
+                mensagem += "\n\n" + avisoAberturaPdf;
+            }
+            ViewUtils.showInfo(
+                    "Pedidos",
+                    mensagem
             );
         } catch (RuntimeException e) {
             ViewUtils.showError("Pedidos", e.getMessage());
@@ -202,47 +264,77 @@ public class GestaoPedidosScreen {
     }
 
     private void carregarMesasDisponiveis() {
+        carregarMesasDisponiveis(true);
+    }
+
+    private void carregarMesasDisponiveis(boolean selecionarPrimeiraMesa) {
         try {
             mesasLancamento.clear();
 
             ArrayNode reservasApi = DesktopAppContext.apiService().getArray("/reservas");
-            Map<Integer, JsonNode> reservaAtivaPorMesa = selecionarReservaAtivaPorMesa(reservasApi);
+            Map<Integer, JsonNode> reservaDisplayPorMesa = selecionarReservaAtivaPorMesa(reservasApi);
+            Map<Integer, JsonNode> reservaAtualPorMesa = selecionarReservaAtualPorMesa(reservasApi);
 
-            List<JsonNode> mesasFiltradas = new ArrayList<>();
+            List<JsonNode> mesasCarregadas = new ArrayList<>();
             for (JsonNode mesa : DesktopAppContext.apiService().getArray("/mesas")) {
                 String estado = normalizarEstadoMesa(ViewUtils.text(mesa, "estado"));
-                if (!("RESERVADA".equals(estado) || "OCUPADA".equals(estado))) {
-                    continue;
-                }
-
                 int mesaId = inteiro(ViewUtils.text(mesa, "id"));
-                JsonNode reservaAssociada = reservaAtivaPorMesa.get(mesaId);
-                if (reservaAssociada == null) {
-                    continue;
-                }
-
                 ObjectNode item = DesktopAppContext.apiService().createObject();
                 item.put("mesaId", mesaId);
                 item.put("mesaEstado", estado);
 
-                item.put("reservaId", inteiro(ViewUtils.text(reservaAssociada, "id")));
-                item.put("reservaDataHora", ViewUtils.text(reservaAssociada, "dataHora"));
-                String clienteNome = ViewUtils.nestedText(reservaAssociada, "idUtilizador", "nome");
-                if (!clienteNome.isBlank()) {
-                    item.put("clienteNome", clienteNome);
+                JsonNode reservaDisplay = reservaDisplayPorMesa.get(mesaId);
+                if (reservaDisplay != null) {
+                    item.put("reservaId", inteiro(ViewUtils.text(reservaDisplay, "id")));
+                    item.put("reservaDataHora", ViewUtils.text(reservaDisplay, "dataHora"));
+                    String clienteNome = ViewUtils.nestedText(reservaDisplay, "idUtilizador", "nome");
+                    if (!clienteNome.isBlank()) {
+                        item.put("clienteNome", clienteNome);
+                    }
                 }
-                mesasFiltradas.add(item);
+
+                JsonNode reservaAtual = reservaAtualPorMesa.get(mesaId);
+                if (reservaAtual != null) {
+                    item.put("reservaAtualId", inteiro(ViewUtils.text(reservaAtual, "id")));
+                }
+
+                mesasCarregadas.add(item);
             }
 
-            mesasFiltradas.sort(Comparator.comparing(mesa -> inteiro(ViewUtils.text(mesa, "mesaId"))));
-            mesasFiltradas.forEach(mesasLancamento::add);
+            mesasCarregadas.sort(Comparator.comparing(mesa -> inteiro(ViewUtils.text(mesa, "mesaId"))));
+            mesasCarregadas.forEach(mesasLancamento::add);
 
             if (reservaCombo != null) {
-                reservaCombo.setValue(mesasLancamento.isEmpty() ? null : mesasLancamento.get(0));
+                if (selecionarPrimeiraMesa) {
+                    reservaCombo.setValue(mesasLancamento.isEmpty() ? null : mesasLancamento.get(0));
+                } else {
+                    reservaCombo.setValue(null);
+                }
+            }
+
+            if (selecionarPrimeiraMesa) {
+                carregarPedidoAtivoDaMesaSelecionada();
+            } else {
+                limparPedidoVisual();
             }
         } catch (RuntimeException e) {
             ViewUtils.showError("Pedidos", e.getMessage());
         }
+    }
+
+    private void atualizarPosFechoConta() {
+        limparPedidoVisual();
+        carregarMesasDisponiveis(false);
+        atualizarEstadoAcoes();
+    }
+
+    private void limparPedidoVisual() {
+        linhasPedido.clear();
+        linhasBasePedidoAtivo.clear();
+        if (itensPedidoBox != null) {
+            itensPedidoBox.getChildren().clear();
+        }
+        atualizarResumoPedido();
     }
 
     private void carregarProdutos() {
@@ -521,13 +613,18 @@ public class GestaoPedidosScreen {
     }
 
     private void atualizarEstadoAcoes() {
+        boolean mesaSelecionada = reservaCombo != null && reservaCombo.getValue() != null;
+        boolean existemNovosItens = !construirLinhasParaRegisto().isEmpty();
         if (limparPedidoButton != null) {
             limparPedidoButton.setDisable(linhasPedido.isEmpty());
         }
         if (registarPedidoButton != null) {
             registarPedidoButton.setDisable(
-                    linhasPedido.isEmpty() || reservaCombo == null || reservaCombo.getValue() == null
+                    !mesaSelecionada || !existemNovosItens
             );
+        }
+        if (fecharContaButton != null) {
+            fecharContaButton.setDisable(!mesaSelecionada);
         }
     }
 
@@ -558,8 +655,7 @@ public class GestaoPedidosScreen {
                 continue;
             }
 
-            String estadoReserva = normalizarEstadoReserva(ViewUtils.text(reserva, "estado"));
-            if ("CANCELADA".equals(estadoReserva)) {
+            if (!isReservaAtiva(reserva)) {
                 continue;
             }
 
@@ -569,6 +665,22 @@ public class GestaoPedidosScreen {
             }
         }
         return reservaAtivaPorMesa;
+    }
+
+    private Map<Integer, JsonNode> selecionarReservaAtualPorMesa(ArrayNode reservasApi) {
+        Map<Integer, JsonNode> reservaAtualPorMesa = new HashMap<>();
+        for (JsonNode reserva : reservasApi) {
+            int mesaId = inteiro(ViewUtils.nestedText(reserva, "numMesa", "id"));
+            if (mesaId <= 0 || !isReservaAtiva(reserva) || !isReservaDaHoraAtual(reserva)) {
+                continue;
+            }
+
+            JsonNode atual = reservaAtualPorMesa.get(mesaId);
+            if (atual == null || compararDataHoraReserva(reserva, atual) > 0) {
+                reservaAtualPorMesa.put(mesaId, reserva);
+            }
+        }
+        return reservaAtualPorMesa;
     }
 
     private int compararDataHoraReserva(JsonNode atual, JsonNode outra) {
@@ -587,20 +699,46 @@ public class GestaoPedidosScreen {
     }
 
     private String descricaoMesaLancamento(JsonNode mesa) {
-        String descricaoBase = "Mesa " + ViewUtils.text(mesa, "mesaId") + " - " + formatarEstadoMesa(ViewUtils.text(mesa, "mesaEstado"));
+        String estadoMesa = normalizarEstadoMesa(ViewUtils.text(mesa, "mesaEstado"));
+        String clienteNome = ViewUtils.text(mesa, "clienteNome");
         String reservaId = ViewUtils.text(mesa, "reservaId");
-        if (reservaId.isBlank()) {
-            return descricaoBase;
+        String descricaoEstado;
+
+        if ("RESERVADA".equals(estadoMesa)) {
+            if (!clienteNome.isBlank()) {
+                descricaoEstado = "Reservada - " + clienteNome;
+            } else if (!reservaId.isBlank()) {
+                descricaoEstado = "Reservada - Reserva #" + reservaId;
+            } else {
+                descricaoEstado = "Reservada";
+            }
+        } else if ("OCUPADA".equals(estadoMesa)) {
+            descricaoEstado = "Ocupada";
+        } else if ("LIVRE".equals(estadoMesa)) {
+            descricaoEstado = "Livre";
+        } else {
+            descricaoEstado = formatarEstadoMesa(estadoMesa);
         }
-        String dataHoraReserva = ViewUtils.text(mesa, "reservaDataHora");
-        if (dataHoraReserva.isBlank()) {
-            return descricaoBase + " | Reserva #" + reservaId;
-        }
-        return descricaoBase + " | Reserva #" + reservaId + " | " + formatarDataHora(dataHoraReserva);
+
+        return "Mesa " + ViewUtils.text(mesa, "mesaId") + " - [" + descricaoEstado + "]";
     }
 
     private String normalizarEstadoReserva(String estado) {
         return estado == null ? "" : estado.trim().toUpperCase(Locale.ROOT);
+    }
+
+    private boolean isReservaAtiva(JsonNode reserva) {
+        String estadoReserva = normalizarEstadoReserva(ViewUtils.text(reserva, "estado"));
+        return ESTADOS_RESERVA_ATIVOS.contains(estadoReserva);
+    }
+
+    private boolean isReservaDaHoraAtual(JsonNode reserva) {
+        LocalDateTime dataHoraReserva = parseDataHora(ViewUtils.text(reserva, "dataHora"));
+        if (dataHoraReserva == null) {
+            return false;
+        }
+        long diferencaMinutos = Math.abs(Duration.between(LocalDateTime.now(), dataHoraReserva).toMinutes());
+        return diferencaMinutos <= JANELA_RESERVA_ATUAL_MINUTOS;
     }
 
     private String normalizarEstadoMesa(String estado) {
@@ -667,6 +805,153 @@ public class GestaoPedidosScreen {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         return spacer;
+    }
+
+    private Optional<String> escolherMetodoPagamento() {
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(
+                "Multibanco",
+                List.of("Dinheiro", "Multibanco", "MBWay")
+        );
+        dialog.setTitle("Fechar Conta");
+        dialog.setHeaderText("Selecione o metodo de pagamento");
+        dialog.setContentText("Metodo:");
+        return dialog.showAndWait();
+    }
+
+    private void carregarPedidoAtivoDaMesaSelecionada() {
+        JsonNode mesaSelecionada = reservaCombo == null ? null : reservaCombo.getValue();
+        linhasPedido.clear();
+        linhasBasePedidoAtivo.clear();
+        if (mesaSelecionada == null) {
+            atualizarResumoPedido();
+            return;
+        }
+
+        int mesaId = inteiro(ViewUtils.text(mesaSelecionada, "mesaId"));
+        JsonNode pedidoAtivo = encontrarPedidoAtivoDaMesa(mesaId);
+        if (pedidoAtivo != null && pedidoAtivo.has("linhas")) {
+            for (JsonNode linha : pedidoAtivo.path("linhas")) {
+                int produtoId = inteiro(ViewUtils.text(linha, "produtoId"));
+                int quantidade = inteiro(ViewUtils.text(linha, "quantidade"));
+                if (produtoId <= 0 || quantidade <= 0) {
+                    continue;
+                }
+
+                LinhaRascunho linhaRascunho = new LinhaRascunho(
+                        produtoId,
+                        ViewUtils.text(linha, "nomeProduto"),
+                        categoriaProduto(ViewUtils.text(linha, "tipoProduto")),
+                        decimal(ViewUtils.text(linha, "precoUnitVenda")),
+                        quantidade,
+                        ViewUtils.text(linha, "observacoes")
+                );
+                linhasPedido.put(produtoId, linhaRascunho);
+                linhasBasePedidoAtivo.put(produtoId, linhaRascunho);
+            }
+        }
+        atualizarResumoPedido();
+    }
+
+    private List<LinhaRascunho> construirLinhasParaRegisto() {
+        if (linhasBasePedidoAtivo.isEmpty()) {
+            return new ArrayList<>(linhasPedido.values());
+        }
+
+        List<LinhaRascunho> linhasNovas = new ArrayList<>();
+        for (LinhaRascunho atual : linhasPedido.values()) {
+            LinhaRascunho base = linhasBasePedidoAtivo.get(atual.produtoId());
+            int quantidadeBase = base == null ? 0 : base.quantidade();
+            int deltaQuantidade = atual.quantidade() - quantidadeBase;
+            if (deltaQuantidade <= 0) {
+                continue;
+            }
+            linhasNovas.add(atual.comQuantidade(deltaQuantidade));
+        }
+        return linhasNovas;
+    }
+
+    private JsonNode encontrarPedidoAtivoDaMesa(int mesaId) {
+        ArrayNode pedidosMesa = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesaId + "/completos");
+        for (JsonNode pedido : pedidosMesa) {
+            String estado = normalizarEstadoPedido(ViewUtils.text(pedido, "estado"));
+            if (ESTADOS_PEDIDO_ATIVO.contains(estado)) {
+                return pedido;
+            }
+        }
+        return null;
+    }
+
+    private JsonNode encontrarPedidoAbertoDaMesa(int mesaId) {
+        ArrayNode pedidosMesa = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesaId + "/completos");
+        for (JsonNode pedido : pedidosMesa) {
+            String estado = normalizarEstadoPedido(ViewUtils.text(pedido, "estado"));
+            if (!"PAGO".equals(estado) && !"CANCELADO".equals(estado)) {
+                return pedido;
+            }
+        }
+        return null;
+    }
+
+    private String normalizarEstadoPedido(String estado) {
+        if (estado == null) {
+            return "";
+        }
+        return estado.trim().toUpperCase(Locale.ROOT).replace(' ', '_');
+    }
+
+    private String abrirPdfGerado(String caminhoPdf) {
+        if (caminhoPdf == null || caminhoPdf.isBlank()) {
+            throw new IllegalArgumentException("A fatura foi gerada, mas nao foi devolvido caminho do PDF.");
+        }
+
+        File ficheiro = new File(caminhoPdf);
+        if (!ficheiro.exists()) {
+            throw new IllegalArgumentException("O PDF da fatura nao foi encontrado no caminho indicado.");
+        }
+
+        if (tentarAbrirComDesktop(ficheiro) || tentarAbrirComFallbackSistema(ficheiro)) {
+            return "";
+        }
+
+        return "A fatura foi gerada, mas nao foi possivel abrir automaticamente o PDF.\n"
+                + "Abra manualmente em: " + ficheiro.getAbsolutePath();
+    }
+
+    private boolean tentarAbrirComDesktop(File ficheiro) {
+        if (!Desktop.isDesktopSupported()) {
+            return false;
+        }
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            if (!desktop.isSupported(Desktop.Action.OPEN)) {
+                return false;
+            }
+            desktop.open(ficheiro);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean tentarAbrirComFallbackSistema(File ficheiro) {
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        try {
+            if (os.contains("win")) {
+                new ProcessBuilder("cmd", "/c", "start", "", "\"" + ficheiro.getAbsolutePath() + "\"").start();
+                return true;
+            }
+            if (os.contains("mac")) {
+                new ProcessBuilder("open", ficheiro.getAbsolutePath()).start();
+                return true;
+            }
+            if (os.contains("nix") || os.contains("nux")) {
+                new ProcessBuilder("xdg-open", ficheiro.getAbsolutePath()).start();
+                return true;
+            }
+        } catch (IOException ignored) {
+            return false;
+        }
+        return false;
     }
 
     private record LinhaRascunho(int produtoId,

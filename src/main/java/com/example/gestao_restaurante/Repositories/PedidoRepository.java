@@ -13,6 +13,8 @@ public interface PedidoRepository extends CrudRepository<Pedido, Integer> {
 
     Optional<Pedido> findFirstByIdReservaIdOrderByDataHoraDesc(Integer reservaId);
 
+    List<Pedido> findByIdReservaNumMesaIdAndEstadoInOrderByDataHoraDesc(Integer mesaId, Collection<String> estados);
+
     List<Pedido> findByIdReservaNumMesaIdOrderByDataHoraDesc(Integer mesaId);
 
     default Optional<Pedido> findTopByMesaIdAndStatusInOrderByDataHoraDesc(Integer mesaId, Collection<String> estados) {

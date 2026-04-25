@@ -26,7 +26,7 @@
                 <VBox spacing="2.0">
                     <children>
                         <Label styleClass="toolbar-caption" text="Lancamento de Pedido"/>
-                        <Label styleClass="toolbar-hint" text="Escolha a reserva, filtre produtos e monte o pedido antes de o enviar para a cozinha."/>
+                        <Label styleClass="toolbar-hint" text="Escolha a mesa, filtre produtos e monte o pedido antes de o enviar para a cozinha."/>
                     </children>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
@@ -114,6 +114,7 @@
                                         </VBox>
 
                                         <Button fx:id="registarPedidoButton" disable="true" mnemonicParsing="false" onAction="#onRegistarPedido" styleClass="pedido-confirmar-button" text="Registar Pedido"/>
+                                        <Button fx:id="fecharContaButton" disable="true" mnemonicParsing="false" onAction="#onFecharConta" styleClass="pedido-fechar-button" text="Fechar Conta"/>
                                         <Button fx:id="limparPedidoButton" disable="true" mnemonicParsing="false" onAction="#onLimparPedido" styleClass="pedido-limpar-button" text="Limpar Pedido"/>
                                     </children>
                                 </VBox>

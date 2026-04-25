@@ -110,6 +110,7 @@ public class GestaoReservasScreen {
         colMesa.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.nestedText(data.getValue(), "numMesa", "id")));
         colUtilizador.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.nestedText(data.getValue(), "idUtilizador", "id")));
         colAcoes.setCellValueFactory(data -> new ReadOnlyStringWrapper("acoes"));
+        configurarColunasTextoCentradas();
 
         colDataHora.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -117,6 +118,7 @@ public class GestaoReservasScreen {
                 super.updateItem(item, empty);
                 setText(empty || item == null || item.isBlank() ? "" : formatarDataHora(item));
                 setGraphic(null);
+                setAlignment(Pos.CENTER);
             }
         });
         colId.setComparator(this::compararInteiros);
@@ -129,7 +131,7 @@ public class GestaoReservasScreen {
             private final HBox wrapper = new HBox(badge);
 
             {
-                wrapper.setAlignment(Pos.CENTER_LEFT);
+                wrapper.setAlignment(Pos.CENTER);
                 badge.getStyleClass().add("estado-badge");
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
@@ -191,6 +193,28 @@ public class GestaoReservasScreen {
                 }
             }
         });
+    }
+
+    private void configurarColunasTextoCentradas() {
+        colId.setCellFactory(column -> criarCelulaTextoCentrada());
+        colMesa.setCellFactory(column -> criarCelulaTextoCentrada());
+        colUtilizador.setCellFactory(column -> criarCelulaTextoCentrada());
+    }
+
+    private TableCell<JsonNode, String> criarCelulaTextoCentrada() {
+        return new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item);
+                }
+                setAlignment(Pos.CENTER);
+            }
+        };
     }
 
     @FXML

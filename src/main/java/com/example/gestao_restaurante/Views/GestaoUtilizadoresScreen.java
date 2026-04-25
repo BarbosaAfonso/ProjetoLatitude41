@@ -72,6 +72,7 @@ public class GestaoUtilizadoresScreen {
         colTipo.setCellValueFactory(data -> new ReadOnlyStringWrapper(formatarTipo(ViewUtils.text(data.getValue(), "tipo"))));
         colEstadoConta.setCellValueFactory(data -> new ReadOnlyStringWrapper(formatarEstadoConta(ViewUtils.text(data.getValue(), "estadoConta"))));
         colAcoes.setCellValueFactory(data -> new ReadOnlyStringWrapper("acoes"));
+        configurarColunasTextoCentradas();
 
         colAcoes.setSortable(false);
         colAcoes.setCellFactory(column -> new TableCell<>() {
@@ -115,6 +116,30 @@ public class GestaoUtilizadoresScreen {
                 setGraphic(wrapper);
             }
         });
+    }
+
+    private void configurarColunasTextoCentradas() {
+        colId.setCellFactory(column -> criarCelulaTextoCentrada());
+        colNome.setCellFactory(column -> criarCelulaTextoCentrada());
+        colEmail.setCellFactory(column -> criarCelulaTextoCentrada());
+        colTipo.setCellFactory(column -> criarCelulaTextoCentrada());
+        colEstadoConta.setCellFactory(column -> criarCelulaTextoCentrada());
+    }
+
+    private TableCell<JsonNode, String> criarCelulaTextoCentrada() {
+        return new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item);
+                }
+                setAlignment(Pos.CENTER);
+            }
+        };
     }
 
     @FXML

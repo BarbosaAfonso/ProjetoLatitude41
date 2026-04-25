@@ -25,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -42,13 +44,15 @@ public class PedidoService {
     private static final String ESTADO_PEDIDO_REGISTADO = "REGISTADO";
     private static final Set<String> ESTADOS_PEDIDO_ATIVOS = Set.of(
             ESTADO_PEDIDO_REGISTADO,
+            "ABERTO",
             "PRONTO",
             "EM PREPARACAO",
             "EM_PREPARACAO",
             "PREPARACAO"
     );
     private static final Set<String> ESTADOS_RESERVA_ATIVOS = Set.of("CONFIRMADA", "OCUPADA", "EM_CURSO", "ATIVA");
-    private static final Set<String> ESTADOS_MESA_PERMITIDOS = Set.of("RESERVADA", "OCUPADA");
+    private static final Set<String> ESTADOS_MESA_PERMITIDOS = Set.of("LIVRE", "RESERVADA", "OCUPADA");
+    private static final long JANELA_RESERVA_ATUAL_MINUTOS = 120;
     private static final Pattern PATTERN_CONSTRAINT = Pattern.compile("constraint\\s+\"?([\\w\\d_]+)\"?", Pattern.CASE_INSENSITIVE);
     private static final int LIMITE_DETALHE_ERRO = 220;
 
@@ -86,7 +90,10 @@ public class PedidoService {
 
     public List<PedidoCompletoResponse> listarCompletosPorMesa(Integer mesaId) {
         Mesa mesa = procurarMesa(mesaId);
-        return pedidoRepository.findByIdReservaNumMesaIdOrderByDataHoraDesc(mesa.getId()).stream()
+        return pedidoRepository.findByIdReservaNumMesaIdAndEstadoInOrderByDataHoraDesc(
+                        mesa.getId(),
+                        ESTADOS_PEDIDO_ATIVOS
+                ).stream()
                 .map(this::construirRespostaCompleta)
                 .toList();
     }
@@ -218,16 +225,37 @@ public class PedidoService {
             return reserva;
         }
 
-        Optional<Reserva> reservaAtiva = reservaRepository.findFirstByNumMesaIdAndEstadoInOrderByDataHoraDesc(
-                mesa.getId(),
-                ESTADOS_RESERVA_ATIVOS
-        );
+        Optional<Reserva> reservaAtiva = procurarReservaVigentePorMesa(mesa.getId());
         if (reservaAtiva.isPresent()) {
             validarReservaParaPedido(reservaAtiva.get(), mesa.getId());
             return reservaAtiva.get();
         }
 
         return criarReservaDeServico(mesa, request.getUtilizadorId());
+    }
+
+    private Optional<Reserva> procurarReservaVigentePorMesa(Integer mesaId) {
+        Instant agora = Instant.now();
+        return reservaRepository.findByNumMesaIdOrderByDataHoraDesc(mesaId).stream()
+                .filter(this::isReservaAtiva)
+                .filter(reserva -> isReservaDaHoraAtual(reserva, agora))
+                .min(Comparator.comparingLong(reserva -> Math.abs(Duration.between(agora, reserva.getDataHora()).toMinutes())));
+    }
+
+    private boolean isReservaAtiva(Reserva reserva) {
+        if (reserva == null) {
+            return false;
+        }
+        String estadoReserva = normalizarEstado(reserva.getEstado(), "");
+        return ESTADOS_RESERVA_ATIVOS.contains(estadoReserva);
+    }
+
+    private boolean isReservaDaHoraAtual(Reserva reserva, Instant agora) {
+        if (reserva == null || reserva.getDataHora() == null) {
+            return false;
+        }
+        long diferencaMinutos = Math.abs(Duration.between(agora, reserva.getDataHora()).toMinutes());
+        return diferencaMinutos <= JANELA_RESERVA_ATUAL_MINUTOS;
     }
 
     private Reserva criarReservaDeServico(Mesa mesa, Integer utilizadorId) {
@@ -487,7 +515,7 @@ public class PedidoService {
         if (!ESTADOS_MESA_PERMITIDOS.contains(estadoMesa)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Apenas e permitido lancar pedidos para mesas RESERVADA ou OCUPADA."
+                    "Apenas e permitido lancar pedidos para mesas LIVRE, RESERVADA ou OCUPADA."
             );
         }
     }

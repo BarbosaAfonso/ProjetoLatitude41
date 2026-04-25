@@ -1,5 +1,7 @@
 package com.example.gestao_restaurante.Controllers;
 
+import com.example.gestao_restaurante.Dtos.FaturaGeracaoRequest;
+import com.example.gestao_restaurante.Dtos.FaturaGeracaoResponse;
 import com.example.gestao_restaurante.Modules.Fatura;
 import com.example.gestao_restaurante.Services.FaturaService;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,13 @@ public class FaturaController {
     public ResponseEntity<Fatura> criar(@RequestBody Fatura fatura) {
         Fatura nova = faturaService.criar(fatura);
         return ResponseEntity.status(HttpStatus.CREATED).body(nova);
+    }
+
+    // POST /faturas/gerar - fechar conta e gerar PDF
+    @PostMapping("/gerar")
+    public ResponseEntity<FaturaGeracaoResponse> gerarFatura(@RequestBody FaturaGeracaoRequest request) {
+        FaturaGeracaoResponse response = faturaService.gerarFatura(request.getPedidoId(), request.getMetodoPagamento());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // PUT /faturas/{id} - atualizar fatura existente

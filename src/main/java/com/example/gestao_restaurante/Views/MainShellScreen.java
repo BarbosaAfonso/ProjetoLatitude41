@@ -49,6 +49,9 @@ public class MainShellScreen {
     private Button btnGestaoStock;
 
     @FXML
+    private Button btnGestaoRelatorios;
+
+    @FXML
     private Button btnGestaoUtilizadores;
 
     @FXML
@@ -67,9 +70,14 @@ public class MainShellScreen {
         botoesNavegacao.put("reservas", btnGestaoReservas);
         botoesNavegacao.put("pedidos", btnGestaoPedidos);
         botoesNavegacao.put("stock", btnGestaoStock);
+        botoesNavegacao.put("relatorios", btnGestaoRelatorios);
         botoesNavegacao.put("utilizadores", btnGestaoUtilizadores);
 
         boolean admin = DesktopAppContext.isAdmin();
+        if (btnGestaoRelatorios != null) {
+            btnGestaoRelatorios.setManaged(admin);
+            btnGestaoRelatorios.setVisible(admin);
+        }
         if (btnGestaoUtilizadores != null) {
             btnGestaoUtilizadores.setManaged(admin);
             btnGestaoUtilizadores.setVisible(admin);
@@ -106,6 +114,11 @@ public class MainShellScreen {
     @FXML
     private void onGestaoStock() {
         DesktopAppContext.showGestaoStock();
+    }
+
+    @FXML
+    private void onGestaoRelatorios() {
+        DesktopAppContext.showGestaoRelatorios();
     }
 
     @FXML
@@ -156,6 +169,7 @@ public class MainShellScreen {
                 || btnGestaoReservas == null
                 || btnGestaoPedidos == null
                 || btnGestaoStock == null
+                || btnGestaoRelatorios == null
                 || btnGestaoUtilizadores == null
                 || btnTerminarSessao == null) {
             throw new IllegalStateException("MainView.fxml nao esta sincronizado com MainShellScreen (fx:id/@FXML).");

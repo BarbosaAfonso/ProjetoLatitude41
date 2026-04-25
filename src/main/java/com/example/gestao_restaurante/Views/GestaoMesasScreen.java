@@ -181,13 +181,10 @@ public class GestaoMesasScreen {
 
     private void verPedidosMesa(Mesa mesa) {
         try {
-            ArrayNode pedidos = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesa.getId() + "/completos");
-
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Pedidos da Mesa " + mesa.getId());
 
             ComboBox<JsonNode> pedidosCombo = new ComboBox<>();
-            pedidos.forEach(pedidosCombo.getItems()::add);
             pedidosCombo.setMaxWidth(Double.MAX_VALUE);
             pedidosCombo.setPromptText("Selecione um pedido");
             pedidosCombo.setConverter(new javafx.util.StringConverter<>() {
@@ -214,30 +211,12 @@ public class GestaoMesasScreen {
             resumoLabel.getStyleClass().add("toolbar-hint");
             resumoLabel.setWrapText(true);
 
-            pedidosCombo.valueProperty().addListener((obs, oldValue, newValue) -> {
-                linhasTable.getItems().clear();
-                if (newValue == null || newValue.isNull()) {
-                    resumoLabel.setText("Nenhum pedido selecionado.");
-                    return;
-                }
+            pedidosCombo.valueProperty().addListener((obs, oldValue, newValue) ->
+                    atualizarDetalhePedidoSelecionado(newValue, linhasTable, resumoLabel, mesa));
 
-                ArrayNode linhas = newValue.has("linhas") && newValue.get("linhas").isArray()
-                        ? (ArrayNode) newValue.get("linhas")
-                        : DesktopAppContext.apiService().createObject().putArray("linhas");
-                linhas.forEach(linhasTable.getItems()::add);
-
-                resumoLabel.setText(
-                        "Estado: " + ViewUtils.text(newValue, "estado")
-                                + " | Itens: " + ViewUtils.text(newValue, "quantidadeItens")
-                                + " | Subtotal: " + formatarMoeda(ViewUtils.text(newValue, "subtotal"))
-                );
-            });
-
-            if (!pedidos.isEmpty()) {
-                pedidosCombo.setValue(pedidos.get(0));
-            } else {
-                resumoLabel.setText("Esta mesa ainda nao tem pedidos.");
-            }
+            ArrayNode pedidos = carregarPedidosAtivosDaMesa(mesa);
+            recarregarPedidosPopup(pedidosCombo, linhasTable, resumoLabel, pedidos, mesa);
+            atualizarDetalhePedidoSelecionado(pedidosCombo.getValue(), linhasTable, resumoLabel, mesa);
 
             VBox form = new VBox(
                     12,
@@ -259,6 +238,58 @@ public class GestaoMesasScreen {
         } catch (RuntimeException e) {
             ViewUtils.showError("Mesas", e.getMessage());
         }
+    }
+
+    private ArrayNode carregarPedidosAtivosDaMesa(Mesa mesa) {
+        // Mesmo em mesas marcadas como LIVRE, pode existir pedido ativo por falta de sincronizacao de estado.
+        // Por isso consultamos sempre a API e deixamos o backend filtrar os estados operacionais.
+        return DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesa.getId() + "/completos");
+    }
+
+    private void recarregarPedidosPopup(ComboBox<JsonNode> pedidosCombo,
+                                        TableView<JsonNode> linhasTable,
+                                        Label resumoLabel,
+                                        ArrayNode pedidos,
+                                        Mesa mesa) {
+        pedidosCombo.getItems().clear();
+        linhasTable.getItems().clear();
+
+        pedidos.forEach(pedidosCombo.getItems()::add);
+        if (!pedidos.isEmpty()) {
+            pedidosCombo.setValue(pedidos.get(0));
+            return;
+        }
+
+        pedidosCombo.setValue(null);
+        if (EstadoMesa.from(mesa.getEstado()) == EstadoMesa.LIVRE) {
+            resumoLabel.setText("Mesa LIVRE sem pedidos ativos.");
+        } else {
+            resumoLabel.setText("Nao existem pedidos ativos para esta mesa.");
+        }
+    }
+
+    private void atualizarDetalhePedidoSelecionado(JsonNode pedidoSelecionado,
+                                                   TableView<JsonNode> linhasTable,
+                                                   Label resumoLabel,
+                                                   Mesa mesa) {
+        linhasTable.getItems().clear();
+        if (pedidoSelecionado == null || pedidoSelecionado.isNull()) {
+            resumoLabel.setText(EstadoMesa.from(mesa.getEstado()) == EstadoMesa.LIVRE
+                    ? "Mesa LIVRE sem pedidos ativos."
+                    : "Nenhum pedido ativo selecionado.");
+            return;
+        }
+
+        ArrayNode linhas = pedidoSelecionado.has("linhas") && pedidoSelecionado.get("linhas").isArray()
+                ? (ArrayNode) pedidoSelecionado.get("linhas")
+                : DesktopAppContext.apiService().createObject().putArray("linhas");
+        linhas.forEach(linhasTable.getItems()::add);
+
+        resumoLabel.setText(
+                "Estado: " + ViewUtils.text(pedidoSelecionado, "estado")
+                        + " | Itens: " + ViewUtils.text(pedidoSelecionado, "quantidadeItens")
+                        + " | Subtotal: " + formatarMoeda(ViewUtils.text(pedidoSelecionado, "subtotal"))
+        );
     }
 
     private Optional<ObjectNode> dialogoMesa(Mesa atual) {

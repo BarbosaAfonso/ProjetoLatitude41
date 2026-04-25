@@ -120,6 +120,13 @@ public final class DesktopAppContext {
         navigateInsideShell("GestaoStockView.fxml", BASE_TITLE + " - Stock", "stock", "Gestao de Stock");
     }
 
+    public static void showGestaoRelatorios() {
+        if (!isAdmin()) {
+            throw new IllegalStateException("A area de relatorios esta disponivel apenas para administradores.");
+        }
+        navigateInsideShell("GestaoRelatoriosView.fxml", BASE_TITLE + " - Relatorios", "relatorios", "Relatorios");
+    }
+
     public static void showGestaoUtilizadores() {
         if (!isAdmin()) {
             throw new IllegalStateException("A gestao de utilizadores esta disponivel apenas para administradores.");
