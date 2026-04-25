@@ -18,10 +18,10 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="gestao-toolbar-card" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="0.0" left="20.0" right="20.0" top="20.0"/>
+                <Insets bottom="18.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
             <children>
-                <VBox spacing="2.0">
+                <VBox prefWidth="520.0" spacing="6.0" styleClass="toolbar-copy">
                     <children>
                         <Label styleClass="toolbar-caption" text="Pesquisa e administracao"/>
                         <Label styleClass="toolbar-hint" text="Atualiza cargos, desativa contas e reativa colaboradores."/>
@@ -36,8 +36,11 @@
     </top>
     <center>
         <VBox styleClass="table-shell" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets left="20.0" right="20.0" top="18.0"/>
+            </BorderPane.margin>
             <padding>
-                <Insets bottom="26.0" left="20.0" right="20.0" top="18.0"/>
+                <Insets bottom="26.0" left="0.0" right="0.0" top="0.0"/>
             </padding>
             <children>
                 <TableView fx:id="tabela" styleClass="gestao-table" VBox.vgrow="ALWAYS">

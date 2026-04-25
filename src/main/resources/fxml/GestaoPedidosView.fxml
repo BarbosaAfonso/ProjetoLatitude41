@@ -20,10 +20,10 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="gestao-toolbar-card">
             <padding>
-                <Insets left="20.0" right="20.0" top="20.0"/>
+                <Insets bottom="18.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
             <children>
-                <VBox spacing="2.0">
+                <VBox prefWidth="520.0" spacing="6.0" styleClass="toolbar-copy">
                     <children>
                         <Label styleClass="toolbar-caption" text="Lancamento de Pedido"/>
                         <Label styleClass="toolbar-hint" text="Escolha a mesa, filtre produtos e monte o pedido antes de o enviar para a cozinha."/>
@@ -38,10 +38,13 @@
 
     <center>
         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="pedido-scroll" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets left="20.0" right="20.0" top="18.0"/>
+            </BorderPane.margin>
             <content>
                 <HBox minHeight="0.0" spacing="18.0" styleClass="pedido-shell">
                     <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="18.0"/>
+                        <Insets bottom="20.0" left="0.0" right="0.0" top="0.0"/>
                     </padding>
                     <children>
                         <VBox minHeight="0.0" spacing="16.0" styleClass="pedido-catalogo-panel" HBox.hgrow="ALWAYS">

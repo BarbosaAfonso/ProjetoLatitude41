@@ -1,108 +1,148 @@
+.login-root,
+.login-root * {
+    -fx-font-family: "Segoe UI";
+}
+
 .login-root {
-    -fx-background-color:
-            radial-gradient(center 50% 35%, radius 120%, rgba(20, 60, 102, 0.45), rgba(5, 12, 24, 0.98)),
-            linear-gradient(to right, #07131f 0%, #082138 38%, #0c263d 52%, #07131f 100%);
+    -fx-background-color: #072344;
+}
+
+.background-image {
+    -fx-background-image: url("../images/bglogin.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-opacity: 0.58;
 }
 
 .login-overlay {
-    -fx-opacity: 0.28;
     -fx-background-color:
-            linear-gradient(to right, rgba(8, 22, 35, 0.96) 0%, rgba(8, 36, 61, 0.18) 50%, rgba(8, 22, 35, 0.96) 100%);
+            linear-gradient(to bottom, rgba(4, 25, 48, 0.18), rgba(4, 19, 38, 0.36)),
+            radial-gradient(center 50% 50%, radius 130%, rgba(11, 48, 88, 0.04), rgba(5, 22, 40, 0.28));
 }
 
-.screen-caption {
-    -fx-text-fill: rgba(227, 233, 243, 0.7);
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-font-size: 21px;
+.compass {
+    -fx-border-color: rgba(184, 162, 109, 0.15);
+    -fx-border-radius: 999px;
+    -fx-border-width: 4px;
+    -fx-background-color: transparent;
 }
 
-.blob {
-    -fx-background-color: rgba(186, 166, 108, 0.12);
-    -fx-background-radius: 58% 42% 53% 47% / 46% 58% 42% 54%;
-    -fx-effect: dropshadow(gaussian, rgba(8, 12, 22, 0.45), 22, 0.2, 0, 6);
+.compass-left {
+    -fx-opacity: 0.42;
 }
 
-.blob-top-right {
-    -fx-rotate: 8;
+.compass-right {
+    -fx-opacity: 0.28;
 }
 
-.blob-mid-left {
-    -fx-rotate: -18;
+.login-frame {
+    -fx-background-color: transparent;
+    -fx-border-color: #b8964c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 18px;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(2, 10, 22, 0.62), 44, 0.22, 0, 22);
 }
 
-.blob-bottom-right {
-    -fx-rotate: 12;
+.login-shell {
+    -fx-background-color: transparent;
+    -fx-background-radius: 16px;
+}
+
+.login-form-pane {
+    -fx-background-color:
+            linear-gradient(to bottom right, rgba(255, 255, 255, 0.98), rgba(239, 242, 246, 0.94));
+    -fx-background-radius: 16px 0 0 16px;
 }
 
 .brand-title {
-    -fx-text-fill: #d4b55d;
-    -fx-font-family: "Georgia";
-    -fx-font-size: 66px;
+    -fx-text-fill: #b89437;
+    -fx-font-size: 30px;
     -fx-font-weight: 700;
 }
 
 .brand-subtitle {
-    -fx-text-fill: #6f8fb6;
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 18px;
+    -fx-text-fill: #9f8351;
+    -fx-font-size: 14px;
 }
 
-.login-card {
-    -fx-background-color: linear-gradient(to bottom, rgba(9, 35, 60, 0.78), rgba(7, 26, 46, 0.88));
-    -fx-background-radius: 14px;
-    -fx-border-color: rgba(76, 114, 153, 0.35);
-    -fx-border-radius: 14px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.38), 34, 0.3, 0, 10);
+.field-row {
+    -fx-padding: 0 0 2 0;
 }
 
-.field-label {
-    -fx-text-fill: #7f9abc;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-font-size: 12px;
+.field-image-icon {
+    -fx-opacity: 0.9;
 }
 
 .login-input {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
-    -fx-padding: 10 0 10 0;
-    -fx-text-fill: #d7e0ec;
-    -fx-prompt-text-fill: rgba(135, 159, 188, 0.65);
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 20px;
-    -fx-border-color: transparent transparent rgba(96, 124, 154, 0.5) transparent;
-    -fx-border-width: 0 0 1.4 0;
+    -fx-padding: 2 0 2 0;
+    -fx-text-fill: #23384d;
+    -fx-prompt-text-fill: #b19257;
+    -fx-font-size: 15px;
+    -fx-border-color: transparent;
 }
 
-.login-input:focused {
-    -fx-border-color: transparent transparent #83a4c8 transparent;
+.field-divider {
+    -fx-background-color: #4e5561;
+    -fx-pref-height: 1.2px;
+    -fx-opacity: 0.9;
 }
 
 .login-button {
-    -fx-background-color: #c9ac50;
-    -fx-text-fill: #0e1d2f;
-    -fx-font-family: "Segoe UI Black";
-    -fx-font-size: 19px;
+    -fx-background-color: linear-gradient(to right, #d8b84c, #d1aa3b);
+    -fx-text-fill: #162033;
+    -fx-font-size: 15px;
     -fx-font-weight: 800;
-    -fx-background-radius: 6px;
+    -fx-background-radius: 999px;
+    -fx-padding: 0 28 0 28;
+    -fx-effect: dropshadow(gaussian, rgba(192, 153, 53, 0.3), 16, 0.2, 0, 4);
     -fx-cursor: hand;
 }
 
 .login-button:hover {
-    -fx-background-color: #d7b95a;
+    -fx-background-color: linear-gradient(to right, #e1c35b, #d8b244);
 }
 
 .login-button:pressed {
-    -fx-background-color: #ba9f49;
+    -fx-background-color: linear-gradient(to right, #c8a13a, #be9730);
 }
 
-.muted-text {
-    -fx-text-fill: rgba(120, 150, 184, 0.68);
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 13px;
+.hero-pane {
+    -fx-background-color: #071d35;
+    -fx-background-radius: 0 13px 13px 0;
+    -fx-padding: 0 2 2 0;
 }
 
-.footer-text {
-    -fx-text-fill: rgba(121, 142, 170, 0.42);
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 12px;
+.hero-image {
+    -fx-background-image: url("../images/bgminilogin.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-radius: 0 11px 11px 0;
+}
+
+.hero-overlay {
+    -fx-background-color:
+            linear-gradient(to bottom, rgba(7, 23, 43, 0.28), rgba(7, 23, 43, 0.58)),
+            linear-gradient(to right, rgba(5, 23, 42, 0.58), rgba(5, 23, 42, 0.26));
+    -fx-background-radius: 0 11px 11px 0;
+}
+
+.hero-copy {
+    -fx-padding: 10 0 0 0;
+}
+
+.hero-title {
+    -fx-text-fill: #e1bf61;
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+    -fx-line-spacing: -2px;
+}
+
+.hero-subtitle {
+    -fx-text-fill: #e0bd63;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-line-spacing: 3px;
 }

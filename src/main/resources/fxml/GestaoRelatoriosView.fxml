@@ -104,10 +104,10 @@
                                     </children>
                                 </VBox>
 
-                                <VBox styleClass="grafico-card" prefWidth="350.0">
+                                <VBox styleClass="grafico-card" prefWidth="430.0" minWidth="430.0">
                                     <children>
                                         <Label styleClass="grafico-title" text="Distribuicao por Categoria"/>
-                                        <PieChart fx:id="vendasCategoriaPie" animated="false" labelsVisible="true" legendVisible="true" styleClass="relatorio-pie-chart" VBox.vgrow="ALWAYS"/>
+                                        <PieChart fx:id="vendasCategoriaPie" animated="false" labelsVisible="true" legendVisible="true" prefWidth="390.0" prefHeight="340.0" styleClass="relatorio-pie-chart" VBox.vgrow="ALWAYS"/>
                                     </children>
                                 </VBox>
                             </children>

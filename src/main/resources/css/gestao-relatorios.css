@@ -1,5 +1,10 @@
+.relatorio-root,
+.relatorio-root * {
+    -fx-font-family: "Segoe UI";
+}
+
 .relatorio-root {
-    -fx-background-color: linear-gradient(to bottom right, #081a2f 0%, #102b47 55%, #0c2036 100%);
+    -fx-background-color: linear-gradient(to bottom right, #edf3fa 0%, #e7eef7 55%, #dde7f2 100%);
 }
 
 .relatorio-scroll {
@@ -13,17 +18,43 @@
     -fx-background-color: transparent;
 }
 
+.relatorio-scroll .scroll-bar:vertical,
+.relatorio-scroll .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+}
+
+.relatorio-scroll .scroll-bar .track {
+    -fx-background-color: rgba(20, 56, 94, 0.08);
+    -fx-background-radius: 999;
+}
+
+.relatorio-scroll .scroll-bar .thumb {
+    -fx-background-color: rgba(24, 71, 118, 0.34);
+    -fx-background-radius: 999;
+}
+
+.relatorio-scroll .scroll-bar .thumb:hover {
+    -fx-background-color: rgba(24, 71, 118, 0.48);
+}
+
+.relatorio-scroll .scroll-bar .increment-button,
+.relatorio-scroll .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
 .relatorio-content {
     -fx-background-color: transparent;
 }
 
 .relatorio-toolbar-card {
-    -fx-background-color: rgba(7, 20, 35, 0.92);
-    -fx-background-radius: 14;
-    -fx-border-color: rgba(201, 172, 80, 0.35);
-    -fx-border-radius: 14;
-    -fx-padding: 18 20 18 20;
-    -fx-effect: dropshadow(gaussian, rgba(2, 10, 20, 0.55), 20, 0.2, 0, 5);
+    -fx-background-color: linear-gradient(to bottom right, rgba(255, 255, 255, 0.98), rgba(243, 247, 252, 0.96));
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(29, 64, 104, 0.12);
+    -fx-border-radius: 18;
+    -fx-padding: 20 22 20 22;
+    -fx-effect: dropshadow(gaussian, rgba(18, 41, 68, 0.12), 18, 0.18, 0, 5);
 }
 
 .relatorio-filtros-wrap {
@@ -31,94 +62,92 @@
 }
 
 .toolbar-caption {
-    -fx-text-fill: #d7b660;
-    -fx-font-family: "Georgia";
+    -fx-text-fill: #17395f;
     -fx-font-size: 24px;
     -fx-font-weight: 700;
 }
 
 .toolbar-hint {
-    -fx-text-fill: rgba(222, 233, 245, 0.80);
-    -fx-font-family: "Segoe UI";
+    -fx-text-fill: #6f8398;
     -fx-font-size: 13px;
 }
 
 .filtro-label {
-    -fx-text-fill: #d5e3f1;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #40607f;
     -fx-font-size: 12px;
+    -fx-font-weight: 600;
 }
 
 .filtro-date {
-    -fx-background-color: #102844;
-    -fx-border-color: rgba(201, 172, 80, 0.45);
+    -fx-background-color: #f8fbff;
+    -fx-border-color: rgba(32, 61, 95, 0.16);
     -fx-border-radius: 10;
     -fx-background-radius: 10;
 }
 
 .filtro-date > .text-field {
     -fx-background-color: transparent;
-    -fx-text-fill: #eff5fb;
+    -fx-text-fill: #17395f;
     -fx-padding: 8 10 8 10;
 }
 
 .filtro-date > .arrow-button {
-    -fx-background-color: rgba(201, 172, 80, 0.24);
+    -fx-background-color: rgba(24, 71, 118, 0.08);
     -fx-background-radius: 0 10 10 0;
 }
 
 .btn-filtrar,
 .btn-exportar {
-    -fx-background-color: linear-gradient(to right, #a8861e 0%, #d6b961 100%);
-    -fx-text-fill: #0e2037;
-    -fx-font-family: "Segoe UI Black";
+    -fx-background-color: linear-gradient(to right, #c6a245 0%, #e0c166 100%);
+    -fx-text-fill: #10243f;
     -fx-font-size: 13px;
+    -fx-font-weight: 700;
     -fx-padding: 10 14 10 14;
-    -fx-background-radius: 10;
+    -fx-background-radius: 12;
     -fx-cursor: hand;
 }
 
 .btn-filtrar:hover,
 .btn-exportar:hover {
-    -fx-background-color: linear-gradient(to right, #b4922b 0%, #e4c96d 100%);
+    -fx-background-color: linear-gradient(to right, #d0ae53 0%, #e8ca73 100%);
 }
 
 .btn-secondary,
 .btn-voltar {
-    -fx-background-color: transparent;
-    -fx-text-fill: #d4e2f0;
-    -fx-border-color: rgba(212, 226, 240, 0.42);
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-text-fill: #365879;
+    -fx-border-color: rgba(54, 88, 121, 0.22);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
     -fx-font-size: 13px;
+    -fx-font-weight: 600;
     -fx-padding: 9 14 9 14;
     -fx-cursor: hand;
 }
 
 .btn-secondary:hover,
 .btn-voltar:hover {
-    -fx-background-color: rgba(212, 226, 240, 0.10);
+    -fx-background-color: #f2f7fc;
 }
 
 .kpi-card {
-    -fx-background-color: rgba(9, 29, 50, 0.9);
-    -fx-border-color: rgba(214, 185, 97, 0.34);
-    -fx-border-radius: 14;
-    -fx-background-radius: 14;
-    -fx-padding: 14 16 14 16;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f5f9fe);
+    -fx-border-color: rgba(25, 63, 103, 0.12);
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-padding: 16 18 16 18;
     -fx-spacing: 6;
+    -fx-effect: dropshadow(gaussian, rgba(18, 41, 68, 0.10), 16, 0.16, 0, 4);
 }
 
 .kpi-title {
-    -fx-text-fill: #a7bfd8;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #6d8095;
     -fx-font-size: 13px;
+    -fx-font-weight: 600;
 }
 
 .kpi-value {
-    -fx-text-fill: #f3d886;
-    -fx-font-family: "Georgia";
+    -fx-text-fill: #17395f;
     -fx-font-size: 33px;
     -fx-font-weight: 700;
 }
@@ -126,11 +155,12 @@
 .resumo-card,
 .grafico-card,
 .tabela-card {
-    -fx-background-color: rgba(8, 25, 43, 0.9);
-    -fx-border-color: rgba(145, 171, 199, 0.22);
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
-    -fx-padding: 12 14 12 14;
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-border-color: rgba(25, 63, 103, 0.12);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 16 18 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(18, 41, 68, 0.10), 14, 0.16, 0, 4);
 }
 
 .grafico-card {
@@ -138,14 +168,12 @@
 }
 
 .resumo-text {
-    -fx-text-fill: #d2e0ee;
-    -fx-font-family: "Segoe UI";
+    -fx-text-fill: #516b85;
     -fx-font-size: 13px;
 }
 
 .grafico-title {
-    -fx-text-fill: #d5b65f;
-    -fx-font-family: "Georgia";
+    -fx-text-fill: #17395f;
     -fx-font-size: 18px;
     -fx-font-weight: 700;
 }
@@ -157,24 +185,25 @@
 }
 
 .relatorio-bar-chart .chart-plot-background {
-    -fx-background-color: rgba(7, 19, 33, 0.66);
+    -fx-background-color: #f6f9fd;
+    -fx-background-radius: 14;
 }
 
 .relatorio-bar-chart .chart-vertical-grid-lines,
 .relatorio-bar-chart .chart-horizontal-grid-lines {
-    -fx-stroke: rgba(174, 193, 214, 0.20);
+    -fx-stroke: rgba(107, 136, 167, 0.20);
 }
 
 .relatorio-bar-chart .axis {
-    -fx-tick-label-fill: #d6e3ef;
+    -fx-tick-label-fill: #637a92;
 }
 
 .relatorio-bar-chart .axis-label {
-    -fx-text-fill: #cddceb;
+    -fx-text-fill: #637a92;
 }
 
 .default-color0.chart-bar {
-    -fx-bar-fill: #d6b961;
+    -fx-bar-fill: #c9a84a;
 }
 
 .chart-bar {
@@ -183,11 +212,12 @@
 
 .relatorio-pie-chart {
     -fx-background-color: transparent;
-    -fx-min-height: 250;
+    -fx-min-height: 340;
+    -fx-pref-height: 340;
 }
 
 .chart-pie-label {
-    -fx-fill: #f2f7fd;
+    -fx-fill: #415a76;
 }
 
 .default-color0.chart-pie { -fx-pie-color: #d6b961; }
@@ -198,22 +228,25 @@
 .default-color5.chart-pie { -fx-pie-color: #b5cce3; }
 
 .chart-legend {
-    -fx-background-color: rgba(255, 255, 255, 0.04);
-    -fx-background-radius: 8;
+    -fx-background-color: #f5f8fc;
+    -fx-background-radius: 12;
+    -fx-padding: 8 10 8 10;
 }
 
 .chart-legend-item {
-    -fx-text-fill: #dbe7f3;
+    -fx-text-fill: #4f6985;
 }
 
 .relatorio-table {
     -fx-background-color: transparent;
     -fx-table-cell-border-color: transparent;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
 }
 
 .relatorio-table .column-header-background {
-    -fx-background-color: #0f2a45;
-    -fx-background-radius: 10 10 0 0;
+    -fx-background-color: #163a5d;
+    -fx-background-radius: 12 12 0 0;
 }
 
 .relatorio-table .column-header,
@@ -224,30 +257,29 @@
 }
 
 .relatorio-table .column-header .label {
-    -fx-text-fill: #f0f6fd;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #f7fbff;
     -fx-font-size: 12px;
+    -fx-font-weight: 600;
 }
 
 .relatorio-table .table-row-cell {
-    -fx-background-color: rgba(15, 42, 69, 0.65);
+    -fx-background-color: #ffffff;
 }
 
 .relatorio-table .table-row-cell:odd {
-    -fx-background-color: rgba(17, 49, 79, 0.72);
+    -fx-background-color: #f7fafd;
 }
 
 .relatorio-table .table-row-cell:hover {
-    -fx-background-color: rgba(213, 182, 95, 0.18);
+    -fx-background-color: #ebf3fb;
 }
 
 .relatorio-table .table-row-cell:selected {
-    -fx-background-color: rgba(213, 182, 95, 0.30);
+    -fx-background-color: #dfeaf7;
 }
 
 .relatorio-table .table-cell {
-    -fx-text-fill: #d7e5f2;
-    -fx-font-family: "Segoe UI";
+    -fx-text-fill: #36506e;
     -fx-font-size: 12px;
     -fx-padding: 10 10 10 10;
 }

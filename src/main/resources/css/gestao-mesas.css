@@ -1,3 +1,10 @@
+.floor-root,
+.floor-root *,
+.floor-content-root,
+.floor-content-root * {
+    -fx-font-family: "Segoe UI";
+}
+
 .floor-root {
     -fx-background-color: #031525;
 }
@@ -18,7 +25,6 @@
 
 .floor-brand {
     -fx-text-fill: #f3f7fb;
-    -fx-font-family: "Georgia";
     -fx-font-size: 40px;
     -fx-font-weight: 700;
 }
@@ -80,7 +86,6 @@
 
 .floor-title {
     -fx-text-fill: #d2b053;
-    -fx-font-family: "Georgia";
     -fx-font-size: 46px;
     -fx-font-weight: 700;
 }
@@ -153,7 +158,6 @@
 
 .salao-title {
     -fx-text-fill: #15263d;
-    -fx-font-family: "Georgia";
     -fx-font-size: 38px;
     -fx-font-weight: 700;
     -fx-background-color: #f5f6f8;
@@ -228,7 +232,6 @@
 
 .mesa-numero {
     -fx-text-fill: #15243a;
-    -fx-font-family: "Georgia";
     -fx-font-size: 46px;
 }
 

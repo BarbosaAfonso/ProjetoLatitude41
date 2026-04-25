@@ -5,77 +5,115 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 
 <StackPane styleClass="login-root" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gestao_restaurante.Views.LoginScreen">
     <children>
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="background-image" />
         <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="login-overlay" />
 
-        <Region prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-top-right" StackPane.alignment="TOP_RIGHT">
+        <Region prefHeight="310.0" prefWidth="310.0" styleClass="compass compass-left" StackPane.alignment="BOTTOM_LEFT">
             <StackPane.margin>
-                <Insets right="60.0" top="78.0" />
+                <Insets bottom="-32.0" left="-48.0" />
             </StackPane.margin>
         </Region>
-        <Region prefHeight="220.0" prefWidth="200.0" styleClass="blob blob-mid-left" StackPane.alignment="CENTER_LEFT">
+        <Region prefHeight="310.0" prefWidth="310.0" styleClass="compass compass-right" StackPane.alignment="BOTTOM_RIGHT">
             <StackPane.margin>
-                <Insets left="58.0" top="70.0" />
-            </StackPane.margin>
-        </Region>
-        <Region prefHeight="240.0" prefWidth="210.0" styleClass="blob blob-bottom-right" StackPane.alignment="BOTTOM_RIGHT">
-            <StackPane.margin>
-                <Insets bottom="70.0" right="84.0" />
+                <Insets bottom="-30.0" right="-40.0" />
             </StackPane.margin>
         </Region>
 
-        <StackPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+        <StackPane alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" fillWidth="true" maxWidth="460.0" spacing="22.0">
+                <StackPane maxHeight="430.0" maxWidth="760.0" minHeight="430.0" minWidth="760.0" prefHeight="430.0" prefWidth="760.0" styleClass="login-frame">
                     <children>
-                        <VBox alignment="CENTER" spacing="4.0">
+                        <HBox maxHeight="424.0" maxWidth="754.0" minHeight="424.0" minWidth="754.0" prefHeight="424.0" prefWidth="754.0" styleClass="login-shell">
+                            <clip>
+                                <Rectangle arcHeight="32.0" arcWidth="32.0" height="424.0" width="754.0" />
+                            </clip>
                             <children>
-                                <Label styleClass="brand-title" text="Latitude 41" />
-                                <Label styleClass="brand-subtitle" text="STAFF PORTAL" />
-                            </children>
-                        </VBox>
-
-                        <VBox fillWidth="true" maxWidth="420.0" spacing="20.0" styleClass="login-card">
+                                <VBox fillWidth="true" maxHeight="424.0" maxWidth="290.0" minHeight="424.0" minWidth="290.0" prefHeight="424.0" prefWidth="290.0" spacing="18.0" styleClass="login-form-pane">
                             <padding>
-                                <Insets bottom="30.0" left="34.0" right="34.0" top="30.0" />
+                                <Insets bottom="24.0" left="28.0" right="32.0" top="22.0" />
                             </padding>
                             <children>
-                                <VBox spacing="6.0" styleClass="input-group">
+                                <VBox spacing="0.0">
                                     <children>
-                                        <Label styleClass="field-label" text="ID DE FUNCIONARIO" />
-                                        <TextField fx:id="emailField" maxWidth="1.7976931348623157E308" promptText="Digite seu ID" styleClass="login-input" />
+                                        <Label styleClass="brand-title" text="Latitude 41" />
+                                        <Label styleClass="brand-subtitle" text="STAFF PORTAL" />
                                     </children>
                                 </VBox>
 
-                                <VBox spacing="6.0" styleClass="input-group">
+                                <VBox spacing="16.0">
                                     <children>
-                                        <Label styleClass="field-label" text="PASSWORD" />
-                                        <PasswordField fx:id="passwordField" maxWidth="1.7976931348623157E308" promptText="********" styleClass="login-input" />
+                                        <VBox spacing="8.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="field-row">
+                                                    <children>
+                                                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" styleClass="field-image-icon">
+                                                            <image>
+                                                                <Image url="@../images/login-user-icon.png" />
+                                                            </image>
+                                                        </ImageView>
+                                                        <TextField fx:id="emailField" maxWidth="1.7976931348623157E308" promptText="Email" styleClass="login-input" />
+                                                    </children>
+                                                </HBox>
+                                                <Region styleClass="field-divider" />
+                                            </children>
+                                        </VBox>
+
+                                        <VBox spacing="8.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="field-row">
+                                                    <children>
+                                                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" styleClass="field-image-icon">
+                                                            <image>
+                                                                <Image url="@../images/login-lock-icon.png" />
+                                                            </image>
+                                                        </ImageView>
+                                                        <PasswordField fx:id="passwordField" maxWidth="1.7976931348623157E308" promptText="Palavra-passe" styleClass="login-input" />
+                                                    </children>
+                                                </HBox>
+                                                <Region styleClass="field-divider" />
+                                            </children>
+                                        </VBox>
                                     </children>
                                 </VBox>
 
-                                <Button defaultButton="true" maxWidth="1.7976931348623157E308" minHeight="46.0" mnemonicParsing="false" onAction="#onEntrar" styleClass="login-button" text="ENTRAR" />
-
-                                <HBox alignment="CENTER_LEFT" spacing="22.0">
-                                    <children>
-                                        <Label styleClass="muted-text" text="Esqueceu as credenciais?" />
-                                        <Label styleClass="muted-text" text="Acesso Restrito" />
-                                    </children>
-                                </HBox>
+                                <Button defaultButton="true" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#onEntrar" prefHeight="40.0" styleClass="login-button" text="LOGIN" />
                             </children>
-                        </VBox>
+                                </VBox>
+
+                                <StackPane maxHeight="424.0" maxWidth="464.0" minHeight="424.0" minWidth="464.0" prefHeight="424.0" prefWidth="464.0" styleClass="hero-pane">
+                                    <children>
+                                        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="hero-image" />
+                                        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="hero-overlay" />
+
+                                        <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="18.0" styleClass="hero-copy" StackPane.alignment="CENTER_LEFT">
+                                            <StackPane.margin>
+                                                <Insets left="30.0" right="22.0" top="10.0" />
+                                            </StackPane.margin>
+                                            <children>
+                                                <Label styleClass="hero-title" text="RESTAURANTE&#10;LATITUDE 41" wrapText="true" />
+                                                <Label styleClass="hero-subtitle" text="Sabores autenticos,&#10;com alma portuguesa." wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </HBox>
                     </children>
-                    <padding>
-                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-                    </padding>
-                </VBox>
+                </StackPane>
             </children>
+            <padding>
+                <Insets bottom="30.0" left="36.0" right="36.0" top="30.0" />
+            </padding>
         </StackPane>
     </children>
 </StackPane>

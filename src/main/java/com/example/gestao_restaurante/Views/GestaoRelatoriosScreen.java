@@ -5,6 +5,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
@@ -81,8 +82,18 @@ public class GestaoRelatoriosScreen {
     @FXML
     private void initialize() {
         configurarTabela();
+        configurarGraficos();
         configurarIntervaloInicial();
         carregarRelatorio();
+    }
+
+    private void configurarGraficos() {
+        if (vendasCategoriaPie != null) {
+            vendasCategoriaPie.setLabelsVisible(false);
+            vendasCategoriaPie.setLabelLineLength(8);
+            vendasCategoriaPie.setLegendSide(Side.BOTTOM);
+            vendasCategoriaPie.setClockwise(true);
+        }
     }
 
     @FXML

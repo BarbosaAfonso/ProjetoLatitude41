@@ -3,7 +3,7 @@ package com.example.gestao_restaurante.Services;
 import com.example.gestao_restaurante.Dtos.RelatorioAnaliseDTO;
 import com.example.gestao_restaurante.Dtos.TopProdutoDTO;
 import com.example.gestao_restaurante.Modules.LinhaPedido;
-import com.lowagie.text.Document;
+import com.lowagie.text .Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
