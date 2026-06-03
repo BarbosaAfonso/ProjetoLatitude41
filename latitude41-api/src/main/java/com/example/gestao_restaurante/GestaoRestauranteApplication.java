@@ -1,0 +1,13 @@
+package com.example.gestao_restaurante;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GestaoRestauranteApplication {
+
+    public static void main(String[] args) {
+        // Inicializa o ecossistema Spring Boot e o servidor Tomcat
+        SpringApplication.run(GestaoRestauranteApplication.class, args);
+    }
+}
