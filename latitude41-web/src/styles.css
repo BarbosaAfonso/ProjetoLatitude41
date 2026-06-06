@@ -1,3 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
 
-@import 'tailwindcss';
+@theme {
+  /* Substitui estes códigos hexadecimais pelos tons exatos do teu Figma */
+  --color-navy: #0B192C;
+  --color-gold: #CDA45E;
+  --color-card-bg: #E2E8F0;    /* O cinzento claro do card de login */
+}

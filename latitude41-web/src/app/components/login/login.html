@@ -1,0 +1,105 @@
+<div class="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-b from-navy to-slate-900 p-6 select-none">
+
+  <div class="text-center mb-8 animate-fade-in">
+    <h1 class="text-white text-4xl font-serif font-bold tracking-wide">Latitude 41</h1>
+    <p class="text-gold text-xs font-sans tracking-[0.2em] uppercase mt-1">Curadoria Gastronómica</p>
+  </div>
+
+  <div class="w-full max-w-md bg-card-bg rounded-sm p-10 shadow-2xl transition-all duration-300 border border-white/10">
+
+    <div class="mb-8">
+      <h2 class="text-slate-800 text-2xl font-serif font-bold">
+        {{ isLoginMode ? 'Bem-vindo' : 'Criar Conta' }}
+      </h2>
+      <p class="text-slate-500 text-xs mt-2 leading-relaxed">
+        {{ isLoginMode ? 'Introduza as suas credenciais para aceder à sua conta.' : 'Registe-se para começar a gerir o restaurante.' }}
+      </p>
+    </div>
+
+    <form class="space-y-6">
+
+      @if (!isLoginMode) {
+        <div class="flex flex-col space-y-2">
+          <label class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Nome Completo</label>
+          <div class="relative flex items-center">
+            <input
+              type="text"
+              [(ngModel)]="nome"
+              name="nome"
+              placeholder="Ex: Afonso Silva"
+              class="w-full bg-transparent border-b border-slate-300 py-2 text-sm text-slate-800 focus:outline-none focus:border-gold transition-colors placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+      }
+
+      <div class="flex flex-col space-y-2">
+        <label class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Email</label>
+        <div class="relative flex items-center">
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="nome@exemplo.com"
+            class="w-full bg-transparent border-b border-slate-300 py-2 text-sm text-slate-800 focus:outline-none focus:border-gold transition-colors placeholder:text-slate-400"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-2">
+        <div class="flex justify-between items-center">
+          <label class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Palavra-passe</label>
+          @if (isLoginMode) {
+            <a href="#" class="text-slate-400 hover:text-gold text-[10px] uppercase tracking-wider transition-colors">Esqueceu-se?</a>
+          }
+        </div>
+        <div class="relative flex items-center">
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="••••••••"
+            class="w-full bg-transparent border-b border-slate-300 py-2 text-sm text-slate-800 focus:outline-none focus:border-gold transition-colors placeholder:text-slate-400"
+          />
+        </div>
+      </div>
+
+      @if (isLoginMode) {
+        <div class="flex items-center space-x-2 pt-2">
+          <input
+            type="checkbox"
+            id="remember"
+            class="w-4 h-4 rounded-sm border-slate-300 text-gold focus:ring-gold accent-gold"
+          />
+          <label for="remember" class="text-slate-500 text-xs cursor-pointer select-none">Manter sessão iniciada</label>
+        </div>
+      }
+
+      <button
+        type="button"
+        (click)="submeter()"
+        class="w-full bg-gold hover:bg-[#b89250] text-navy font-sans font-bold text-xs uppercase tracking-widest py-4 rounded-sm shadow-md hover:shadow-lg transition-all duration-300 mt-4"
+      >
+        {{ isLoginMode ? 'Entrar' : 'Registar Conta' }}
+      </button>
+
+    </form>
+
+    <div class="text-center mt-8 pt-6 border-t border-slate-300/50">
+      <p class="text-slate-400 text-xs">ou</p>
+      <button
+        type="button"
+        (click)="alterarModo()"
+        class="inline-block text-slate-700 hover:text-gold text-xs font-bold uppercase tracking-wider mt-4 transition-colors focus:outline-none"
+      >
+        {{ isLoginMode ? 'Criar Conta' : 'Voltar para o Login' }}
+      </button>
+    </div>
+
+  </div>
+
+  <div class="mt-12 text-center">
+    <p class="text-white/30 text-[9px] tracking-widest uppercase">© 2026 Latitude 41. Lisboa, Portugal.</p>
+  </div>
+
+</div>

@@ -38,6 +38,24 @@ public class UtilizadorService {
         return utilizadorRepository.save(utilizador);
     }
 
+    // POST - registar um novo utilizador vindo da aplicação Web/Formulário
+    public Utilizador registarNovoUtilizador(String nome, String email, String password) {
+        // Valida se o email já está registado na base de dados antes de avançar
+        if (email != null && utilizadorRepository.findByEmailIgnoreCase(email.trim()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O email já está em uso.");
+        }
+
+        Utilizador novoUtilizador = new Utilizador();
+        novoUtilizador.setNome(nome);
+        novoUtilizador.setEmail(email);
+        novoUtilizador.setPassword(password);
+        novoUtilizador.setTipo("FUNCIONARIO"); // Ajustado para "FUNCIONARIO" de acordo com o vosso filtro do normalizarTipo
+        novoUtilizador.setEstadoConta("ATIVO");
+
+        // Reutiliza o método criar para rodar as validações estruturais e salvar na BD
+        return criar(novoUtilizador);
+    }
+
     // PUT - atualizar utilizador existente
     public Optional<Utilizador> atualizar(Integer id, Utilizador utilizadorAtualizado) {
         return utilizadorRepository.findById(id).map(utilizador -> {
