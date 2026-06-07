@@ -42,6 +42,12 @@ export class Menu implements OnInit {
   public successMessage = '';
   public editingProductId: number | null = null;
 
+  // Estados dos novos filtros dinâmicos
+  public categoriaSelecionada = 'Todos';
+  public filtroVegetariano = false;
+  public filtroSemGluten = false;
+  public filtroSemLactose = false;
+
   public readonly tiposProduto = [
     'Entrada',
     'Prato Principal',
@@ -57,8 +63,35 @@ export class Menu implements OnInit {
     return this.user?.tipo.toUpperCase() === 'ADMIN';
   }
 
+  // Mapeamento dinâmico de alergénios baseado no nome do produto
+  public obterTags(nome: string): { veg: boolean; semGluten: boolean; semLactose: boolean } {
+    const n = nome.toLowerCase();
+    return {
+      veg: n.includes('salada') || n.includes('sopa') || n.includes('vegetariano') || n.includes('sobremesa') || n.includes('pudim') || n.includes('mousse') || n.includes('fruta'),
+      semGluten: !n.includes('pão') && !n.includes('massa') && !n.includes('francesinha') && !n.includes('croquete') && !n.includes('crepe'),
+      semLactose: !n.includes('queijo') && !n.includes('natas') && !n.includes('gelado') && !n.includes('manteiga') && !n.includes('creme')
+    };
+  }
+
   public get produtosVisiveis(): Produto[] {
-    const produtosPermitidos = this.isAdmin ? this.produtos : this.produtos.filter((produto) => produto.disponivel !== false);
+    let produtosPermitidos = this.isAdmin ? this.produtos : this.produtos.filter((produto) => produto.disponivel !== false);
+
+    // Filtro por Categoria Selecionada
+    if (this.categoriaSelecionada !== 'Todos') {
+      produtosPermitidos = produtosPermitidos.filter((p) => p.tipo === this.categoriaSelecionada);
+    }
+
+    // Filtros por Preferências e Alergénios
+    if (this.filtroVegetariano || this.filtroSemGluten || this.filtroSemLactose) {
+      produtosPermitidos = produtosPermitidos.filter((p) => {
+        const tags = this.obterTags(p.nome);
+        if (this.filtroVegetariano && !tags.veg) return false;
+        if (this.filtroSemGluten && !tags.semGluten) return false;
+        if (this.filtroSemLactose && !tags.semLactose) return false;
+        return true;
+      });
+    }
+
     const produtosPorNome = new Map<string, Produto>();
 
     for (const produto of produtosPermitidos) {
@@ -270,6 +303,7 @@ export class Menu implements OnInit {
     }
   }
 
+  // MÉTODOS PRIVADOS REPOSTOS CORRETAMENTE
   private isAuthenticatedUser(user: Partial<AuthenticatedUser>): user is AuthenticatedUser {
     return (
       typeof user.id === 'number' &&

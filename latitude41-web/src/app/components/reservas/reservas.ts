@@ -20,6 +20,15 @@ interface ApiErrorResponse {
   error?: unknown;
 }
 
+interface ReservaExibicao {
+  idSimulado: number; // Adicionado para identificar qual reserva cancelar nos testes
+  data: string;
+  hora: string;
+  pessoas: number;
+  estado: string;
+  mesa?: number;
+}
+
 @Component({
   selector: 'app-reservas',
   imports: [CommonModule, FormsModule, Navbar],
@@ -35,8 +44,11 @@ export class Reservas implements OnInit {
   public isSubmitting = false;
   public user: AuthenticatedUser | null = null;
 
-  public readonly horarios = ['12:30', '13:30', '20:00', '21:30'];
+  public readonly horarios = ['12:30', '13:00', '13:30', '14:00', '20:00', '20:30', '21:00', '21:30'];
   public readonly opcoesPessoas = [1, 2, 3, 4, 5, 6, 7, 8];
+
+  public minhasReservas: ReservaExibicao[] = [];
+  public reservaSelecionada: ReservaExibicao | null = null;
 
   private idUtilizador: number | null = null;
 
@@ -58,9 +70,56 @@ export class Reservas implements OnInit {
 
       this.user = user;
       this.idUtilizador = user.id;
+
+      this.carregarReservas();
     } catch {
       this.clearSessionAndRedirect();
     }
+  }
+
+  public carregarReservas(): void {
+    this.minhasReservas = [
+      { idSimulado: 1, data: '12/06/2026', hora: '20:30', pessoas: 4, estado: 'CONFIRMADA', mesa: 1 },
+      { idSimulado: 2, data: '18/06/2026', hora: '13:00', pessoas: 2, estado: 'CONFIRMADA', mesa: 2 }
+    ];
+  }
+
+  public abrirDetalhes(reserva: ReservaExibicao): void {
+    this.reservaSelecionada = reserva;
+  }
+
+  public fecharDetalhes(): void {
+    this.reservaSelecionada = null;
+  }
+
+  public cancelarReserva(reserva: ReservaExibicao): void {
+    if (!confirm('Tem a certeza de que deseja cancelar esta reserva?')) {
+      return;
+    }
+
+    // Aqui podes ligar à tua API Spring Boot mais tarde. Exemplo:
+    // this.reservaService.cancelar(reserva.id).subscribe(...)
+
+    // Simulação de resposta rápida do servidor
+    const encontrada = this.minhasReservas.find(r => r.idSimulado === reserva.idSimulado);
+    if (encontrada) {
+      encontrada.estado = 'CANCELADA';
+
+      // Atualiza o modal em tempo real
+      if (this.reservaSelecionada && this.reservaSelecionada.idSimulado === reserva.idSimulado) {
+        this.reservaSelecionada = { ...encontrada };
+      }
+
+      alert('A sua reserva foi cancelada com sucesso.');
+    }
+  }
+
+  public selecionarHora(horario: string): void {
+    this.hora = horario;
+  }
+
+  public selecionarPessoas(quantidade: number): void {
+    this.quantidadePessoas = quantidade;
   }
 
   public submeterReserva(): void {
@@ -72,14 +131,14 @@ export class Reservas implements OnInit {
     const dataIso = this.converterDataParaIso(this.data);
 
     if (!dataIso) {
-      alert('Use uma data valida no formato dia/mes/ano.');
+      alert('Use uma data válida no formato dia/mês/ano.');
       return;
     }
 
     const dataHoraSelecionada = this.criarDataHoraSelecionada(dataIso, this.hora);
 
     if (!dataHoraSelecionada || dataHoraSelecionada.getTime() < Date.now()) {
-      alert('Nao pode criar reservas para datas ou horarios passados.');
+      alert('Não pode criar reservas para datas ou horários passados.');
       return;
     }
 
@@ -88,10 +147,12 @@ export class Reservas implements OnInit {
       return;
     }
 
+    const mesaId = this.obterMesaPorQuantidade();
+
     const reserva = {
       dataHora: `${dataIso}T${this.hora}:00Z`,
       estado: 'CONFIRMADA',
-      numMesa: { id: this.obterMesaPorQuantidade() },
+      numMesa: { id: mesaId },
       idUtilizador: { id: this.idUtilizador },
     };
 
@@ -100,6 +161,16 @@ export class Reservas implements OnInit {
     this.reservaService.fazerReserva(reserva).subscribe({
       next: () => {
         alert('Reserva confirmada com sucesso!');
+
+        this.minhasReservas.unshift({
+          idSimulado: Date.now(),
+          data: this.data,
+          hora: this.hora,
+          pessoas: this.quantidadePessoas!,
+          estado: 'CONFIRMADA',
+          mesa: mesaId
+        });
+
         this.limparFormulario();
       },
       error: (error: HttpErrorResponse) => {
@@ -116,6 +187,12 @@ export class Reservas implements OnInit {
     const digitos = valor.replace(/\D/g, '').slice(0, 8);
     const partes = [digitos.slice(0, 2), digitos.slice(2, 4), digitos.slice(4, 8)].filter(Boolean);
     this.data = partes.join('/');
+  }
+
+  public formatarHora(valor: string): void {
+    const digitos = valor.replace(/\D/g, '').slice(0, 4);
+    const partes = [digitos.slice(0, 2), digitos.slice(2, 4)].filter(Boolean);
+    this.hora = partes.join(':');
   }
 
   public logout(): void {
@@ -155,7 +232,13 @@ export class Reservas implements OnInit {
   }
 
   private converterDataParaIso(data: string): string | null {
-    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(data.trim());
+    const dadoLimpo = data.trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dadoLimpo)) {
+      return dadoLimpo;
+    }
+
+    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(dadoLimpo);
 
     if (!match) {
       return null;
@@ -181,7 +264,7 @@ export class Reservas implements OnInit {
 
   private obterMensagemErroReserva(error: HttpErrorResponse): string {
     if (error.status === 0) {
-      return 'Nao foi possivel contactar a API. Confirme se o servidor esta ligado.';
+      return 'Não foi possível contactar a API. Confirme se o servidor está ligado.';
     }
 
     const apiError = error.error as ApiErrorResponse | string | null;
@@ -199,10 +282,10 @@ export class Reservas implements OnInit {
     }
 
     if (error.status === 409) {
-      return 'Este horario ja nao esta disponivel para reserva.';
+      return 'Este horário já não está disponível para reserva.';
     }
 
-    return 'Nao foi possivel confirmar a reserva. Tente novamente.';
+    return 'Não foi possível confirmar a reserva. Tente novamente.';
   }
 
   private obterTextoErro(valor: unknown): string | null {
