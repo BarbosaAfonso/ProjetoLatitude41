@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class DesktopAppContext {
 
@@ -18,12 +20,22 @@ public final class DesktopAppContext {
     private static final double DEFAULT_HEIGHT = 820;
 
     private static Stage primaryStage;
-    private static final ApiService apiService = new ApiService();
     private static UtilizadorSessao utilizadorSessao = UtilizadorSessao.empty();
     private static boolean stageLayoutConfigured;
 
     private static Parent mainShellRoot;
     private static MainShellScreen mainShellController;
+
+    private static final ApiService apiService = new ApiService();
+    private static final MesaService mesaService = new MesaService(apiService);
+    private static final PedidoService pedidoService = new PedidoService(apiService);
+    private static final ProdutoService produtoService = new ProdutoService(apiService);
+    private static final ReservaService reservaService = new ReservaService(apiService);
+    private static final StockService stockService = new StockService(apiService);
+    private static final IngredienteService ingredienteService = new IngredienteService(apiService);
+    private static final UtilizadorService utilizadorService = new UtilizadorService(apiService);
+    private static final FaturaService faturaService = new FaturaService(apiService);
+    private static final RelatorioService relatorioService = new RelatorioService(apiService);
 
     private DesktopAppContext() {
     }
@@ -32,9 +44,16 @@ public final class DesktopAppContext {
         primaryStage = stage;
     }
 
-    public static ApiService apiService() {
-        return apiService;
-    }
+    public static MesaService getMesaService() { return mesaService; }
+    public static PedidoService getPedidoService() { return pedidoService; }
+    public static ProdutoService getProdutoService() { return produtoService; }
+    public static ReservaService getReservaService() { return reservaService; }
+    public static StockService getStockService() { return stockService; }
+    public static IngredienteService getIngredienteService() { return ingredienteService; }
+    public static UtilizadorService getUtilizadorService() { return utilizadorService; }
+    public static FaturaService getFaturaService() { return faturaService; }
+    public static RelatorioService getRelatorioService() { return relatorioService; }
+
 
     public static String utilizadorNome() {
         return utilizadorSessao.nome();
@@ -202,17 +221,50 @@ public final class DesktopAppContext {
 
     private static FXMLLoader createLoader(String fxmlFile) {
         String fullPath = FXML_BASE_PATH + fxmlFile;
-        URL resource = DesktopAppContext.class.getResource(fullPath);
-        if (resource == null) {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            if (contextClassLoader != null) {
-                resource = contextClassLoader.getResource(fullPath.startsWith("/") ? fullPath.substring(1) : fullPath);
-            }
-        }
+        URL resource = resolveResource(fullPath);
         if (resource == null) {
             throw new RuntimeException("Erro ao carregar interface grafica. Recurso FXML nao encontrado: " + fullPath);
         }
         return new FXMLLoader(resource);
+    }
+
+    private static URL resolveResource(String fullPath) {
+        URL resource = DesktopAppContext.class.getResource(fullPath);
+        if (resource != null) {
+            return resource;
+        }
+
+        String relativePath = fullPath.startsWith("/") ? fullPath.substring(1) : fullPath;
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader != null) {
+            resource = contextClassLoader.getResource(relativePath);
+            if (resource != null) {
+                return resource;
+            }
+        }
+
+        return resolveResourceFromFileSystem(relativePath);
+    }
+
+    private static URL resolveResourceFromFileSystem(String relativePath) {
+        Path[] candidates = {
+                Path.of(relativePath),
+                Path.of("target", "classes").resolve(relativePath),
+                Path.of("src", "main", "resources").resolve(relativePath),
+                Path.of("latitude41-desktop", "target", "classes").resolve(relativePath),
+                Path.of("latitude41-desktop", "src", "main", "resources").resolve(relativePath)
+        };
+
+        for (Path candidate : candidates) {
+            if (Files.isRegularFile(candidate)) {
+                try {
+                    return candidate.toUri().toURL();
+                } catch (IOException ignored) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     private static RuntimeException buildFxmlLoadException(String fxmlFile, IOException e) {

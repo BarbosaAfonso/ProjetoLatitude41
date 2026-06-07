@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { Navbar } from '../navbar/navbar';
 
 interface AuthenticatedUser {
   id: number;
@@ -12,7 +13,7 @@ interface AuthenticatedUser {
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, Navbar],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

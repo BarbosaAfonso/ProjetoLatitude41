@@ -1,22 +1,7 @@
 <div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white">
-  <header class="border-b border-white/5 bg-navy/85 backdrop-blur-md">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
-      <div>
-        <h1 class="font-serif text-2xl font-bold tracking-wide text-white">Latitude 41</h1>
-        <p class="mt-1 text-[9px] font-bold uppercase tracking-[0.28em] text-gold">Reservas Privadas</p>
-      </div>
+  <app-navbar [userName]="user?.nome ?? null" (logoutRequested)="logout()"></app-navbar>
 
-      <button
-        type="button"
-        routerLink="/home"
-        class="rounded-sm border border-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/70 transition hover:border-gold/50 hover:bg-gold/10 hover:text-gold"
-      >
-        Voltar
-      </button>
-    </div>
-  </header>
-
-  <main class="relative flex min-h-[calc(100vh-89px)] items-center justify-center overflow-hidden px-5 py-16 lg:px-8">
+  <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 pb-16 pt-40 lg:px-8">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(205,164,94,0.13),transparent_34%)]"></div>
     <div class="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent"></div>
 
@@ -29,14 +14,20 @@
         </p>
       </div>
 
-      <form class="space-y-7" (ngSubmit)="submeterReserva()">
+      <form class="space-y-7" novalidate (ngSubmit)="submeterReserva()">
         <div>
           <label for="data" class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">Data</label>
           <input
             id="data"
             name="data"
-            type="date"
-            [(ngModel)]="data"
+            type="text"
+            inputmode="numeric"
+            maxlength="10"
+            autocomplete="off"
+            placeholder="dd/mm/aaaa"
+            pattern="\d{2}/\d{2}/\d{4}"
+            [ngModel]="data"
+            (ngModelChange)="formatarData($event)"
             class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
           />
         </div>

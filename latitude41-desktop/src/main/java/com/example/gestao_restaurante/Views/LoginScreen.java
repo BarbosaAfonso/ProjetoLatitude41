@@ -27,12 +27,13 @@ public class LoginScreen {
 
         Optional<JsonNode> resultadoLogin;
         try {
-            resultadoLogin = DesktopAppContext.apiService().login(email.trim(), password);
+            resultadoLogin = DesktopAppContext.getUtilizadorService().login(email.trim(), password);
         } catch (RuntimeException e) {
             e.printStackTrace();
             ViewUtils.showError(
                     "Login",
-                    "Nao foi possivel validar login na API. Confirma se o backend esta ativo em http://localhost:8080.\n\nDetalhe: "
+                    "Nao foi possivel validar login na API. Confirma se o backend esta ativo em http://localhost:8080.\n\n"
+                            + "Para arrancar: abre o modulo latitude41-api e executa .\\mvnw.cmd spring-boot:run.\n\nDetalhe: "
                             + e.getMessage()
             );
             return;

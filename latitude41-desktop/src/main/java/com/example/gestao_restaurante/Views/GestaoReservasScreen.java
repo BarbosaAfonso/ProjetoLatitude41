@@ -247,7 +247,7 @@ public class GestaoReservasScreen {
         Optional<ObjectNode> payload = dialogoReserva(null);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().post("/reservas", body);
+                DesktopAppContext.getReservaService().create(body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Reservas", e.getMessage());
@@ -292,7 +292,7 @@ public class GestaoReservasScreen {
         payload.ifPresent(body -> {
             try {
                 String id = ViewUtils.text(selecionada, "id");
-                DesktopAppContext.apiService().put("/reservas/" + id, body);
+                DesktopAppContext.getReservaService().update(Integer.parseInt(id), body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Reservas", e.getMessage());
@@ -312,8 +312,8 @@ public class GestaoReservasScreen {
         }
 
         try {
-            JsonNode reservaAtual = DesktopAppContext.apiService().getObject("/reservas/" + id);
-            DesktopAppContext.apiService().put("/reservas/" + id, criarPayloadReserva(reservaAtual, "CANCELADA"));
+            JsonNode reservaAtual = DesktopAppContext.getReservaService().getById(Integer.parseInt(id));
+            DesktopAppContext.getReservaService().update(Integer.parseInt(id), criarPayloadReserva(reservaAtual, "CANCELADA"));
             carregarDados();
         } catch (RuntimeException e) {
             ViewUtils.showError("Reservas", e.getMessage());
@@ -327,8 +327,8 @@ public class GestaoReservasScreen {
         }
 
         try {
-            JsonNode reservaAtual = DesktopAppContext.apiService().getObject("/reservas/" + id);
-            DesktopAppContext.apiService().put("/reservas/" + id, criarPayloadReserva(reservaAtual, "CONFIRMADA"));
+            JsonNode reservaAtual = DesktopAppContext.getReservaService().getById(Integer.parseInt(id));
+            DesktopAppContext.getReservaService().update(Integer.parseInt(id), criarPayloadReserva(reservaAtual, "CONFIRMADA"));
             carregarDados();
         } catch (RuntimeException e) {
             ViewUtils.showError("Reservas", e.getMessage());
@@ -337,7 +337,7 @@ public class GestaoReservasScreen {
 
     private void carregarDados() {
         try {
-            ArrayNode resposta = DesktopAppContext.apiService().getArray("/reservas");
+            ArrayNode resposta = DesktopAppContext.getReservaService().getAll();
             dados.clear();
             resposta.forEach(dados::add);
             atualizarFiltros();
@@ -470,11 +470,11 @@ public class GestaoReservasScreen {
             ComboBox<String> estadoCombo = new ComboBox<>(FXCollections.observableArrayList("CONFIRMADA", "PENDENTE", "CANCELADA"));
             estadoCombo.setValue(normalizarEstado(ViewUtils.text(atual, "estado"), "CONFIRMADA"));
 
-            ComboBox<JsonNode> mesaCombo = new ComboBox<>(carregarOpcoes("/mesas"));
+            ComboBox<JsonNode> mesaCombo = new ComboBox<>(carregarOpcoes(DesktopAppContext.getMesaService()::getAll));
             configurarCombo(mesaCombo, this::descricaoMesa);
             selecionarPorId(mesaCombo, ViewUtils.nestedText(atual, "numMesa", "id"), node -> ViewUtils.text(node, "id"));
 
-            ComboBox<JsonNode> utilizadorCombo = new ComboBox<>(carregarOpcoes("/utilizadores"));
+            ComboBox<JsonNode> utilizadorCombo = new ComboBox<>(carregarOpcoes(DesktopAppContext.getUtilizadorService()::getAll));
             configurarCombo(utilizadorCombo, this::descricaoUtilizador);
             selecionarPorId(utilizadorCombo, ViewUtils.nestedText(atual, "idUtilizador", "id"), node -> ViewUtils.text(node, "id"));
 
@@ -508,7 +508,7 @@ public class GestaoReservasScreen {
 
             validarDataHoraSelecionada(dataPicker.getValue(), horaCombo.getValue(), minutoCombo.getValue(), estadoCombo.getValue());
 
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getReservaService().createObject();
             payload.put("dataHora", construirDataHoraIso(dataPicker.getValue(), horaCombo.getValue(), minutoCombo.getValue()));
             payload.put("estado", normalizarEstado(estadoCombo.getValue(), "CONFIRMADA"));
 
@@ -531,8 +531,8 @@ public class GestaoReservasScreen {
         }
     }
 
-    private ObservableList<JsonNode> carregarOpcoes(String path) {
-        ArrayNode resposta = DesktopAppContext.apiService().getArray(path);
+    private ObservableList<JsonNode> carregarOpcoes(java.util.function.Supplier<ArrayNode> supplier) {
+        ArrayNode resposta = supplier.get();
         ObservableList<JsonNode> opcoes = FXCollections.observableArrayList();
         resposta.forEach(opcoes::add);
         return opcoes;
@@ -704,7 +704,7 @@ public class GestaoReservasScreen {
     }
 
     private ObjectNode criarPayloadReserva(JsonNode reserva, String estado) {
-        ObjectNode payload = DesktopAppContext.apiService().createObject();
+        ObjectNode payload = DesktopAppContext.getReservaService().createObject();
         payload.put("dataHora", ViewUtils.text(reserva, "dataHora"));
         payload.put("estado", estado);
 

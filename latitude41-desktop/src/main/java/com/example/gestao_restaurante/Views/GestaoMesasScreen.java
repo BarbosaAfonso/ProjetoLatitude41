@@ -1,6 +1,5 @@
 package com.example.gestao_restaurante.Views;
 
-import com.example.gestao_restaurante.Modules.Mesa;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -91,7 +90,7 @@ public class GestaoMesasScreen {
         Optional<ObjectNode> payload = dialogoMesa(null);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().post("/mesas", body);
+                DesktopAppContext.getMesaService().create(body);
                 carregarMesas();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Mesas", e.getMessage());
@@ -106,7 +105,7 @@ public class GestaoMesasScreen {
 
     private void carregarMesas() {
         try {
-            ArrayNode resposta = DesktopAppContext.apiService().getArray("/mesas");
+            ArrayNode resposta = DesktopAppContext.getMesaService().getAll();
             mesas.clear();
             resposta.forEach(json -> mesas.add(mapearMesa(json)));
             mesas.sort(Comparator.comparing(Mesa::getId, Comparator.nullsLast(Integer::compareTo)));
@@ -155,7 +154,7 @@ public class GestaoMesasScreen {
         Optional<ObjectNode> payload = dialogoMesa(mesa);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().put("/mesas/" + mesa.getId(), body);
+                DesktopAppContext.getMesaService().update(mesa.getId(), body);
                 carregarMesas();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Mesas", e.getMessage());
@@ -169,7 +168,7 @@ public class GestaoMesasScreen {
         }
 
         try {
-            boolean apagada = DesktopAppContext.apiService().delete("/mesas/" + mesa.getId());
+            boolean apagada = DesktopAppContext.getMesaService().delete(mesa.getId());
             if (!apagada) {
                 ViewUtils.showWarning("Mesas", "Mesa nao encontrada.");
             }
@@ -241,9 +240,7 @@ public class GestaoMesasScreen {
     }
 
     private ArrayNode carregarPedidosAtivosDaMesa(Mesa mesa) {
-        // Mesmo em mesas marcadas como LIVRE, pode existir pedido ativo por falta de sincronizacao de estado.
-        // Por isso consultamos sempre a API e deixamos o backend filtrar os estados operacionais.
-        return DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesa.getId() + "/completos");
+        return DesktopAppContext.getPedidoService().getPedidosCompletosByMesa(mesa.getId());
     }
 
     private void recarregarPedidosPopup(ComboBox<JsonNode> pedidosCombo,
@@ -282,7 +279,7 @@ public class GestaoMesasScreen {
 
         ArrayNode linhas = pedidoSelecionado.has("linhas") && pedidoSelecionado.get("linhas").isArray()
                 ? (ArrayNode) pedidoSelecionado.get("linhas")
-                : DesktopAppContext.apiService().createObject().putArray("linhas");
+                : DesktopAppContext.getPedidoService().createObject().putArray("linhas");
         linhas.forEach(linhasTable.getItems()::add);
 
         resumoLabel.setText(
@@ -332,7 +329,7 @@ public class GestaoMesasScreen {
         }
 
         try {
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getMesaService().createObject();
             payload.put("id", Integer.parseInt(idField.getText().trim()));
             payload.put("numLugares", Integer.parseInt(lugaresField.getText().trim()));
             payload.put("estado", estadoCombo.getValue().trim().toUpperCase(Locale.ROOT));
@@ -401,6 +398,36 @@ public class GestaoMesasScreen {
         }
         String numeroBase = String.format("%02d", mesa.getId());
         return isMesaEspecial(mesa) ? numeroBase + " (VIP Booth)" : numeroBase;
+    }
+
+    private static final class Mesa {
+        private Integer id;
+        private Integer numLugares;
+        private String estado;
+
+        private Integer getId() {
+            return id;
+        }
+
+        private void setId(Integer id) {
+            this.id = id;
+        }
+
+        private Integer getNumLugares() {
+            return numLugares;
+        }
+
+        private void setNumLugares(Integer numLugares) {
+            this.numLugares = numLugares;
+        }
+
+        private String getEstado() {
+            return estado;
+        }
+
+        private void setEstado(String estado) {
+            this.estado = estado;
+        }
     }
 
     private enum EstadoMesa {

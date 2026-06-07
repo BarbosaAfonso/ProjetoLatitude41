@@ -1,0 +1,31 @@
+<header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-navy/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+    <div>
+      <h1 class="font-serif text-2xl font-bold tracking-wide text-white">Latitude 41</h1>
+      <p class="mt-1 text-[9px] font-bold uppercase tracking-[0.28em] text-gold">Curadoria Gastron&oacute;mica</p>
+    </div>
+
+    <nav class="flex items-center gap-6 text-sm font-medium text-white/65 lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+      <a routerLink="/home" routerLinkActive="text-gold" [routerLinkActiveOptions]="{ exact: true }" class="transition hover:text-gold">In&iacute;cio</a>
+      <a routerLink="/menu" routerLinkActive="text-gold" [routerLinkActiveOptions]="{ exact: true }" class="transition hover:text-gold">Menu</a>
+      <a routerLink="/reservas" routerLinkActive="text-gold" [routerLinkActiveOptions]="{ exact: true }" class="transition hover:text-gold">Reservas</a>
+    </nav>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-2 rounded-sm border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80">
+        <svg class="h-4 w-4 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+        </svg>
+        <span>{{ userName }}</span>
+      </div>
+
+      <button
+        type="button"
+        (click)="logoutRequested.emit()"
+        class="rounded-sm border border-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/75 transition hover:border-gold/50 hover:bg-gold/10 hover:text-gold"
+      >
+        Sair
+      </button>
+    </div>
+  </div>
+</header>

@@ -209,7 +209,7 @@ public class GestaoStockScreen {
         Optional<ObjectNode> payload = dialogoStock(null);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().post("/stocks", body);
+                DesktopAppContext.getStockService().create(body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Stock", e.getMessage());
@@ -256,7 +256,7 @@ public class GestaoStockScreen {
         }
 
         try {
-            boolean apagado = DesktopAppContext.apiService().delete("/stocks/" + id);
+            boolean apagado = DesktopAppContext.getStockService().delete(Integer.parseInt(id));
             if (!apagado) {
                 ViewUtils.showWarning("Stock", "Registo nao encontrado.");
             }
@@ -280,7 +280,7 @@ public class GestaoStockScreen {
 
         try {
             ObjectNode payload = criarPayloadStock(selecionado, "disponivel");
-            DesktopAppContext.apiService().put("/stocks/" + id, payload);
+            DesktopAppContext.getStockService().update(Integer.parseInt(id), payload);
             carregarDados();
         } catch (RuntimeException e) {
             ViewUtils.showError("Stock", e.getMessage());
@@ -289,7 +289,7 @@ public class GestaoStockScreen {
 
     private void carregarDados() {
         try {
-            ArrayNode resposta = DesktopAppContext.apiService().getArray("/stocks");
+            ArrayNode resposta = DesktopAppContext.getStockService().getAll();
             dados.clear();
             resposta.forEach(dados::add);
         } catch (RuntimeException e) {
@@ -364,7 +364,7 @@ public class GestaoStockScreen {
 
             int ingredienteId = Integer.parseInt(ViewUtils.text(ingredienteSelecionado, "id"));
 
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getStockService().createObject();
             payload.put("id", ingredienteId);
             payload.put("quant", new BigDecimal(normalizarNumero(quantField.getText())));
             payload.put("estado", "encomendado");
@@ -379,7 +379,7 @@ public class GestaoStockScreen {
     }
 
     private ObservableList<JsonNode> carregarIngredientes() {
-        ArrayNode resposta = DesktopAppContext.apiService().getArray("/ingredientes");
+        ArrayNode resposta = DesktopAppContext.getIngredienteService().getAll();
         ObservableList<JsonNode> ingredientes = FXCollections.observableArrayList();
         resposta.forEach(ingredientes::add);
         ingredientes.add(criarOpcaoNovoIngrediente());
@@ -472,8 +472,8 @@ public class GestaoStockScreen {
         }
 
         try {
-            DesktopAppContext.apiService().delete("/stocks/" + ViewUtils.text(ingrediente, "id"));
-            DesktopAppContext.apiService().delete("/ingredientes/" + ViewUtils.text(ingrediente, "id"));
+            DesktopAppContext.getStockService().delete(Integer.parseInt(ViewUtils.text(ingrediente, "id")));
+            DesktopAppContext.getIngredienteService().delete(Integer.parseInt(ViewUtils.text(ingrediente, "id")));
             combo.setItems(carregarIngredientes());
             combo.getSelectionModel().clearSelection();
         } catch (RuntimeException e) {
@@ -489,15 +489,15 @@ public class GestaoStockScreen {
             throw new IllegalArgumentException("Selecione a unidade do novo ingrediente.");
         }
 
-        ObjectNode payload = DesktopAppContext.apiService().createObject();
+        ObjectNode payload = DesktopAppContext.getIngredienteService().createObject();
         payload.put("nome", nome.trim());
         payload.put("unidade", normalizarUnidadeApi(unidadeSelecionada));
         payload.put("preco", BigDecimal.ZERO);
-        return DesktopAppContext.apiService().post("/ingredientes", payload);
+        return DesktopAppContext.getIngredienteService().create(payload);
     }
 
     private ObjectNode criarOpcaoNovoIngrediente() {
-        ObjectNode node = DesktopAppContext.apiService().createObject();
+        ObjectNode node = DesktopAppContext.getStockService().createObject();
         node.put("id", NOVO_INGREDIENTE_ID);
         node.put("nome", "(+ novo produto)");
         return node;
@@ -508,7 +508,7 @@ public class GestaoStockScreen {
     }
 
     private ObjectNode criarPayloadStock(JsonNode stock, String estado) {
-        ObjectNode payload = DesktopAppContext.apiService().createObject();
+        ObjectNode payload = DesktopAppContext.getStockService().createObject();
         String id = ViewUtils.text(stock, "id");
         payload.put("id", Integer.parseInt(id));
         payload.put("quant", new BigDecimal(normalizarNumero(ViewUtils.text(stock, "quant"))));

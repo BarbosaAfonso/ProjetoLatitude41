@@ -1,0 +1,196 @@
+<div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white">
+  <app-navbar [userName]="user?.nome ?? null" (logoutRequested)="logout()"></app-navbar>
+
+  <main class="relative overflow-hidden px-5 pb-12 pt-40 lg:px-8">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(205,164,94,0.18),transparent_32%)]"></div>
+    <div class="pointer-events-none absolute left-8 top-24 h-64 w-64 rounded-full border border-gold/10"></div>
+
+    <section class="relative mx-auto max-w-7xl">
+      <div class="mb-10 max-w-4xl">
+        <div>
+          <p class="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-gold">Latitude 41</p>
+          <h2 class="font-serif text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+            Menu pensado para cada momento &agrave; mesa.
+          </h2>
+          <p class="mt-5 max-w-2xl text-sm leading-7 text-white/62">
+            Consulte os produtos dispon&iacute;veis.
+          </p>
+        </div>
+      </div>
+
+      @if (isAdmin) {
+        <section class="mb-12 border border-gold/20 bg-navy/70 p-6 shadow-2xl shadow-black/30 backdrop-blur-sm lg:p-8">
+          <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.24em] text-gold">Gest&atilde;o do Menu</p>
+              <h3 class="mt-2 font-serif text-3xl font-bold text-white">
+                {{ editingProductId ? 'Editar produto' : 'Adicionar produto' }}
+              </h3>
+            </div>
+
+            @if (editingProductId) {
+              <button
+                type="button"
+                (click)="cancelarEdicao()"
+                class="rounded-sm border border-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/70 transition hover:border-gold/50 hover:bg-gold/10 hover:text-gold"
+              >
+                Cancelar edi&ccedil;&atilde;o
+              </button>
+            }
+          </div>
+
+          <form class="grid gap-4 lg:grid-cols-[1fr_0.8fr_0.45fr_auto] lg:items-end" (ngSubmit)="guardarProduto()">
+            <label class="block">
+              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Nome do Produto</span>
+              <input
+                name="nome"
+                type="text"
+                [(ngModel)]="form.nome"
+                placeholder="Ex: Bacalhau a Latitude"
+                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+              />
+            </label>
+
+            <label class="block">
+              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Tipo</span>
+              <select
+                name="tipo"
+                [(ngModel)]="form.tipo"
+                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+              >
+                @for (tipo of tiposProduto; track tipo) {
+                  <option [value]="tipo">{{ tipo }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Pre&ccedil;o</span>
+              <input
+                name="preco"
+                type="number"
+                min="0"
+                step="0.01"
+                [(ngModel)]="form.preco"
+                placeholder="0.00"
+                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+              />
+            </label>
+
+            <div class="flex flex-col gap-4">
+              <label class="flex items-center gap-3 text-sm text-white/70">
+                <input
+                  name="disponivel"
+                  type="checkbox"
+                  [(ngModel)]="form.disponivel"
+                  class="h-4 w-4 accent-gold"
+                />
+                Dispon&iacute;vel
+              </label>
+
+              <button
+                type="submit"
+                [disabled]="isSaving"
+                class="rounded-sm bg-gold px-6 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {{ isSaving ? 'A guardar...' : editingProductId ? 'Guardar' : 'Adicionar' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+
+      @if (successMessage) {
+        <div class="mb-6 border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+          {{ successMessage }}
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="mb-6 border border-red-400/25 bg-red-400/10 px-4 py-3 text-sm text-red-100">
+          {{ errorMessage }}
+        </div>
+      }
+
+      @if (isLoading) {
+        <div class="border border-white/10 bg-white/[0.03] px-6 py-12 text-center text-white/60">
+          A carregar menu...
+        </div>
+      } @else if (gruposMenu.length === 0) {
+        <div class="border border-white/10 bg-white/[0.03] px-6 py-12 text-center text-white/60">
+          Ainda n&atilde;o existem produtos dispon&iacute;veis no menu.
+        </div>
+      } @else {
+        <section class="space-y-5">
+          @for (grupo of gruposMenu; track grupo.tipo) {
+            <article class="border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/20 backdrop-blur-sm">
+              <button
+                type="button"
+                (click)="alternarGrupo(grupo.tipo)"
+                class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition hover:bg-white/[0.03]"
+                [attr.aria-expanded]="isGrupoAberto(grupo.tipo)"
+              >
+                <span>
+                  <span class="block font-serif text-3xl font-bold text-white">{{ grupo.tipo }}</span>
+                  <span class="mt-1 block text-xs font-bold uppercase tracking-[0.22em] text-gold">{{ grupo.produtos.length }} itens</span>
+                </span>
+
+                <span
+                  class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-gold/30 text-gold transition"
+                  [class.rotate-90]="isGrupoAberto(grupo.tipo)"
+                >
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </span>
+              </button>
+
+              @if (isGrupoAberto(grupo.tipo)) {
+                <div class="space-y-4 border-t border-gold/20 p-6">
+                  @for (produto of grupo.produtos; track produto.id ?? produto.nome) {
+                    <div class="border border-white/8 bg-slate-950/30 p-4 transition hover:border-gold/25 hover:bg-slate-950/50">
+                      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <div class="flex flex-wrap items-center gap-3">
+                            <h4 class="text-lg font-semibold text-white">{{ produto.nome }}</h4>
+                            @if (isAdmin && produto.disponivel === false) {
+                              <span class="rounded-full bg-red-400/12 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-red-200">
+                                Indispon&iacute;vel
+                              </span>
+                            }
+                          </div>
+                          <p class="mt-2 text-sm text-white/45">{{ produto.tipo }}</p>
+                        </div>
+
+                        <p class="font-serif text-2xl font-bold text-gold">{{ formatPrice(produto.preco) }}</p>
+                      </div>
+
+                      @if (isAdmin) {
+                        <div class="mt-4 flex flex-wrap gap-3">
+                          <button
+                            type="button"
+                            (click)="editarProduto(produto)"
+                            class="rounded-sm border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold transition hover:bg-gold/10"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            (click)="apagarProduto(produto)"
+                            class="rounded-sm border border-red-300/30 px-4 py-2 text-xs font-bold uppercase tracking-widest text-red-200 transition hover:bg-red-400/10"
+                          >
+                            Apagar
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          }
+        </section>
+      }
+    </section>
+  </main>
+</div>

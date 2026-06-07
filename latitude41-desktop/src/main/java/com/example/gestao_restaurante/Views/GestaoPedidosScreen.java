@@ -158,7 +158,7 @@ public class GestaoPedidosScreen {
                 throw new IllegalArgumentException("Nao existem novos itens para registar neste pedido.");
             }
 
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getPedidoService().createObject();
             payload.put("dataHora", Instant.now().toString());
             payload.put("estado", "REGISTADO");
             payload.put("mesaId", inteiro(ViewUtils.text(mesaSelecionada, "mesaId")));
@@ -181,7 +181,7 @@ public class GestaoPedidosScreen {
                 }
             }
 
-            JsonNode resposta = DesktopAppContext.apiService().post("/pedidos/completo", payload);
+            JsonNode resposta = DesktopAppContext.getPedidoService().createCompleto(payload);
             carregarPedidoAtivoDaMesaSelecionada();
             ViewUtils.showInfo(
                     "Pedidos",
@@ -212,11 +212,11 @@ public class GestaoPedidosScreen {
             }
 
             long pedidoId = Long.parseLong(ViewUtils.text(pedidoAberto, "id"));
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getPedidoService().createObject();
             payload.put("pedidoId", pedidoId);
             payload.put("metodoPagamento", metodoOpt.get());
 
-            JsonNode resposta = DesktopAppContext.apiService().post("/faturas/gerar", payload);
+            JsonNode resposta = DesktopAppContext.getFaturaService().gerarFatura(payload);
             String avisoAberturaPdf = abrirPdfGerado(ViewUtils.text(resposta, "caminhoPdf"));
             atualizarPosFechoConta();
             String mensagem = "Pedido Finalizado. Mesa " + mesaId + " agora esta disponivel.";
@@ -271,15 +271,15 @@ public class GestaoPedidosScreen {
         try {
             mesasLancamento.clear();
 
-            ArrayNode reservasApi = DesktopAppContext.apiService().getArray("/reservas");
+            ArrayNode reservasApi = DesktopAppContext.getReservaService().getAll();
             Map<Integer, JsonNode> reservaDisplayPorMesa = selecionarReservaAtivaPorMesa(reservasApi);
             Map<Integer, JsonNode> reservaAtualPorMesa = selecionarReservaAtualPorMesa(reservasApi);
 
             List<JsonNode> mesasCarregadas = new ArrayList<>();
-            for (JsonNode mesa : DesktopAppContext.apiService().getArray("/mesas")) {
+            for (JsonNode mesa : DesktopAppContext.getMesaService().getAll()) {
                 String estado = normalizarEstadoMesa(ViewUtils.text(mesa, "estado"));
                 int mesaId = inteiro(ViewUtils.text(mesa, "id"));
-                ObjectNode item = DesktopAppContext.apiService().createObject();
+                ObjectNode item = DesktopAppContext.getMesaService().createObject();
                 item.put("mesaId", mesaId);
                 item.put("mesaEstado", estado);
 
@@ -340,7 +340,7 @@ public class GestaoPedidosScreen {
     private void carregarProdutos() {
         try {
             produtos.clear();
-            DesktopAppContext.apiService().getArray("/produtos").forEach(produtos::add);
+            DesktopAppContext.getProdutoService().getAll().forEach(produtos::add);
             produtos.sort(Comparator.comparing(produto -> ViewUtils.text(produto, "nome"), String.CASE_INSENSITIVE_ORDER));
             renderizarFiltrosTipo();
             renderizarProdutos();
@@ -871,7 +871,7 @@ public class GestaoPedidosScreen {
     }
 
     private JsonNode encontrarPedidoAtivoDaMesa(int mesaId) {
-        ArrayNode pedidosMesa = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesaId + "/completos");
+        ArrayNode pedidosMesa = DesktopAppContext.getPedidoService().getPedidosCompletosByMesa(mesaId);
         for (JsonNode pedido : pedidosMesa) {
             String estado = normalizarEstadoPedido(ViewUtils.text(pedido, "estado"));
             if (ESTADOS_PEDIDO_ATIVO.contains(estado)) {
@@ -882,7 +882,7 @@ public class GestaoPedidosScreen {
     }
 
     private JsonNode encontrarPedidoAbertoDaMesa(int mesaId) {
-        ArrayNode pedidosMesa = DesktopAppContext.apiService().getArray("/pedidos/mesa/" + mesaId + "/completos");
+        ArrayNode pedidosMesa = DesktopAppContext.getPedidoService().getPedidosCompletosByMesa(mesaId);
         for (JsonNode pedido : pedidosMesa) {
             String estado = normalizarEstadoPedido(ViewUtils.text(pedido, "estado"));
             if (!"PAGO".equals(estado) && !"CANCELADO".equals(estado)) {

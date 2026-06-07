@@ -222,7 +222,7 @@ public class GestaoProdutosScreen {
         Optional<ObjectNode> payload = dialogoProduto(null);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().post("/produtos", body);
+                DesktopAppContext.getProdutoService().create(body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Produtos", e.getMessage());
@@ -267,7 +267,7 @@ public class GestaoProdutosScreen {
         payload.ifPresent(body -> {
             try {
                 String id = ViewUtils.text(selecionado, "id");
-                DesktopAppContext.apiService().put("/produtos/" + id, body);
+                DesktopAppContext.getProdutoService().update(Integer.parseInt(id), body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Produtos", e.getMessage());
@@ -282,7 +282,7 @@ public class GestaoProdutosScreen {
         }
 
         try {
-            boolean apagado = DesktopAppContext.apiService().delete("/produtos/" + id);
+            boolean apagado = DesktopAppContext.getProdutoService().delete(Integer.parseInt(id));
             if (!apagado) {
                 ViewUtils.showWarning("Produtos", "Produto nao encontrado.");
             }
@@ -294,7 +294,7 @@ public class GestaoProdutosScreen {
 
     private void carregarDados() {
         try {
-            ArrayNode resposta = DesktopAppContext.apiService().getArray("/produtos");
+            ArrayNode resposta = DesktopAppContext.getProdutoService().getAll();
             dados.clear();
             resposta.forEach(dados::add);
             configurarFiltrosCategoria();
@@ -460,7 +460,7 @@ public class GestaoProdutosScreen {
         }
 
         try {
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getProdutoService().createObject();
             payload.put("nome", nomeField.getText().trim());
             payload.put("tipo", tipoField.getText().trim());
             payload.put("preco", new BigDecimal(normalizarNumero(precoField.getText())));

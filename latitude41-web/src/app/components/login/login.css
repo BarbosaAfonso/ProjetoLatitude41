@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.login-page {
+  background-color: #072344;
+  background-image:
+    linear-gradient(180deg, rgba(4, 25, 48, 0.18), rgba(4, 19, 38, 0.42)),
+    radial-gradient(circle at 50% 50%, rgba(11, 48, 88, 0.08), rgba(5, 22, 40, 0.46)),
+    url("/images/bglogin.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.login-card {
+  box-shadow:
+    0 28px 70px rgba(2, 10, 22, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.login-input {
+  caret-color: #ffffff;
+}
+
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus,
+.login-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #12365c inset !important;
+  box-shadow: 0 0 0 1000px #12365c inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: rgba(205, 164, 94, 0.72) !important;
+  caret-color: #ffffff;
+}
+
+.login-input:autofill {
+  box-shadow: 0 0 0 1000px #12365c inset !important;
+  color: #ffffff !important;
+  border-color: rgba(205, 164, 94, 0.72) !important;
+}
+
+.login-card button,
+.login-card input[type="checkbox"],
+.login-card label[for="remember"] {
+  cursor: pointer;
+}

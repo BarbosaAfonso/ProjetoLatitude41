@@ -119,7 +119,7 @@ public class GestaoRelatoriosScreen {
             LocalDate inicio = dataInicioPicker == null ? null : dataInicioPicker.getValue();
             LocalDate fim = dataFimPicker == null ? null : dataFimPicker.getValue();
             validarIntervalo(inicio, fim);
-            JsonNode resposta = DesktopAppContext.apiService().getObject("/relatorios/exportar-pdf?dataInicio=" + inicio + "&dataFim=" + fim);
+            JsonNode resposta = DesktopAppContext.getRelatorioService().exportarPdf(inicio.toString(), fim.toString());
             String avisoAberturaPdf = abrirPdfGerado(ViewUtils.text(resposta, "caminhoPdf"));
             String mensagem = "Exportacao PDF concluida com sucesso.";
             if (!avisoAberturaPdf.isBlank()) {
@@ -164,8 +164,7 @@ public class GestaoRelatoriosScreen {
             LocalDate fim = dataFimPicker == null ? null : dataFimPicker.getValue();
             validarIntervalo(inicio, fim);
 
-            String path = "/relatorios/analise?dataInicio=" + inicio + "&dataFim=" + fim;
-            JsonNode relatorio = DesktopAppContext.apiService().getObject(path);
+            JsonNode relatorio = DesktopAppContext.getRelatorioService().analise(inicio.toString(), fim.toString());
 
             atualizarKpis(relatorio, inicio, fim);
             atualizarBarChart(relatorio.path("vendasUltimos7Dias"));

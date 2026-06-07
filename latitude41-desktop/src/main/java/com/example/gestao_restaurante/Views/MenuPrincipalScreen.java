@@ -60,10 +60,10 @@ public class MenuPrincipalScreen {
 
     private void carregarIndicadores() {
         try {
-            ArrayNode produtos = DesktopAppContext.apiService().getArray("/produtos");
-            ArrayNode reservas = DesktopAppContext.apiService().getArray("/reservas");
-            ArrayNode pedidos = DesktopAppContext.apiService().getArray("/pedidos");
-            ArrayNode mesas = DesktopAppContext.apiService().getArray("/mesas");
+            ArrayNode produtos = DesktopAppContext.getProdutoService().getAll();
+            ArrayNode reservas = DesktopAppContext.getReservaService().getAll();
+            ArrayNode pedidos = DesktopAppContext.getPedidoService().getAll();
+            ArrayNode mesas = DesktopAppContext.getMesaService().getAll();
 
             preencherIndicadorProdutos(produtos);
             preencherIndicadorReservas(reservas);

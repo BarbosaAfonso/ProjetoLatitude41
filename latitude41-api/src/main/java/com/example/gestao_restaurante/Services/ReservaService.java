@@ -18,6 +18,8 @@ import java.util.Optional;
 @Service
 public class ReservaService {
 
+    private static final List<String> ESTADOS_RESERVA_ATIVA = List.of("CONFIRMADA", "PENDENTE");
+
     private final ReservaRepository reservaRepository;
     private final MesaRepository mesaRepository;
     private final UtilizadorRepository utilizadorRepository;
@@ -72,8 +74,13 @@ public class ReservaService {
         String estado = normalizarEstado(origem.getEstado(), "CONFIRMADA");
         validarDataHora(destino.getDataHora(), estado);
         destino.setEstado(estado);
-        destino.setNumMesa(procurarMesa(origem, destino, preservarRelacoesAtuais));
-        destino.setIdUtilizador(procurarUtilizador(origem, destino, preservarRelacoesAtuais));
+
+        Mesa mesa = procurarMesa(origem, destino, preservarRelacoesAtuais);
+        Utilizador utilizador = procurarUtilizador(origem, destino, preservarRelacoesAtuais);
+        validarDisponibilidade(destino.getId(), mesa.getId(), destino.getDataHora(), estado);
+
+        destino.setNumMesa(mesa);
+        destino.setIdUtilizador(utilizador);
     }
 
     private Mesa procurarMesa(Reserva reserva, Reserva reservaAtual, boolean preservarRelacoesAtuais) {
@@ -114,5 +121,20 @@ public class ReservaService {
         if (dataHora.isBefore(Instant.now()) && !"CANCELADA".equalsIgnoreCase(estado)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nao pode criar ou alterar reservas para datas passadas.");
         }
+    }
+
+    private void validarDisponibilidade(Integer reservaAtualId, Integer mesaId, Instant dataHora, String estado) {
+        if (mesaId == null || dataHora == null || "CANCELADA".equalsIgnoreCase(estado)) {
+            return;
+        }
+
+        reservaRepository.findFirstByNumMesaIdAndDataHoraAndEstadoIn(mesaId, dataHora, ESTADOS_RESERVA_ATIVA)
+                .filter(reservaExistente -> !reservaExistente.getId().equals(reservaAtualId))
+                .ifPresent(reservaExistente -> {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Este horario ja nao esta disponivel para reserva."
+                    );
+                });
     }
 }

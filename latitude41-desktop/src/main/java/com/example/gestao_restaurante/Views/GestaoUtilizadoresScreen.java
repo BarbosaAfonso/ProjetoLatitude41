@@ -158,7 +158,7 @@ public class GestaoUtilizadoresScreen {
         Optional<ObjectNode> payload = dialogoNovoUtilizador();
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().post("/utilizadores", body);
+                DesktopAppContext.getUtilizadorService().create(body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Utilizadores", e.getMessage());
@@ -180,7 +180,7 @@ public class GestaoUtilizadoresScreen {
         Optional<ObjectNode> payload = dialogoUtilizador(utilizador);
         payload.ifPresent(body -> {
             try {
-                DesktopAppContext.apiService().put("/utilizadores/" + ViewUtils.text(utilizador, "id"), body);
+                DesktopAppContext.getUtilizadorService().update(Integer.parseInt(ViewUtils.text(utilizador, "id")), body);
                 carregarDados();
             } catch (RuntimeException e) {
                 ViewUtils.showError("Utilizadores", e.getMessage());
@@ -201,7 +201,7 @@ public class GestaoUtilizadoresScreen {
         try {
             ObjectNode payload = criarPayloadUtilizador(utilizador);
             payload.put("estadoConta", novoEstado);
-            DesktopAppContext.apiService().put("/utilizadores/" + ViewUtils.text(utilizador, "id"), payload);
+            DesktopAppContext.getUtilizadorService().update(Integer.parseInt(ViewUtils.text(utilizador, "id")), payload);
             carregarDados();
         } catch (RuntimeException e) {
             ViewUtils.showError("Utilizadores", e.getMessage());
@@ -210,7 +210,7 @@ public class GestaoUtilizadoresScreen {
 
     private void carregarDados() {
         try {
-            ArrayNode resposta = DesktopAppContext.apiService().getArray("/utilizadores");
+            ArrayNode resposta = DesktopAppContext.getUtilizadorService().getAll();
             dados.clear();
             resposta.forEach(dados::add);
             onPesquisar();
@@ -329,7 +329,7 @@ public class GestaoUtilizadoresScreen {
                 return Optional.empty();
             }
 
-            ObjectNode payload = DesktopAppContext.apiService().createObject();
+            ObjectNode payload = DesktopAppContext.getUtilizadorService().createObject();
             payload.put("nome", nomeField.getText().trim());
             payload.put("email", emailField.getText().trim());
             payload.put("contacto", contactoField.getText().trim());
@@ -344,7 +344,7 @@ public class GestaoUtilizadoresScreen {
     }
 
     private ObjectNode criarPayloadUtilizador(JsonNode utilizador) {
-        ObjectNode payload = DesktopAppContext.apiService().createObject();
+        ObjectNode payload = DesktopAppContext.getUtilizadorService().createObject();
         payload.put("nome", ViewUtils.text(utilizador, "nome"));
         payload.put("contacto", ViewUtils.text(utilizador, "contacto"));
         payload.put("email", ViewUtils.text(utilizador, "email"));

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane styleClass="main-shell"
-            stylesheets="@/css/menu-principal.css"
+      stylesheets="@../css/menu-principal.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.gestao_restaurante.Views.MenuPrincipalScreen">
 
