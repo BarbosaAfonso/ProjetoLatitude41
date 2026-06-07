@@ -1,37 +1,111 @@
-<div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white">
+<div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white scroll-smooth">
   <app-navbar [userName]="user?.nome ?? null" (logoutRequested)="logout()"></app-navbar>
 
-  <main class="relative flex min-h-screen items-center overflow-hidden px-5 pb-16 pt-40 sm:pt-36 lg:px-8">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(205,164,94,0.16),transparent_34%)]"></div>
-    <div class="pointer-events-none absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent"></div>
+  <main class="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-5 pt-40 sm:pt-36 lg:px-8">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(205,164,94,0.11),transparent_34%)]"></div>
+    <div class="pointer-events-none absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent"></div>
 
-    <section class="relative mx-auto flex max-w-5xl flex-col items-center text-center">
+    <section class="relative mx-auto flex max-w-5xl flex-col items-center text-center animate-fade-in">
       <p class="mb-6 text-xs font-bold uppercase tracking-[0.28em] text-gold">{{ currentDate }}</p>
 
-      <h2 class="max-w-4xl font-serif text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-7xl">
-        Ol&aacute;, {{ user?.nome }}! Seja bem-vindo ao Latitude 41.
+      <h2 class="max-w-4xl font-serif text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+        Ol&aacute;, {{ user?.nome || 'Afonso' }}!<br>
+        <span class="text-white/90 font-light italic text-3xl sm:text-4xl lg:text-5xl">Seja bem-vindo ao Latitude 41.</span>
       </h2>
 
-      <p class="mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
-        Descubra uma curadoria gastron&oacute;mica onde cada prato conta uma hist&oacute;ria e cada momento se torna memor&aacute;vel.
+      <p class="mt-6 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
+        Descubra uma experi&ecirc;ncia gastron&oacute;mica onde cada prato conta uma hist&oacute;ria e cada momento se torna memor&aacute;vel.
       </p>
 
       <div class="mt-10 flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row">
         <a
           routerLink="/reservas"
-          type="button"
-          class="rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35"
+          class="rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/10 transition hover:bg-[#d8b677] hover:shadow-gold/25 text-center"
         >
           Reservar Mesa
         </a>
 
         <a
           routerLink="/menu"
-          class="rounded-sm border border-gold/70 bg-transparent px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-gold/10 hover:text-gold"
+          class="rounded-sm border border-gold/70 bg-transparent px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-gold/10 hover:text-gold text-center"
         >
           Conhecer o Menu
         </a>
       </div>
     </section>
   </main>
+
+  <section class="relative max-w-5xl mx-auto px-6 py-24 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+      <div class="lg:col-span-5 border-l-2 border-gold/40 pl-6">
+        <p class="text-xs font-bold uppercase tracking-widest text-gold mb-2">A Nossa História</p>
+        <h3 class="font-serif text-3xl font-bold text-white">Experiência Gastronómica</h3>
+      </div>
+
+      <div class="lg:col-span-7 space-y-6 text-sm leading-relaxed text-white/75 font-sans">
+        <p>
+          O <span class="text-gold font-medium">Latitude 41</span> nasce da paixão pela alta gastronomia e pelo respectivo respeito absoluto pelas matérias-primas. O nosso nome celebra a nossa localização geográfica e a ligação intrínseca às tradições e influências marítimas e terrestres que moldam a nossa identidade.
+        </p>
+        <p>
+          Mais do que um restaurante, oferecemos uma experi&ecirc;ncia culinária. Cada prato no nosso menu é cuidadosamente desenhado pela nossa equipa, combinando técnicas contemporâneas com sabores autênticos que evocam memórias e despertam os sentidos.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="relative bg-slate-950/40 border-t border-b border-white/5 py-20 px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div class="border border-gold/10 bg-navy/40 p-8 rounded-sm backdrop-blur-sm">
+          <div class="flex items-center space-x-3 mb-6">
+            <span class="text-gold uppercase text-xs font-bold tracking-widest">Horário de Funcionamento</span>
+          </div>
+          <ul class="space-y-3 text-sm text-white/80">
+            <li class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-white/60">Terça a Sábado</span>
+              <span class="font-medium">12:30 – 15:00 <span class="text-gold">|</span> 19:30 – 23:00</span>
+            </li>
+            <li class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-white/60">Domingo</span>
+              <span class="font-medium">12:30 – 16:00</span>
+            </li>
+            <li class="flex justify-between text-gold/80">
+              <span>Segunda-feira</span>
+              <span class="uppercase tracking-wider font-bold text-xs">Encerrado</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="border border-gold/10 bg-navy/40 p-8 rounded-sm backdrop-blur-sm">
+          <div class="flex items-center space-x-3 mb-6">
+            <span class="text-gold uppercase text-xs font-bold tracking-widest">Contactos & Localização</span>
+          </div>
+          <div class="space-y-4 text-sm text-white/80">
+            <div>
+              <p class="text-white/50 text-xs uppercase tracking-wider mb-1">Endereço</p>
+              <p class="font-medium text-white">Av. dos Combatentes da Grande Guerra, Viana do Castelo</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div>
+                <p class="text-white/50 text-xs uppercase tracking-wider mb-1">Telefone</p>
+                <p class="font-medium text-white">+351 258 123 456</p>
+              </div>
+              <div>
+                <p class="text-white/50 text-xs uppercase tracking-wider mb-1">E-mail</p>
+                <p class="font-medium text-white">reservas&#64;latitude41.pt</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-8 text-center text-[10px] tracking-widest text-white/40 uppercase">
+    &copy; 2026 Latitude 41. Todos os direitos reservados.
+  </footer>
 </div>

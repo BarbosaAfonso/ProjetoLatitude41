@@ -13,10 +13,93 @@
             Menu pensado para cada momento &agrave; mesa.
           </h2>
           <p class="mt-5 max-w-2xl text-sm leading-7 text-white/62">
-            Consulte os produtos dispon&iacute;veis.
+            Consulte os produtos dispon&iacute;veis e filtre de acordo com as suas prefer&ecirc;ncias.
           </p>
         </div>
       </div>
+
+      <section class="mb-10 border border-white/5 bg-white/[0.02] p-5 rounded-sm backdrop-blur-sm space-y-5">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider text-gold mb-3">Filtrar por Categoria</p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              (click)="categoriaSelecionada = 'Tomos'; categoriaSelecionada = 'Todos'"
+              [class.bg-gold]="categoriaSelecionada === 'Todos'"
+              [class.text-navy]="categoriaSelecionada === 'Todos'"
+              [class.border-gold]="categoriaSelecionada === 'Todos'"
+              [class.bg-slate-950/40]="categoriaSelecionada !== 'Todos'"
+            [class.text-white/70]="categoriaSelecionada !== 'Todos'"
+            [class.border-white/10]="categoriaSelecionada !== 'Todos'"
+            class="rounded-sm border px-4 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 hover:border-gold"
+            >
+            Todos
+            </button>
+            @for (tipo of tiposProduto; track tipo) {
+              <button
+                type="button"
+                (click)="categoriaSelecionada = tipo"
+                [class.bg-gold]="categoriaSelecionada === tipo"
+                [class.text-navy]="categoriaSelecionada === tipo"
+                [class.border-gold]="categoriaSelecionada === tipo"
+                [class.bg-slate-950/40]="categoriaSelecionada !== tipo"
+                [class.text-white/70]="categoriaSelecionada !== tipo"
+                [class.border-white/10]="categoriaSelecionada !== tipo"
+                class="rounded-sm border px-4 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 hover:border-gold"
+                >
+              {{ tipo }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-white/5">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-gold mb-3">Prefer&ecirc;ncias e Alerg&eacute;nios</p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              (click)="filtroVegetariano = !filtroVegetariano"
+              [class.border-emerald-500/40]="filtroVegetariano"
+            [class.bg-emerald-500/10]="filtroVegetariano"
+            [class.text-emerald-400]="filtroVegetariano"
+            [class.border-white/10]="!filtroVegetariano"
+            [class.bg-slate-950/40]="!filtroVegetariano"
+            [class.text-white/60]="!filtroVegetariano"
+            class="flex items-center gap-2 rounded-sm border px-3 py-2 text-xs font-medium transition duration-200 hover:border-emerald-500/30"
+            >
+            <span>🌱</span> Vegetariano
+            </button>
+
+            <button
+              type="button"
+              (click)="filtroSemGluten = !filtroSemGluten"
+              [class.border-amber-500/40]="filtroSemGluten"
+            [class.bg-amber-500/10]="filtroSemGluten"
+            [class.text-amber-400]="filtroSemGluten"
+            [class.border-white/10]="!filtroSemGluten"
+            [class.bg-slate-950/40]="!filtroSemGluten"
+            [class.text-white/60]="!filtroSemGluten"
+            class="flex items-center gap-2 rounded-sm border px-3 py-2 text-xs font-medium transition duration-200 hover:border-amber-500/30"
+            >
+            <span>🌾</span> Sem Gl&uacute;ten
+            </button>
+
+            <button
+              type="button"
+              (click)="filtroSemLactose = !filtroSemLactose"
+              [class.border-blue-500/40]="filtroSemLactose"
+            [class.bg-blue-500/10]="filtroSemLactose"
+            [class.text-blue-400]="filtroSemLactose"
+            [class.border-white/10]="!filtroSemLactose"
+            [class.bg-slate-950/40]="!filtroSemLactose"
+            [class.text-white/60]="!filtroSemLactose"
+            class="flex items-center gap-2 rounded-sm border px-3 py-2 text-xs font-medium transition duration-200 hover:border-blue-500/30"
+            >
+            <span>🥛</span> Sem Lactose
+            </button>
+          </div>
+        </div>
+      </section>
 
       @if (isAdmin) {
         <section class="mb-12 border border-gold/20 bg-navy/70 p-6 shadow-2xl shadow-black/30 backdrop-blur-sm lg:p-8">
@@ -118,7 +201,7 @@
         </div>
       } @else if (gruposMenu.length === 0) {
         <div class="border border-white/10 bg-white/[0.03] px-6 py-12 text-center text-white/60">
-          Ainda n&atilde;o existem produtos dispon&iacute;veis no menu.
+          Nenhum produto corresponde aos filtros selecionados.
         </div>
       } @else {
         <section class="space-y-5">
@@ -148,11 +231,22 @@
               @if (isGrupoAberto(grupo.tipo)) {
                 <div class="space-y-4 border-t border-gold/20 p-6">
                   @for (produto of grupo.produtos; track produto.id ?? produto.nome) {
-                    <div class="border border-white/8 bg-slate-950/30 p-4 transition hover:border-gold/25 hover:bg-slate-950/50">
+                    <div class="border border-white/8 bg-slate-950/30 p-4 transition hover:border-gold/25 hover:bg-slate-950/55">
                       <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <div class="flex flex-wrap items-center gap-3">
                             <h4 class="text-lg font-semibold text-white">{{ produto.nome }}</h4>
+
+                            @if (obterTags(produto.nome).veg) {
+                              <span class="rounded-sm bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-400 select-none">🌱 VEG</span>
+                            }
+                            @if (obterTags(produto.nome).semGluten) {
+                              <span class="rounded-sm bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[9px] font-bold text-amber-400 select-none">🌾 SEM GLÚTEN</span>
+                            }
+                            @if (obterTags(produto.nome).semLactose) {
+                              <span class="rounded-sm bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold text-blue-400 select-none">🥛 SEM LACTOSE</span>
+                            }
+
                             @if (isAdmin && produto.disponivel === false) {
                               <span class="rounded-full bg-red-400/12 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-red-200">
                                 Indispon&iacute;vel

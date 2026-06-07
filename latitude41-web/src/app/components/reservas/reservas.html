@@ -1,71 +1,266 @@
-<div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white">
+<div class="min-h-screen bg-gradient-to-br from-navy via-slate-950 to-slate-900 text-white select-none overflow-y-auto">
   <app-navbar [userName]="user?.nome ?? null" (logoutRequested)="logout()"></app-navbar>
 
-  <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 pb-16 pt-40 lg:px-8">
+  <main class="relative flex min-h-screen flex-col items-center justify-start px-5 pb-16 pt-36 gap-10 lg:px-8 lg:pt-40">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(205,164,94,0.13),transparent_34%)]"></div>
     <div class="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent"></div>
 
-    <section class="relative w-full max-w-2xl border border-gold/20 bg-navy/70 px-6 py-8 shadow-2xl shadow-black/30 backdrop-blur-sm sm:px-10 sm:py-11">
-      <div class="mb-9 text-center">
-        <p class="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-gold">Latitude 41</p>
-        <h2 class="font-serif text-4xl font-bold leading-tight text-white sm:text-5xl">Reserve a sua mesa</h2>
-        <p class="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/62">
-          Escolha o momento ideal para uma experiência gastronómica pensada ao detalhe.
-        </p>
+    <div class="relative z-10 w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+
+      <section class="lg:col-span-7 w-full border border-gold/20 bg-navy/70 px-6 py-8 shadow-2xl shadow-black/30 backdrop-blur-sm sm:px-10 sm:py-11">
+
+        <div class="mb-9 text-center lg:text-left">
+          <p class="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-gold">Latitude 41</p>
+          <h2 class="font-serif text-4xl font-bold leading-tight text-white sm:text-5xl">Reserve a sua mesa</h2>
+          <p class="mt-4 text-sm leading-7 text-white/62">
+            Escolha o momento ideal para uma experiência gastronómica pensada ao detalhe.
+          </p>
+        </div>
+
+        <form class="space-y-8" novalidate (ngSubmit)="submeterReserva()">
+
+          <div>
+            <label for="data" class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">1. Escolha a Data</label>
+            <input
+              id="data"
+              name="data"
+              type="text"
+              inputmode="numeric"
+              maxlength="10"
+              autocomplete="off"
+              placeholder="dd/mm/aaaa"
+              pattern="\d{2}/\d{2}/\d{4}"
+              [ngModel]="data"
+              (ngModelChange)="formatarData($event)"
+              class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+            />
+          </div>
+
+          <div>
+            <label class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">2. Selecione o Horário</label>
+
+            <div class="mb-4">
+              <input
+                id="horaManual"
+                name="horaManual"
+                type="text"
+                inputmode="numeric"
+                maxlength="5"
+                autocomplete="off"
+                placeholder="Ou introduza outra hora personalizada (hh:mm)"
+                pattern="\d{2}:\d{2}"
+                [ngModel]="hora"
+                (ngModelChange)="formatarHora($event)"
+                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              @for (horario of horarios; track horario) {
+                <button
+                  type="button"
+                  (click)="selecionarHora(horario)"
+                  [class.bg-gold]="hora === horario"
+                  [class.text-navy]="hora === horario"
+                  [class.font-bold]="hora === horario"
+                  [class.border-gold]="hora === horario"
+                  [class.bg-slate-950/55]="hora !== horario"
+                  [class.text-white/80]="hora !== horario"
+                  [class.border-gold/25]="hora !== horario"
+                  class="rounded-sm border px-4 py-3.5 text-center text-sm tracking-wider transition duration-200 hover:border-gold hover:bg-slate-950/80 focus:outline-none"
+                  >
+                {{ horario }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">3. Número de Pessoas</label>
+            <div class="grid grid-cols-4 gap-3 sm:grid-cols-8">
+              @for (pessoas of opcoesPessoas; track pessoas) {
+                <button
+                  type="button"
+                  (click)="selecionarPessoas(pessoas)"
+                  [class.bg-gold]="quantidadePessoas === pessoas"
+                  [class.text-navy]="quantidadePessoas === pessoas"
+                  [class.font-bold]="quantidadePessoas === pessoas"
+                  [class.border-gold]="quantidadePessoas === pessoas"
+                  [class.bg-slate-950/55]="quantidadePessoas !== pessoas"
+                  [class.text-white/80]="quantidadePessoas !== pessoas"
+                  [class.border-gold/25]="quantidadePessoas !== pessoas"
+                  class="rounded-sm border py-3.5 text-center text-sm font-sans transition duration-200 hover:border-gold hover:bg-slate-950/80 focus:outline-none"
+                  >
+                {{ pessoas }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button
+              type="submit"
+              [disabled]="isSubmitting"
+              class="w-full rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ isSubmitting ? 'A confirmar...' : 'Confirmar Reserva' }}
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <section class="lg:col-span-5 w-full border border-gold/20 bg-navy/70 px-6 py-8 shadow-2xl shadow-black/30 backdrop-blur-sm sm:px-10 sm:py-9">
+
+        <div class="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gold">Histórico Recente</p>
+            <h3 class="font-serif text-2xl font-bold text-white">As Minhas Reservas</h3>
+          </div>
+          <span class="rounded-full bg-gold/10 px-3 py-1 text-xs font-mono text-gold border border-gold/25">
+            {{ minhasReservas.length }} {{ minhasReservas.length === 1 ? 'reserva' : 'reservas' }}
+          </span>
+        </div>
+
+        @if (minhasReservas.length === 0) {
+          <div class="rounded-sm border border-white/5 bg-slate-950/40 py-12 text-center text-sm text-white/50">
+            Ainda não efetuou nenhuma reserva para a sua conta.
+          </div>
+        } @else {
+          <div class="space-y-3 max-h-[560px] overflow-y-auto pr-1">
+            @for (res of minhasReservas; track res.idSimulado) {
+              <div
+                (click)="abrirDetalhes(res)"
+                [class.border-red-500/20]="res.estado === 'CANCELADA'"
+                [class.hover:border-red-500/40]="res.estado === 'CANCELADA'"
+                [class.border-white/5]="res.estado !== 'CANCELADA'"
+                [class.hover:border-gold/40]="res.estado !== 'CANCELADA'"
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-sm border bg-slate-950/45 p-4 cursor-pointer transition duration-200 hover:bg-slate-900/60"
+                >
+              <div class="flex items-center gap-4">
+                <div
+                  [class.text-red-400]="res.estado === 'CANCELADA'"
+                  [class.text-gold]="res.estado !== 'CANCELADA'"
+                  class="hidden sm:flex h-10 w-10 items-center justify-center rounded-sm bg-white/5 border border-white/10"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-white" [class.line-through]="res.estado === 'CANCELADA'" [class.text-white/50]="res.estado === 'CANCELADA'">
+                  {{ res.data }} <span class="font-normal ml-1.5" [class.text-red-400/80]="res.estado === 'CANCELADA'" [class.text-gold/80]="res.estado !== 'CANCELADA'">às {{ res.hora }}</span>
+                  </p>
+                  <p class="text-xs text-white/50 mt-0.5">
+                    Mesa para {{ res.pessoas }} {{ res.pessoas === 1 ? 'pessoa' : 'pessoas' }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-3 sm:mt-0 flex items-center justify-between sm:justify-end">
+                @if (res.estado === 'CANCELADA') {
+                  <span class="rounded-sm bg-red-500/10 border border-red-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-red-400 font-mono flex items-center gap-1.5">
+                      <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
+                    {{ res.estado }}
+                    </span>
+                } @else {
+                  <span class="rounded-sm bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-1.5">
+                      <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    {{ res.estado }}
+                    </span>
+                }
+              </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+    </div>
+  </main>
+
+  @if (reservaSelecionada) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <section
+        [class.border-red-500/30]="reservaSelecionada.estado === 'CANCELADA'"
+      [class.border-gold/30]="reservaSelecionada.estado !== 'CANCELADA'"
+      class="relative w-full max-w-md border bg-navy/95 p-6 shadow-2xl shadow-black rounded-sm backdrop-blur-md"
+      >
+
+      <button type="button" (click)="fecharDetalhes()" class="absolute top-4 right-4 text-white/50 hover:text-gold transition duration-200">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="mb-5 border-b border-white/10 pb-3">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-gold">Comprovativo de Marcação</p>
+        <h3 class="font-serif text-xl font-bold text-white mt-1">Detalhes da Reserva</h3>
       </div>
 
-      <form class="space-y-7" novalidate (ngSubmit)="submeterReserva()">
-        <div>
-          <label for="data" class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">Data</label>
-          <input
-            id="data"
-            name="data"
-            type="text"
-            inputmode="numeric"
-            maxlength="10"
-            autocomplete="off"
-            placeholder="dd/mm/aaaa"
-            pattern="\d{2}/\d{2}/\d{4}"
-            [ngModel]="data"
-            (ngModelChange)="formatarData($event)"
-            class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
-          />
+      <div class="space-y-4 text-sm">
+        <div class="flex justify-between border-b border-white/5 pb-2">
+          <span class="text-white/50">Titular da Reserva:</span>
+          <span class="font-medium text-white">{{ user?.nome }}</span>
         </div>
 
-        <div>
-          <label for="hora" class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">Horário</label>
-          <select
-            id="hora"
-            name="hora"
-            [(ngModel)]="hora"
-            class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+        <div class="flex justify-between border-b border-white/5 pb-2">
+          <span class="text-white/50">Data Selecionada:</span>
+          <span class="font-bold" [class.text-red-400]="reservaSelecionada.estado === 'CANCELADA'" [class.text-gold]="reservaSelecionada.estado !== 'CANCELADA'">{{ reservaSelecionada.data }}</span>
+        </div>
+
+        <div class="flex justify-between border-b border-white/5 pb-2">
+          <span class="text-white/50">Horário Agendado:</span>
+          <span class="font-bold" [class.text-red-400]="reservaSelecionada.estado === 'CANCELADA'" [class.text-gold]="reservaSelecionada.estado !== 'CANCELADA'">{{ reservaSelecionada.hora }} h</span>
+        </div>
+
+        <div class="flex justify-between border-b border-white/5 pb-2">
+          <span class="text-white/50">Lotação / Lugares:</span>
+          <span class="font-medium text-white">{{ reservaSelecionada.pessoas }} {{ reservaSelecionada.pessoas === 1 ? 'pessoa' : 'pessoas' }}</span>
+        </div>
+
+        <div class="flex justify-between border-b border-white/5 pb-2">
+          <span class="text-white/50">Mesa Atribuída:</span>
+          <span class="font-mono text-white">Mesa #{{ reservaSelecionada.mesa || 1 }}</span>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <span class="text-white/50">Estado Atual:</span>
+          @if (reservaSelecionada.estado === 'CANCELADA') {
+            <span class="rounded-sm bg-red-500/10 border border-red-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-red-400 font-mono flex items-center gap-1.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
+              {{ reservaSelecionada.estado }}
+              </span>
+          } @else {
+            <span class="rounded-sm bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-1.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              {{ reservaSelecionada.estado }}
+              </span>
+          }
+        </div>
+      </div>
+
+      <div class="mt-6 space-y-2">
+        @if (reservaSelecionada.estado !== 'CANCELADA') {
+          <button
+            type="button"
+            (click)="cancelarReserva(reservaSelecionada)"
+            class="w-full rounded-sm border border-red-500/30 bg-transparent px-4 py-3 text-xs font-bold uppercase tracking-widest text-red-400 transition hover:bg-red-500/10"
           >
-            <option value="" disabled>Selecione um horário</option>
-            <option *ngFor="let horario of horarios" [value]="horario">{{ horario }}</option>
-          </select>
-        </div>
+            Cancelar Esta Reserva
+          </button>
+        }
 
-        <div>
-          <label for="pessoas" class="mb-3 block text-xs font-bold uppercase tracking-[0.22em] text-gold">Número de Pessoas</label>
-          <select
-            id="pessoas"
-            name="pessoas"
-            [(ngModel)]="quantidadePessoas"
-            class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
-          >
-            <option [ngValue]="null" disabled>Selecione a lotação</option>
-            <option *ngFor="let pessoas of opcoesPessoas" [ngValue]="pessoas">{{ pessoas }} pessoa{{ pessoas > 1 ? 's' : '' }}</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          [disabled]="isSubmitting"
-          class="w-full rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {{ isSubmitting ? 'A confirmar...' : 'Confirmar Reserva' }}
+        <button type="button" (click)="fecharDetalhes()" class="w-full rounded-sm bg-gold px-4 py-3 text-xs font-bold uppercase tracking-widest text-navy transition hover:bg-[#d8b677]">
+          Fechar Janela
         </button>
-      </form>
-    </section>
-  </main>
+      </div>
+
+      </section>
+    </div>
+  }
 </div>
