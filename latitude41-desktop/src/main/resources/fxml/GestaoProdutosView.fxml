@@ -31,6 +31,7 @@
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar produtos..." styleClass="pesquisa-field"/>
+                <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onAtualizar" styleClass="refresh-list-button" text="&#8635;"/>
                 <Button fx:id="btnNovoProduto" mnemonicParsing="false" onAction="#onNovoProduto" styleClass="novo-produto-button" text="+ Novo Produto"/>
             </children>
         </HBox>
@@ -62,6 +63,7 @@
                         <TableColumn fx:id="colId" prefWidth="80.0" text="ID"/>
                         <TableColumn fx:id="colNome" prefWidth="220.0" text="Nome"/>
                         <TableColumn fx:id="colTipo" prefWidth="170.0" text="Tipo"/>
+                        <TableColumn fx:id="colTags" prefWidth="180.0" text="Tags"/>
                         <TableColumn fx:id="colPreco" prefWidth="130.0" text="Preco"/>
                         <TableColumn fx:id="colDisponivel" prefWidth="160.0" text="Disponibilidade"/>
                         <TableColumn fx:id="colAcoes" prefWidth="140.0" text="Acoes"/>

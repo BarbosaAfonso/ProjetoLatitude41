@@ -31,6 +31,7 @@
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar item..." styleClass="pesquisa-field"/>
+                <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onAtualizar" styleClass="refresh-list-button" text="&#8635;"/>
                 <ComboBox fx:id="reservaCombo" onAction="#onReservaAlterada" prefWidth="280.0" styleClass="table-control-combo"/>
             </children>
         </HBox>

@@ -29,8 +29,8 @@
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar utilizadores..." styleClass="pesquisa-field"/>
+                <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onAtualizar" styleClass="refresh-list-button" text="&#8635;"/>
                 <Button mnemonicParsing="false" onAction="#onAdicionar" styleClass="novo-registo-button" text="+ Nova Conta"/>
-                <Button mnemonicParsing="false" onAction="#onAtualizar" styleClass="novo-registo-button" text="Atualizar"/>
             </children>
         </HBox>
     </top>

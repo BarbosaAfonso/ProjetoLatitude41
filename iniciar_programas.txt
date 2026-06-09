@@ -1,0 +1,11 @@
+API:
+cd latitude41-api
+.\mvnw.cmd spring-boot:run
+
+DESKTOP:
+cd latitude41-desktop
+.\mvnw.cmd javafx:run
+
+WEB:
+cd latitude41-web
+npm start

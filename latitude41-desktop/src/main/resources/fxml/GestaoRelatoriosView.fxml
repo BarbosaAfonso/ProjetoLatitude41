@@ -49,6 +49,7 @@
                                         <Label styleClass="filtro-label" text="Fim"/>
                                         <DatePicker fx:id="dataFimPicker" styleClass="filtro-date"/>
                                         <Button mnemonicParsing="false" onAction="#onAplicarFiltros" styleClass="btn-filtrar" text="Aplicar"/>
+                                        <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onAtualizar" styleClass="refresh-list-button" text="&#8635;"/>
                                         <Button mnemonicParsing="false" onAction="#onUltimos7Dias" styleClass="btn-secondary" text="Ultimos 7 dias"/>
                                         <Button fx:id="exportarPdfButton" mnemonicParsing="false" onAction="#onExportarPdf" styleClass="btn-exportar" text="Exportar PDF"/>
                                     </children>

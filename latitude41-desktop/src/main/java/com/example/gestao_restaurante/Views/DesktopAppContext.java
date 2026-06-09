@@ -80,7 +80,14 @@ public final class DesktopAppContext {
     }
 
     public static String utilizadorCargoLabel() {
-        return isAdmin() ? "Administrador" : "Funcionario";
+        String tipo = utilizadorSessao.tipo();
+        if ("ADMIN".equalsIgnoreCase(tipo)) {
+            return "Administrador";
+        }
+        if ("CLIENTE".equalsIgnoreCase(tipo)) {
+            return "Cliente";
+        }
+        return "Funcionario";
     }
 
     public static boolean isAdmin() {

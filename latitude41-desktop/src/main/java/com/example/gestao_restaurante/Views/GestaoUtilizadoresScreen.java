@@ -230,7 +230,7 @@ public class GestaoUtilizadoresScreen {
             TextField passwordField = new TextField();
             passwordField.setPromptText("Deixe vazio para manter a password");
 
-            ComboBox<String> tipoCombo = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "FUNCIONARIO"));
+            ComboBox<String> tipoCombo = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "FUNCIONARIO", "CLIENTE"));
             tipoCombo.setValue(normalizar(ViewUtils.text(atual, "tipo"), "FUNCIONARIO"));
 
             ComboBox<String> estadoCombo = new ComboBox<>(FXCollections.observableArrayList("ATIVO", "INATIVO"));
@@ -293,7 +293,7 @@ public class GestaoUtilizadoresScreen {
             TextField passwordField = new TextField();
             passwordField.setPromptText("Password inicial");
 
-            ComboBox<String> tipoCombo = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "FUNCIONARIO"));
+            ComboBox<String> tipoCombo = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "FUNCIONARIO", "CLIENTE"));
             tipoCombo.setValue("FUNCIONARIO");
 
             ComboBox<String> estadoCombo = new ComboBox<>(FXCollections.observableArrayList("ATIVO", "INATIVO"));
@@ -362,7 +362,12 @@ public class GestaoUtilizadoresScreen {
     }
 
     private String formatarTipo(String tipo) {
-        return "ADMIN".equalsIgnoreCase(tipo) ? "Administrador" : "Funcionario";
+        String valor = normalizar(tipo, "");
+        return switch (valor) {
+            case "ADMIN" -> "Administrador";
+            case "CLIENTE" -> "Cliente";
+            default -> "Funcionario";
+        };
     }
 
     private String formatarEstadoConta(String estado) {

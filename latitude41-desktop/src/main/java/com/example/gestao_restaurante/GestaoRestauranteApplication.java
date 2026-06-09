@@ -1,10 +1,2 @@
-package com.example.gestao_restaurante;
-
-import com.example.gestao_restaurante.Views.JavaFXLauncher;
-
-public class GestaoRestauranteApplication {
-
-    public static void main(String[] args) {
-        JavaFXLauncher.main(args);
-    }
-}
+// Este ficheiro foi apagado para resolver um conflito de classes duplicadas.
+// A classe principal da API agora reside no módulo latitude41-api.

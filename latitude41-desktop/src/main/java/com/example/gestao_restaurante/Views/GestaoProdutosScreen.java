@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
@@ -31,6 +32,7 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.StreamSupport;
 
 public class GestaoProdutosScreen {
@@ -46,6 +48,9 @@ public class GestaoProdutosScreen {
 
     @FXML
     private TableColumn<JsonNode, String> colTipo;
+
+    @FXML
+    private TableColumn<JsonNode, String> colTags;
 
     @FXML
     private TableColumn<JsonNode, String> colPreco;
@@ -94,6 +99,7 @@ public class GestaoProdutosScreen {
         colId.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "id")));
         colNome.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "nome")));
         colTipo.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "tipo")));
+        colTags.setCellValueFactory(data -> new ReadOnlyStringWrapper(formatarTags(data.getValue())));
         colPreco.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "preco")));
         colDisponivel.setCellValueFactory(data -> new ReadOnlyStringWrapper(ViewUtils.text(data.getValue(), "disponivel")));
         colAcoes.setCellValueFactory(data -> new ReadOnlyStringWrapper("acoes"));
@@ -184,6 +190,7 @@ public class GestaoProdutosScreen {
         colId.setCellFactory(column -> criarCelulaTextoCentrada());
         colNome.setCellFactory(column -> criarCelulaTextoCentrada());
         colTipo.setCellFactory(column -> criarCelulaTextoCentrada());
+        colTags.setCellFactory(column -> criarCelulaTextoCentrada());
     }
 
     private TableCell<JsonNode, String> criarCelulaTextoCentrada() {
@@ -365,7 +372,7 @@ public class GestaoProdutosScreen {
             return;
         }
 
-        ordenarPorCombo.setItems(FXCollections.observableArrayList("ID", "Nome", "Categoria", "Preco", "Disponibilidade"));
+        ordenarPorCombo.setItems(FXCollections.observableArrayList("ID", "Nome", "Categoria", "Tags", "Preco", "Disponibilidade"));
         direcaoOrdenacaoCombo.setItems(FXCollections.observableArrayList("Ascendente", "Descendente"));
         ordenarPorCombo.setValue("Nome");
         direcaoOrdenacaoCombo.setValue("Ascendente");
@@ -384,6 +391,7 @@ public class GestaoProdutosScreen {
         return contem(produto, "id", termo)
                 || contem(produto, "nome", termo)
                 || contem(produto, "tipo", termo)
+                || formatarTags(produto).toLowerCase(Locale.ROOT).contains(termo)
                 || contem(produto, "preco", termo)
                 || contem(produto, "disponivel", termo);
     }
@@ -405,6 +413,7 @@ public class GestaoProdutosScreen {
         TableColumn<JsonNode, ?> coluna = switch (ordenarPorCombo.getValue()) {
             case "ID" -> colId;
             case "Categoria" -> colTipo;
+            case "Tags" -> colTags;
             case "Preco" -> colPreco;
             case "Disponibilidade" -> colDisponivel;
             case "Nome" -> colNome;
@@ -424,6 +433,10 @@ public class GestaoProdutosScreen {
         TextField nomeField = new TextField(atual == null ? "" : ViewUtils.text(atual, "nome"));
         TextField tipoField = new TextField(atual == null ? "" : ViewUtils.text(atual, "tipo"));
         TextField precoField = new TextField(atual == null ? "" : ViewUtils.text(atual, "preco"));
+        TextField imagemField = new TextField(atual == null ? "" : ViewUtils.text(atual, "urlImagem"));
+        CheckBox vegetarianoCheck = criarTagCheckBox("VEG", isTrue(atual, "vegetariano"));
+        CheckBox semGlutenCheck = criarTagCheckBox("Sem gluten", isTrue(atual, "semGluten"));
+        CheckBox semLactoseCheck = criarTagCheckBox("Sem lactose", isTrue(atual, "semLactose"));
 
         ComboBox<String> disponivelCombo = new ComboBox<>(FXCollections.observableArrayList("Disponivel", "Indisponivel"));
         disponivelCombo.setValue(isDisponivel(atual == null ? "true" : ViewUtils.text(atual, "disponivel"))
@@ -433,6 +446,7 @@ public class GestaoProdutosScreen {
         nomeField.setPromptText("Ex: Bacalhau com natas");
         tipoField.setPromptText("Ex: Prato principal");
         precoField.setPromptText("Ex: 12,50");
+        imagemField.setPromptText("https://exemplo.com/imagem.jpg");
 
         HBox primeiraLinha = new HBox(12,
                 ViewUtils.criarCampoFormulario("Nome do produto", nomeField),
@@ -442,11 +456,16 @@ public class GestaoProdutosScreen {
                 ViewUtils.criarCampoFormulario("Preco", precoField),
                 ViewUtils.criarCampoFormulario("Disponibilidade", disponivelCombo)
         );
+        HBox terceiraLinha = new HBox(12,
+                ViewUtils.criarCampoFormulario("URL da imagem", imagemField)
+        );
+        VBox tagsBox = criarTagsBox(vegetarianoCheck, semGlutenCheck, semLactoseCheck);
 
         primeiraLinha.getStyleClass().add("app-form-row");
         segundaLinha.getStyleClass().add("app-form-row");
+        terceiraLinha.getStyleClass().add("app-form-row");
 
-        VBox form = new VBox(12, primeiraLinha, segundaLinha);
+        VBox form = new VBox(12, primeiraLinha, segundaLinha, terceiraLinha, tagsBox);
         form.getStyleClass().add("app-form");
 
         dialog.getDialogPane().setContent(form);
@@ -465,11 +484,76 @@ public class GestaoProdutosScreen {
             payload.put("tipo", tipoField.getText().trim());
             payload.put("preco", new BigDecimal(normalizarNumero(precoField.getText())));
             payload.put("disponivel", "Disponivel".equals(disponivelCombo.getValue()));
+            String urlImagem = imagemField.getText().trim();
+            if (urlImagem.isBlank()) {
+                payload.putNull("urlImagem");
+            } else {
+                payload.put("urlImagem", urlImagem);
+            }
+            payload.put("vegetariano", vegetarianoCheck.isSelected());
+            payload.put("semGluten", semGlutenCheck.isSelected());
+            payload.put("semLactose", semLactoseCheck.isSelected());
             return Optional.of(payload);
         } catch (Exception e) {
             ViewUtils.showError("Produtos", "Dados invalidos. Verifique os campos.");
             return Optional.empty();
         }
+    }
+
+    private CheckBox criarTagCheckBox(String texto, boolean selecionado) {
+        CheckBox checkBox = new CheckBox(texto);
+        checkBox.setSelected(selecionado);
+        checkBox.setStyle("""
+                -fx-text-fill: #203d5f;
+                -fx-font-size: 13px;
+                -fx-font-weight: 700;
+                -fx-padding: 8 12 8 12;
+                """);
+        return checkBox;
+    }
+
+    private VBox criarTagsBox(CheckBox vegetarianoCheck, CheckBox semGlutenCheck, CheckBox semLactoseCheck) {
+        Label label = new Label("Preferencias e alergenios");
+        label.setStyle("-fx-text-fill: #203d5f; -fx-font-size: 13px; -fx-font-weight: 700;");
+
+        HBox checks = new HBox(10, vegetarianoCheck, semGlutenCheck, semLactoseCheck);
+        checks.setAlignment(Pos.CENTER_LEFT);
+        checks.setStyle("""
+                -fx-background-color: #f7f9fc;
+                -fx-background-radius: 12;
+                -fx-border-color: rgba(32, 61, 95, 0.18);
+                -fx-border-radius: 12;
+                -fx-padding: 8 10 8 10;
+                """);
+
+        VBox box = new VBox(6, label, checks);
+        box.getStyleClass().add("app-form-field");
+        return box;
+    }
+
+    private String formatarTags(JsonNode produto) {
+        StringJoiner tags = new StringJoiner(", ");
+        if (isTrue(produto, "vegetariano")) {
+            tags.add("VEG");
+        }
+        if (isTrue(produto, "semGluten")) {
+            tags.add("Sem gluten");
+        }
+        if (isTrue(produto, "semLactose")) {
+            tags.add("Sem lactose");
+        }
+
+        String resultado = tags.toString();
+        return resultado.isBlank() ? "Sem tags" : resultado;
+    }
+
+    private boolean isTrue(JsonNode node, String field) {
+        JsonNode value = node == null ? null : node.get(field);
+        if (value == null || value.isNull()) {
+            return false;
+        }
+
+        return value.asBoolean(false) || "true".equalsIgnoreCase(value.asText(""));
     }
 
     private boolean contem(JsonNode produto, String campo, String termo) {

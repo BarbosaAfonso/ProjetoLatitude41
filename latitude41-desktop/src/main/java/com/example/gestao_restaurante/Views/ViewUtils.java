@@ -90,6 +90,12 @@ public final class ViewUtils {
     public static void prepararDialogo(Dialog<?> dialog, String titulo, String subtitulo) {
         configurarBaseDialogo(dialog);
 
+        Node conteudoOriginal = dialog.getDialogPane().getContent();
+        String textoConteudo = dialog.getDialogPane().getContentText();
+        dialog.getDialogPane().setContent(null);
+        dialog.getDialogPane().setContentText(null);
+        dialog.getDialogPane().setHeaderText(null);
+
         String stylesheet = Optional.ofNullable(ViewUtils.class.getResource("/css/gestao-produtos.css"))
                 .map(url -> url.toExternalForm())
                 .orElse(null);
@@ -99,18 +105,82 @@ public final class ViewUtils {
         }
 
         dialog.getDialogPane().getStyleClass().add("app-dialog-pane");
+        dialog.getDialogPane().setStyle("""
+                -fx-background-color: #ffffff;
+                -fx-background-radius: 22;
+                -fx-border-color: rgba(19, 43, 70, 0.18);
+                -fx-border-radius: 22;
+                -fx-padding: 0;
+                -fx-pref-width: 590;
+                -fx-min-width: 520;
+                -fx-effect: dropshadow(gaussian, rgba(11, 28, 48, 0.28), 26, 0.24, 0, 12);
+                """);
+
+        Label eyebrowLabel = new Label("LATITUDE 41");
+        eyebrowLabel.getStyleClass().add("app-dialog-eyebrow");
+        eyebrowLabel.setStyle("-fx-text-fill: rgba(239, 227, 190, 0.86); -fx-font-size: 11px; -fx-font-weight: 700;");
 
         Label tituloLabel = new Label(titulo);
         tituloLabel.getStyleClass().add("app-dialog-title");
+        tituloLabel.setStyle("-fx-text-fill: #d2b053; -fx-font-size: 28px; -fx-font-weight: 700;");
 
         Label subtituloLabel = new Label(subtitulo);
         subtituloLabel.getStyleClass().add("app-dialog-subtitle");
         subtituloLabel.setWrapText(true);
+        subtituloLabel.setStyle("-fx-text-fill: rgba(233, 240, 247, 0.82); -fx-font-size: 14px;");
 
-        VBox header = new VBox(4, tituloLabel, subtituloLabel);
+        Region accent = new Region();
+        accent.getStyleClass().add("app-dialog-accent");
+        accent.setStyle("-fx-min-width: 5; -fx-pref-width: 5; -fx-min-height: 62; -fx-background-color: #d2b053; -fx-background-radius: 999;");
+
+        VBox tituloBox = new VBox(4, eyebrowLabel, tituloLabel, subtituloLabel);
+        HBox.setHgrow(tituloBox, Priority.ALWAYS);
+
+        Label marcaLabel = new Label("41");
+        marcaLabel.getStyleClass().add("app-dialog-mark");
+        marcaLabel.setStyle("""
+                -fx-min-width: 46;
+                -fx-pref-width: 46;
+                -fx-min-height: 46;
+                -fx-pref-height: 46;
+                -fx-alignment: center;
+                -fx-background-color: rgba(255, 255, 255, 0.10);
+                -fx-background-radius: 14;
+                -fx-border-color: rgba(210, 176, 83, 0.55);
+                -fx-border-radius: 14;
+                -fx-text-fill: #d2b053;
+                -fx-font-size: 18px;
+                -fx-font-weight: 800;
+                """);
+
+        HBox header = new HBox(16, accent, tituloBox, marcaLabel);
         header.getStyleClass().add("app-dialog-header");
+        header.setStyle("""
+                -fx-background-color: linear-gradient(to right, #1a3f65 0%, #224d76 60%, #20466c 100%);
+                -fx-background-radius: 22 22 0 0;
+                -fx-padding: 22 24 22 24;
+                -fx-cursor: move;
+                -fx-alignment: center-left;
+                """);
 
-        dialog.getDialogPane().setHeader(header);
+        VBox body = new VBox();
+        body.getStyleClass().add("app-dialog-body");
+        body.setStyle("-fx-background-color: #ffffff; -fx-padding: 24 24 8 24; -fx-spacing: 14;");
+        if (conteudoOriginal != null) {
+            body.getChildren().add(conteudoOriginal);
+        } else if (textoConteudo != null && !textoConteudo.isBlank()) {
+            Label conteudoLabel = new Label(textoConteudo);
+            conteudoLabel.getStyleClass().add("dialog-message-text");
+            conteudoLabel.setWrapText(true);
+            body.getChildren().add(conteudoLabel);
+        }
+
+        VBox shell = new VBox(header, body);
+        shell.getStyleClass().add("app-dialog-shell");
+        shell.setStyle("-fx-background-color: transparent; -fx-background-radius: 22;");
+
+        dialog.getDialogPane().setHeader(null);
+        dialog.getDialogPane().setContent(shell);
     }
 
     public static void estilizarBotoesDialogo(Dialog<?> dialog) {
@@ -135,14 +205,27 @@ public final class ViewUtils {
     public static VBox criarCampoFormulario(String labelText, Node input) {
         Label label = new Label(labelText);
         label.getStyleClass().add("app-form-label");
+        label.setStyle("-fx-text-fill: #203d5f; -fx-font-size: 13px; -fx-font-weight: 700;");
 
         input.getStyleClass().add("app-form-input");
+        input.setStyle("""
+                -fx-background-color: #f7f9fc;
+                -fx-background-radius: 12;
+                -fx-border-color: rgba(32, 61, 95, 0.18);
+                -fx-border-radius: 12;
+                -fx-padding: 10 13 10 13;
+                -fx-font-size: 14px;
+                -fx-min-height: 42;
+                -fx-prompt-text-fill: rgba(69, 88, 109, 0.48);
+                """);
         if (input instanceof Region region) {
             region.setMaxWidth(Double.MAX_VALUE);
+            region.setMinHeight(42);
         }
 
         VBox box = new VBox(6, label, input);
         box.getStyleClass().add("app-form-field");
+        box.setStyle("-fx-spacing: 6; -fx-min-width: 210;");
         box.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(box, Priority.ALWAYS);
         return box;
@@ -223,6 +306,17 @@ public final class ViewUtils {
         Node node = dialog.getDialogPane().lookupButton(buttonType);
         if (node instanceof Button button) {
             button.getStyleClass().addAll("dialog-action-button", variantClass);
+            String variantStyle = "dialog-primary-button".equals(variantClass)
+                    ? "-fx-background-color: linear-gradient(to right, #b89328 0%, #d8ba59 100%); -fx-text-fill: #10243f;"
+                    : "-fx-background-color: #f8fafc; -fx-text-fill: #3b5573; -fx-border-color: rgba(59, 85, 115, 0.32); -fx-border-radius: 12;";
+            button.setStyle("""
+                    -fx-min-width: 108;
+                    -fx-font-size: 13px;
+                    -fx-font-weight: 600;
+                    -fx-padding: 11 18 11 18;
+                    -fx-background-radius: 12;
+                    -fx-cursor: hand;
+                    """ + variantStyle);
             button.setDefaultButton(defaultButton);
             button.setCancelButton(cancelButton);
         }

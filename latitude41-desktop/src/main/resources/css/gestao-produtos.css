@@ -122,6 +122,28 @@
     -fx-background-color: #d6ba5a;
 }
 
+.refresh-list-button {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-background-color: #eef3f9;
+    -fx-text-fill: #1f426a;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(22, 52, 87, 0.16);
+    -fx-border-radius: 12;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.refresh-list-button:hover {
+    -fx-background-color: #e1ebf7;
+    -fx-border-color: rgba(22, 52, 87, 0.28);
+}
+
 .table-shell {
     -fx-background-color: #ffffff;
     -fx-background-radius: 14;
@@ -281,6 +303,29 @@
     -fx-font-size: 13px;
 }
 
+.produto-thumb-wrapper {
+    -fx-min-width: 78;
+    -fx-pref-width: 78;
+    -fx-min-height: 54;
+    -fx-pref-height: 54;
+    -fx-alignment: center;
+}
+
+.produto-thumb-placeholder {
+    -fx-min-width: 72;
+    -fx-pref-width: 72;
+    -fx-min-height: 48;
+    -fx-pref-height: 48;
+    -fx-alignment: center;
+    -fx-background-color: #edf3fb;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(32, 61, 95, 0.14);
+    -fx-border-radius: 8;
+    -fx-text-fill: #58718e;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+}
+
 .estado-badge {
     -fx-padding: 4 10 4 10;
     -fx-background-radius: 999;
@@ -381,45 +426,99 @@
 }
 
 .app-dialog-pane {
-    -fx-background-color: #eef2f7;
-    -fx-background-radius: 18;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 22;
     -fx-background-insets: 0;
-    -fx-border-color: rgba(26, 48, 77, 0.18);
-    -fx-border-radius: 18;
+    -fx-border-color: rgba(19, 43, 70, 0.18);
+    -fx-border-radius: 22;
+    -fx-padding: 0;
+    -fx-pref-width: 590;
+    -fx-min-width: 520;
+    -fx-effect: dropshadow(gaussian, rgba(11, 28, 48, 0.28), 26, 0.24, 0, 12);
+}
+
+.app-dialog-pane > .header-panel,
+.app-dialog-pane > .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 22;
     -fx-padding: 0;
 }
 
-.app-dialog-pane > .header-panel {
+.app-dialog-shell {
     -fx-background-color: transparent;
-}
-
-.app-dialog-pane > .content.label,
-.app-dialog-pane > *.content {
-    -fx-background-color: transparent;
-    -fx-background-radius: 0 0 18 18;
+    -fx-background-radius: 22;
 }
 
 .app-dialog-header {
     -fx-background-color: linear-gradient(to right, #1a3f65 0%, #224d76 60%, #20466c 100%);
-    -fx-background-radius: 14 14 0 0;
-    -fx-padding: 18 20 18 20;
+    -fx-background-radius: 22 22 0 0;
+    -fx-padding: 22 24 22 24;
     -fx-cursor: move;
+    -fx-alignment: center-left;
+}
+
+.app-dialog-accent {
+    -fx-min-width: 5;
+    -fx-pref-width: 5;
+    -fx-max-width: 5;
+    -fx-min-height: 62;
+    -fx-background-color: #d2b053;
+    -fx-background-radius: 999;
+}
+
+.app-dialog-eyebrow {
+    -fx-text-fill: rgba(239, 227, 190, 0.86);
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+.app-dialog-mark {
+    -fx-min-width: 46;
+    -fx-pref-width: 46;
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-alignment: center;
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(210, 176, 83, 0.55);
+    -fx-border-radius: 14;
+    -fx-text-fill: #d2b053;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.app-dialog-body {
+    -fx-background-color: #ffffff;
+    -fx-padding: 24 24 8 24;
+    -fx-spacing: 14;
 }
 
 .app-dialog-pane > .button-bar > .container {
-    -fx-background-color: transparent;
-    -fx-padding: 0 20 18 20;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 0 22 22;
+    -fx-padding: 8 24 24 24;
+}
+
+.app-dialog-pane > .button-bar {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 0 22 22;
+    -fx-padding: 0;
+}
+
+.app-dialog-pane .button-bar {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 0 22 22;
 }
 
 .app-dialog-title {
     -fx-text-fill: #d2b053;
-    -fx-font-size: 24px;
+    -fx-font-size: 28px;
     -fx-font-weight: 700;
 }
 
 .app-dialog-subtitle {
     -fx-text-fill: rgba(233, 240, 247, 0.82);
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
 }
 
 .app-dialog-pane .content.label {
@@ -428,7 +527,7 @@
 
 .dialog-message-box {
     -fx-alignment: center-left;
-    -fx-padding: 8 20 6 20;
+    -fx-padding: 0;
 }
 
 .dialog-message-icon {
@@ -468,7 +567,8 @@
 }
 
 .app-form {
-    -fx-padding: 6 20 0 20;
+    -fx-padding: 0;
+    -fx-spacing: 14;
 }
 
 .app-form-row {
@@ -478,30 +578,68 @@
 .app-form-field {
     -fx-spacing: 6;
     -fx-max-width: infinity;
+    -fx-min-width: 210;
 }
 
 .app-form-label {
     -fx-text-fill: #203d5f;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-font-weight: 600;
 }
 
 .app-form-input {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 10;
-    -fx-border-color: rgba(32, 61, 95, 0.16);
-    -fx-border-radius: 10;
-    -fx-padding: 9 12 9 12;
-    -fx-font-size: 13px;
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(32, 61, 95, 0.18);
+    -fx-border-radius: 12;
+    -fx-padding: 10 13 10 13;
+    -fx-font-size: 14px;
+    -fx-min-height: 42;
+    -fx-prompt-text-fill: rgba(69, 88, 109, 0.48);
+}
+
+.app-dialog-pane .text-input,
+.app-dialog-pane .combo-box-base,
+.app-dialog-pane .date-picker {
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(32, 61, 95, 0.18);
+    -fx-border-radius: 12;
+    -fx-font-size: 14px;
+    -fx-min-height: 42;
+    -fx-prompt-text-fill: rgba(69, 88, 109, 0.48);
 }
 
 .app-form-input:focused {
-    -fx-border-color: #7f9ec2;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d2b053;
+}
+
+.app-dialog-pane .text-input:focused,
+.app-dialog-pane .combo-box-base:focused,
+.app-dialog-pane .date-picker:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d2b053;
 }
 
 .app-form-input > .text-field,
 .app-form-input .text-field {
     -fx-background-color: transparent;
+}
+
+.text-area.app-form-input {
+    -fx-padding: 0;
+}
+
+.text-area.app-form-input .content,
+.app-dialog-pane .text-area .content {
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 12;
+}
+
+.text-area.app-form-input:focused .content,
+.app-dialog-pane .text-area:focused .content {
+    -fx-background-color: #ffffff;
 }
 
 .combo-box.app-form-input,
@@ -511,7 +649,13 @@
 
 .combo-box.app-form-input > .list-cell,
 .date-picker.app-form-input > .text-field {
-    -fx-padding: 9 12 9 12;
+    -fx-padding: 10 13 10 13;
+}
+
+.combo-box-base.app-form-input > .list-cell,
+.app-dialog-pane .combo-box-base > .list-cell {
+    -fx-text-fill: #203d5f;
+    -fx-padding: 10 13 10 13;
 }
 
 .combo-box.app-form-input > .arrow-button,
@@ -520,28 +664,65 @@
     -fx-background-radius: 0 10 10 0;
 }
 
+.combo-box-base.app-form-input > .arrow-button,
+.date-picker.app-form-input > .arrow-button,
+.app-dialog-pane .combo-box-base > .arrow-button,
+.app-dialog-pane .date-picker > .arrow-button {
+    -fx-background-color: rgba(26, 63, 101, 0.08);
+    -fx-background-radius: 0 12 12 0;
+}
+
+.combo-box-base.app-form-input > .arrow-button > .arrow,
+.date-picker.app-form-input > .arrow-button > .arrow,
+.app-dialog-pane .combo-box-base > .arrow-button > .arrow,
+.app-dialog-pane .date-picker > .arrow-button > .arrow {
+    -fx-background-color: #21456e;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(32, 61, 95, 0.18);
+    -fx-border-radius: 12;
+    -fx-padding: 6;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #203d5f;
+    -fx-padding: 9 12 9 12;
+}
+
+.combo-box-popup .list-cell:hover,
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #edf3fb;
+    -fx-background-radius: 8;
+    -fx-text-fill: #17395f;
+}
+
 .dialog-action-button {
+    -fx-min-width: 108;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
-    -fx-padding: 9 16 9 16;
-    -fx-background-radius: 10;
+    -fx-padding: 11 18 11 18;
+    -fx-background-radius: 12;
     -fx-cursor: hand;
 }
 
 .dialog-primary-button {
-    -fx-background-color: #c9ac50;
+    -fx-background-color: linear-gradient(to right, #b89328 0%, #d8ba59 100%);
     -fx-text-fill: #10243f;
 }
 
 .dialog-primary-button:hover {
-    -fx-background-color: #d6ba5a;
+    -fx-background-color: linear-gradient(to right, #c6a239 0%, #e2c566 100%);
 }
 
 .dialog-secondary-button {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #f8fafc;
     -fx-text-fill: #3b5573;
     -fx-border-color: rgba(59, 85, 115, 0.32);
-    -fx-border-radius: 10;
+    -fx-border-radius: 12;
 }
 
 .dialog-secondary-button:hover {
@@ -639,6 +820,11 @@
     -fx-background-color: linear-gradient(to bottom right, #2c75bc, #154d88);
     -fx-background-radius: 16;
     -fx-padding: 18;
+}
+
+.pedido-produto-imagem-com-foto {
+    -fx-background-color: #102d4d;
+    -fx-padding: 0;
 }
 
 .pedido-produto-imagem-icone {

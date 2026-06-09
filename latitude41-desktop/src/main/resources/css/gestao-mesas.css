@@ -327,6 +327,28 @@
     -fx-background-color: rgba(52, 72, 95, 0.08);
 }
 
+.refresh-list-button {
+    -fx-min-width: 38;
+    -fx-pref-width: 38;
+    -fx-max-width: 38;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-background-color: #eef3f9;
+    -fx-text-fill: #1f426a;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(52, 72, 95, 0.22);
+    -fx-border-radius: 10;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.refresh-list-button:hover {
+    -fx-background-color: #e1ebf7;
+    -fx-border-color: rgba(52, 72, 95, 0.34);
+}
+
 .fab-button {
     -fx-pref-width: 58;
     -fx-pref-height: 58;

@@ -1,7 +1,9 @@
 package com.example.gestao_restaurante.Modules;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -30,6 +32,28 @@ public class Produto {
     @ColumnDefault("true")
     @Column(name = "disponivel")
     private Boolean disponivel;
+
+    @JsonProperty("urlImagem")
+    @JsonAlias("url_imagem")
+    @Column(name = "url_imagem", length = 500)
+    private String urlImagem;
+
+    @JsonProperty("vegetariano")
+    @ColumnDefault("false")
+    @Column(name = "vegetariano")
+    private Boolean vegetariano = false;
+
+    @JsonProperty("semGluten")
+    @JsonAlias("sem_gluten")
+    @ColumnDefault("false")
+    @Column(name = "sem_gluten")
+    private Boolean semGluten = false;
+
+    @JsonProperty("semLactose")
+    @JsonAlias("sem_lactose")
+    @ColumnDefault("false")
+    @Column(name = "sem_lactose")
+    private Boolean semLactose = false;
 
     @OneToMany(mappedBy = "idProduto")
     @JsonIgnore
@@ -77,6 +101,38 @@ public class Produto {
 
     public void setDisponivel(Boolean disponivel) {
         this.disponivel = disponivel;
+    }
+
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
+    }
+
+    public Boolean getVegetariano() {
+        return vegetariano;
+    }
+
+    public void setVegetariano(Boolean vegetariano) {
+        this.vegetariano = vegetariano;
+    }
+
+    public Boolean getSemGluten() {
+        return semGluten;
+    }
+
+    public void setSemGluten(Boolean semGluten) {
+        this.semGluten = semGluten;
+    }
+
+    public Boolean getSemLactose() {
+        return semLactose;
+    }
+
+    public void setSemLactose(Boolean semLactose) {
+        this.semLactose = semLactose;
     }
 
     public Set<IngredienteProduto> getIngredienteProdutos() {

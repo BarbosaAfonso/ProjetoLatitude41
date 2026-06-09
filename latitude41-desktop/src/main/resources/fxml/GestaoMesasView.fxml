@@ -71,6 +71,7 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
+                        <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onFloorPlan" styleClass="refresh-list-button" text="&#8635;"/>
                         <Label fx:id="ocupacaoLabel" styleClass="ocupacao-pill" text="OCUPACAO: 0%"/>
 
                         <Button mnemonicParsing="false" onAction="#onVoltar" styleClass="voltar-floor-button" text="Voltar"/>

@@ -102,6 +102,11 @@ public class GestaoRelatoriosScreen {
     }
 
     @FXML
+    private void onAtualizar() {
+        carregarRelatorio();
+    }
+
+    @FXML
     private void onUltimos7Dias() {
         LocalDate hoje = LocalDate.now();
         if (dataInicioPicker != null) {

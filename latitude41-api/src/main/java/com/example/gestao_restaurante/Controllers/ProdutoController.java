@@ -1,6 +1,7 @@
 package com.example.gestao_restaurante.Controllers;
 
-import com.example.gestao_restaurante.Modules.Produto;
+import com.example.gestao_restaurante.Dtos.ProdutoRequestDTO;
+import com.example.gestao_restaurante.Dtos.ProdutoResponseDTO;
 import com.example.gestao_restaurante.Services.ProdutoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,36 +20,39 @@ public class ProdutoController {
         this.produtoService = produtoService;
     }
 
-    // GET /produtos - listar todos os produtos
     @GetMapping
-    public ResponseEntity<List<Produto>> listarTodos() {
+    public ResponseEntity<List<ProdutoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(produtoService.listarTodos());
     }
 
-    // GET /produtos/{id} - procurar produto por id
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> procurarPorId(@PathVariable Integer id) {
+    public ResponseEntity<ProdutoResponseDTO> procurarPorId(@PathVariable Integer id) {
         return produtoService.procurarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST /produtos - criar novo produto
     @PostMapping
-    public ResponseEntity<Produto> criar(@RequestBody Produto produto) {
-        Produto novo = produtoService.criar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+    public ResponseEntity<?> criar(@RequestBody ProdutoRequestDTO produto) {
+        try {
+            ProdutoResponseDTO novo = produtoService.criar(produto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    // PUT /produtos/{id} - atualizar produto existente
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Integer id, @RequestBody Produto produto) {
-        return produtoService.atualizar(id, produto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody ProdutoRequestDTO produto) {
+        try {
+            return produtoService.atualizar(id, produto)
+                    .<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    // DELETE /produtos/{id} - apagar produto
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> apagar(@PathVariable Integer id) {
         if (produtoService.apagar(id)) {

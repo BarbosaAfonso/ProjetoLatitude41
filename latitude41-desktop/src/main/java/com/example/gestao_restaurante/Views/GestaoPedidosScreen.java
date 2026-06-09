@@ -17,6 +17,8 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -24,6 +26,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
@@ -55,6 +58,9 @@ public class GestaoPedidosScreen {
     private static final Set<String> ESTADOS_RESERVA_ATIVOS = Set.of("CONFIRMADA", "OCUPADA", "EM_CURSO", "ATIVA");
     private static final Set<String> ESTADOS_PEDIDO_ATIVO = Set.of("ABERTO", "EM_PREPARACAO", "REGISTADO", "PRONTO", "PREPARACAO");
     private static final long JANELA_RESERVA_ATUAL_MINUTOS = 120;
+    private static final double ALTURA_IMAGEM_PRODUTO = 170;
+    private static final double LARGURA_CARREGAMENTO_IMAGEM_PRODUTO = 640;
+    private static final double ALTURA_CARREGAMENTO_IMAGEM_PRODUTO = 480;
 
     @FXML
     private TextField pesquisaField;
@@ -122,6 +128,16 @@ public class GestaoPedidosScreen {
     @FXML
     private void onReservaAlterada() {
         carregarPedidoAtivoDaMesaSelecionada();
+        atualizarEstadoAcoes();
+    }
+
+    @FXML
+    private void onAtualizar() {
+        Integer mesaIdSelecionada = reservaCombo == null || reservaCombo.getValue() == null
+                ? null
+                : inteiro(ViewUtils.text(reservaCombo.getValue(), "mesaId"));
+        carregarMesasDisponiveis(false, mesaIdSelecionada);
+        carregarProdutos();
         atualizarEstadoAcoes();
     }
 
@@ -268,6 +284,10 @@ public class GestaoPedidosScreen {
     }
 
     private void carregarMesasDisponiveis(boolean selecionarPrimeiraMesa) {
+        carregarMesasDisponiveis(selecionarPrimeiraMesa, null);
+    }
+
+    private void carregarMesasDisponiveis(boolean selecionarPrimeiraMesa, Integer mesaIdParaManter) {
         try {
             mesasLancamento.clear();
 
@@ -304,15 +324,21 @@ public class GestaoPedidosScreen {
             mesasCarregadas.sort(Comparator.comparing(mesa -> inteiro(ViewUtils.text(mesa, "mesaId"))));
             mesasCarregadas.forEach(mesasLancamento::add);
 
-            if (reservaCombo != null) {
-                if (selecionarPrimeiraMesa) {
-                    reservaCombo.setValue(mesasLancamento.isEmpty() ? null : mesasLancamento.get(0));
-                } else {
-                    reservaCombo.setValue(null);
-                }
+            JsonNode mesaParaSelecionar = null;
+            if (mesaIdParaManter != null) {
+                mesaParaSelecionar = mesasLancamento.stream()
+                        .filter(mesa -> mesaIdParaManter.equals(inteiro(ViewUtils.text(mesa, "mesaId"))))
+                        .findFirst()
+                        .orElse(null);
+            } else if (selecionarPrimeiraMesa && !mesasLancamento.isEmpty()) {
+                mesaParaSelecionar = mesasLancamento.get(0);
             }
 
-            if (selecionarPrimeiraMesa) {
+            if (reservaCombo != null) {
+                reservaCombo.setValue(mesaParaSelecionar);
+            }
+
+            if (mesaParaSelecionar != null) {
                 carregarPedidoAtivoDaMesaSelecionada();
             } else {
                 limparPedidoVisual();
@@ -423,18 +449,7 @@ public class GestaoPedidosScreen {
         VBox card = new VBox(12);
         card.getStyleClass().add("pedido-produto-card");
 
-        StackPane imagem = new StackPane();
-        imagem.getStyleClass().add("pedido-produto-imagem");
-        imagem.setMinHeight(170);
-
-        VBox placeholder = new VBox(6);
-        placeholder.setAlignment(Pos.CENTER);
-        Label icon = new Label("\uD83D\uDDBC");
-        icon.getStyleClass().add("pedido-produto-imagem-icone");
-        Label text = new Label("Imagem");
-        text.getStyleClass().add("pedido-produto-imagem-texto");
-        placeholder.getChildren().addAll(icon, text);
-        imagem.getChildren().add(placeholder);
+        StackPane imagem = criarImagemProduto(produto);
 
         Label badge = new Label(categoriaProduto(ViewUtils.text(produto, "tipo")));
         badge.getStyleClass().add("pedido-produto-badge");
@@ -461,6 +476,134 @@ public class GestaoPedidosScreen {
         card.getChildren().addAll(imagem, topoInfo, nome, descricao, adicionar);
         VBox.setVgrow(descricao, Priority.ALWAYS);
         return card;
+    }
+
+    private StackPane criarImagemProduto(JsonNode produto) {
+        StackPane imagem = new StackPane();
+        imagem.getStyleClass().add("pedido-produto-imagem");
+        imagem.setMinHeight(ALTURA_IMAGEM_PRODUTO);
+        imagem.setPrefHeight(ALTURA_IMAGEM_PRODUTO);
+        imagem.setMaxHeight(ALTURA_IMAGEM_PRODUTO);
+        imagem.setMaxWidth(Double.MAX_VALUE);
+
+        String urlImagem = urlImagemProduto(produto);
+        if (urlImagem.isBlank()) {
+            imagem.getChildren().add(criarPlaceholderImagem("Imagem"));
+            return imagem;
+        }
+
+        VBox placeholder = criarPlaceholderImagem("A carregar imagem");
+        ImageView foto = new ImageView();
+        foto.getStyleClass().add("pedido-produto-foto");
+        foto.setManaged(false);
+        foto.setPreserveRatio(true);
+        foto.setSmooth(true);
+        foto.layoutXProperty().bind(imagem.widthProperty().subtract(foto.fitWidthProperty()).divide(2));
+        foto.layoutYProperty().bind(imagem.heightProperty().subtract(foto.fitHeightProperty()).divide(2));
+
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(imagem.widthProperty());
+        clip.heightProperty().bind(imagem.heightProperty());
+        clip.setArcWidth(32);
+        clip.setArcHeight(32);
+
+        imagem.setClip(clip);
+        imagem.getStyleClass().add("pedido-produto-imagem-com-foto");
+        imagem.getChildren().addAll(placeholder, foto);
+
+        try {
+            Image image = new Image(
+                    urlImagem,
+                    LARGURA_CARREGAMENTO_IMAGEM_PRODUTO,
+                    ALTURA_CARREGAMENTO_IMAGEM_PRODUTO,
+                    true,
+                    true,
+                    true
+            );
+            foto.setImage(image);
+            configurarImagemCover(foto, imagem, image);
+
+            image.progressProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue.doubleValue() >= 1.0 && !image.isError()) {
+                    ocultarPlaceholderImagem(placeholder);
+                }
+            });
+            image.errorProperty().addListener((obs, oldValue, hasError) -> {
+                if (Boolean.TRUE.equals(hasError)) {
+                    mostrarPlaceholderImagem(imagem, "Imagem indisponivel");
+                }
+            });
+
+            if (image.isError()) {
+                mostrarPlaceholderImagem(imagem, "Imagem indisponivel");
+            } else if (image.getProgress() >= 1.0) {
+                ocultarPlaceholderImagem(placeholder);
+            }
+        } catch (IllegalArgumentException e) {
+            mostrarPlaceholderImagem(imagem, "Imagem indisponivel");
+        }
+
+        return imagem;
+    }
+
+    private void configurarImagemCover(ImageView foto, StackPane imagem, Image image) {
+        Runnable ajustar = () -> {
+            double larguraArea = imagem.getWidth();
+            double alturaArea = imagem.getHeight();
+            double larguraImagem = image.getWidth();
+            double alturaImagem = image.getHeight();
+
+            if (larguraArea <= 0 || alturaArea <= 0 || larguraImagem <= 0 || alturaImagem <= 0) {
+                return;
+            }
+
+            double proporcaoArea = larguraArea / alturaArea;
+            double proporcaoImagem = larguraImagem / alturaImagem;
+
+            if (proporcaoImagem >= proporcaoArea) {
+                foto.setFitHeight(alturaArea);
+                foto.setFitWidth(alturaArea * proporcaoImagem);
+            } else {
+                foto.setFitWidth(larguraArea);
+                foto.setFitHeight(larguraArea / proporcaoImagem);
+            }
+        };
+
+        imagem.widthProperty().addListener((obs, oldValue, newValue) -> ajustar.run());
+        imagem.heightProperty().addListener((obs, oldValue, newValue) -> ajustar.run());
+        image.widthProperty().addListener((obs, oldValue, newValue) -> ajustar.run());
+        image.heightProperty().addListener((obs, oldValue, newValue) -> ajustar.run());
+        ajustar.run();
+    }
+
+    private void ocultarPlaceholderImagem(VBox placeholder) {
+        placeholder.setVisible(false);
+        placeholder.setManaged(false);
+    }
+
+    private VBox criarPlaceholderImagem(String texto) {
+        VBox placeholder = new VBox(6);
+        placeholder.setAlignment(Pos.CENTER);
+        Label icon = new Label("\uD83D\uDDBC");
+        icon.getStyleClass().add("pedido-produto-imagem-icone");
+        Label label = new Label(texto);
+        label.getStyleClass().add("pedido-produto-imagem-texto");
+        placeholder.getChildren().addAll(icon, label);
+        return placeholder;
+    }
+
+    private void mostrarPlaceholderImagem(StackPane imagem, String texto) {
+        imagem.setClip(null);
+        imagem.getStyleClass().remove("pedido-produto-imagem-com-foto");
+        imagem.getChildren().setAll(criarPlaceholderImagem(texto));
+    }
+
+    private String urlImagemProduto(JsonNode produto) {
+        String urlImagem = ViewUtils.text(produto, "urlImagem").trim();
+        if (urlImagem.isBlank()) {
+            urlImagem = ViewUtils.text(produto, "url_imagem").trim();
+        }
+        return urlImagem;
     }
 
     private void adicionarProduto(JsonNode produto) {
@@ -815,6 +958,8 @@ public class GestaoPedidosScreen {
         dialog.setTitle("Fechar Conta");
         dialog.setHeaderText("Selecione o metodo de pagamento");
         dialog.setContentText("Metodo:");
+        ViewUtils.prepararDialogo(dialog, dialog.getTitle(), "Escolha como o cliente vai liquidar a conta.");
+        ViewUtils.estilizarBotoesDialogo(dialog, "Confirmar", "Cancelar");
         return dialog.showAndWait();
     }
 

@@ -45,12 +45,18 @@ public class LoginScreen {
         }
 
         JsonNode utilizador = resultadoLogin.get();
+        String tipo = ViewUtils.text(utilizador, "tipo");
+        if ("CLIENTE".equalsIgnoreCase(tipo)) {
+            ViewUtils.showError("Login", "A aplicacao desktop esta disponivel apenas para funcionarios e administradores.");
+            return;
+        }
+
         String nome = ViewUtils.text(utilizador, "nome");
         DesktopAppContext.setSessaoUtilizador(
                 utilizador.path("id").isNumber() ? utilizador.path("id").asInt() : null,
                 nome.isBlank() ? email.trim() : nome,
                 ViewUtils.text(utilizador, "email"),
-                ViewUtils.text(utilizador, "tipo"),
+                tipo,
                 ViewUtils.text(utilizador, "estadoConta")
         );
 

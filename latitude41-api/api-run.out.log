@@ -1,0 +1,180 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:latitude41-api >---------------------
+[INFO] Building latitude41-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.3:run (default-cli) > test-compile @ latitude41-api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ latitude41-api ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ latitude41-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ latitude41-api ---
+[INFO] skip non existing resourceDirectory C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ latitude41-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot:4.0.3:run (default-cli) < test-compile @ latitude41-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.3:run (default-cli) @ latitude41-api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-06-08T23:35:56.359+01:00  INFO 17444 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : Starting GestaoRestauranteApplication using Java 25.0.2 with PID 17444 (C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api\target\classes started by hugom in C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api)
+2026-06-08T23:35:56.363+01:00  INFO 17444 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-08T23:35:57.322+01:00  INFO 17444 --- [gestao_restaurante] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-08T23:35:57.426+01:00  INFO 17444 --- [gestao_restaurante] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 92 ms. Found 11 JPA repository interfaces.
+2026-06-08T23:35:58.158+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-08T23:35:58.183+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-08T23:35:58.185+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-06-08T23:35:58.378+01:00  INFO 17444 --- [gestao_restaurante] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1935 ms
+2026-06-08T23:35:58.666+01:00  INFO 17444 --- [gestao_restaurante] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-06-08T23:35:58.900+01:00  INFO 17444 --- [gestao_restaurante] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.4.Final
+2026-06-08T23:36:00.267+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-08T23:36:00.380+01:00  INFO 17444 --- [gestao_restaurante] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-08T23:36:00.902+01:00  INFO 17444 --- [gestao_restaurante] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1eb9d69a
+2026-06-08T23:36:00.905+01:00  INFO 17444 --- [gestao_restaurante] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-08T23:36:01.044+01:00  INFO 17444 --- [gestao_restaurante] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/gestao_restaurante]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.3
+	Default catalog/schema: gestao_restaurante/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-08T23:36:02.718+01:00  INFO 17444 --- [gestao_restaurante] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: alter table if exists produto alter column url_imagem set data type varchar(500)
+2026-06-08T23:36:02.876+01:00  INFO 17444 --- [gestao_restaurante] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-08T23:36:02.964+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-08T23:36:03.443+01:00  WARN 17444 --- [gestao_restaurante] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-08T23:36:03.912+01:00  INFO 17444 --- [gestao_restaurante] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-06-08T23:36:03.917+01:00  INFO 17444 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : Started GestaoRestauranteApplication in 8.21 seconds (process running for 8.934)
+2026-06-08T23:36:11.436+01:00  INFO 17444 --- [gestao_restaurante] [nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-08T23:36:11.437+01:00  INFO 17444 --- [gestao_restaurante] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-08T23:36:11.440+01:00  INFO 17444 --- [gestao_restaurante] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select count(*) from produto p1_0 where p1_0.id_produto=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0 where p1_0.id_produto=?
+Hibernate: delete from produto where id_produto=?
+2026-06-08T23:39:15.825+01:00  WARN 17444 --- [gestao_restaurante] [nio-8080-exec-7] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 23503
+2026-06-08T23:39:15.825+01:00  WARN 17444 --- [gestao_restaurante] [nio-8080-exec-7] org.hibernate.orm.jdbc.error             : ERROR: update or delete on table "produto" violates foreign key constraint "linha_pedido_id_produto_fkey" on table "linha_pedido"
+  Detail: Key (id_produto)=(24) is still referenced from table "linha_pedido".
+2026-06-08T23:39:15.844+01:00 ERROR 17444 --- [gestao_restaurante] [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.DataIntegrityViolationException: could not execute statement [ERROR: update or delete on table "produto" violates foreign key constraint "linha_pedido_id_produto_fkey" on table "linha_pedido"
+  Detail: Key (id_produto)=(24) is still referenced from table "linha_pedido".] [delete from produto where id_produto=?]; SQL [delete from produto where id_produto=?]; constraint [linha_pedido_id_produto_fkey]] with root cause
+
+org.postgresql.util.PSQLException: ERROR: update or delete on table "produto" violates foreign key constraint "linha_pedido_id_produto_fkey" on table "linha_pedido"
+  Detail: Key (id_produto)=(24) is still referenced from table "linha_pedido".
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2875) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2560) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:429) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:526) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:436) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:196) ~[postgresql-42.7.10.jar:42.7.10]
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:157) ~[postgresql-42.7.10.jar:42.7.10]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:181) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:145) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:53) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:66) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.persister.entity.mutation.AbstractDeleteCoordinator.doStaticDelete(AbstractDeleteCoordinator.java:268) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.persister.entity.mutation.AbstractDeleteCoordinator.delete(AbstractDeleteCoordinator.java:79) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.action.internal.EntityDeleteAction.execute(EntityDeleteAction.java:119) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:634) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:505) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:381) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:40) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:138) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.internal.SessionImpl.fireFlush(SessionImpl.java:1489) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:481) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2116) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:2038) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:410) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:166) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commitNoRollbackOnly(JdbcResourceLocalTransactionCoordinatorImpl.java:248) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:242) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:89) ~[hibernate-core-7.2.4.Final.jar:7.2.4.Final]
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:553) ~[spring-orm-7.0.5.jar:7.0.5]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:794) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:757) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:687) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:408) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.5.jar:7.0.5]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135) ~[spring-tx-7.0.5.jar:7.0.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.5.jar:7.0.5]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:166) ~[spring-data-jpa-4.0.3.jar:4.0.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.5.jar:7.0.5]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222) ~[spring-aop-7.0.5.jar:7.0.5]
+	at jdk.proxy2/jdk.proxy2.$Proxy152.deleteById(Unknown Source) ~[na:na]
+	at com.example.gestao_restaurante.Services.ProdutoService.apagar(ProdutoService.java:48) ~[classes/:na]
+	at com.example.gestao_restaurante.Controllers.ProdutoController.apagar(ProdutoController.java:58) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at org.springframework.web.servlet.FrameworkServlet.doDelete(FrameworkServlet.java:925) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:651) ~[tomcat-embed-core-11.0.18.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.5.jar:7.0.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.18.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.18.jar:11.0.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.5.jar:7.0.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1779) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select count(*) from produto p1_0 where p1_0.id_produto=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0 where p1_0.id_produto=?
+Hibernate: delete from produto where id_produto=?

@@ -1,0 +1,518 @@
+[INFO] Scanning for projects...
+Downloading from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml
+Progress (1): 249 BProgress (2): 249 B | 243 BProgress (3): 249 B | 243 B | 255 BProgress (4): 249 B | 243 B | 255 B | 234 B                                           Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml (249 B at 276 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml (243 B at 269 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml (234 B at 259 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml (255 B at 282 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml
+Progress (1): 394 BProgress (2): 394 B | 242 BProgress (3): 394 B | 242 B | 398 BProgress (4): 394 B | 242 B | 398 B | 375 B                                           Downloaded from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml (394 B at 5.6 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml (242 B at 3.8 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml (375 B at 3.8 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml (398 B at 3.9 kB/s)
+Progress (1): 3.1 kBProgress (1): 7.7 kBProgress (1): 12 kB Progress (1): 17 kBProgress (2): 17 kB | 4.6 kBProgress (2): 20 kB | 4.6 kBProgress (2): 20 kB | 9.7 kBProgress (2): 21 kB | 9.7 kBProgress (2): 21 kB | 14 kB                            Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 140 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (21 kB at 143 kB/s)
+[INFO] 
+[INFO] ---------------------< com.example:latitude41-api >---------------------
+[INFO] Building latitude41-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.3:run (default-cli) > test-compile @ latitude41-api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ latitude41-api ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ latitude41-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ latitude41-api ---
+[INFO] skip non existing resourceDirectory C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ latitude41-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot:4.0.3:run (default-cli) < test-compile @ latitude41-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.3:run (default-cli) @ latitude41-api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-06-09T00:19:50.590+01:00  INFO 5984 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : Starting GestaoRestauranteApplication using Java 25.0.2 with PID 5984 (C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api\target\classes started by hugom in C:\Users\hugom\Downloads\github\ProjetoLatitude41\latitude41-api)
+2026-06-09T00:19:50.604+01:00  INFO 5984 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T00:19:52.297+01:00  INFO 5984 --- [gestao_restaurante] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-09T00:19:52.432+01:00  INFO 5984 --- [gestao_restaurante] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 113 ms. Found 11 JPA repository interfaces.
+2026-06-09T00:19:53.216+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T00:19:53.233+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T00:19:53.234+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-06-09T00:19:53.407+01:00  INFO 5984 --- [gestao_restaurante] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2647 ms
+2026-06-09T00:19:53.684+01:00  INFO 5984 --- [gestao_restaurante] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-06-09T00:19:53.801+01:00  INFO 5984 --- [gestao_restaurante] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.4.Final
+2026-06-09T00:19:54.662+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-09T00:19:54.728+01:00  INFO 5984 --- [gestao_restaurante] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-09T00:19:55.068+01:00  INFO 5984 --- [gestao_restaurante] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5dd23809
+2026-06-09T00:19:55.072+01:00  INFO 5984 --- [gestao_restaurante] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-09T00:19:55.275+01:00  INFO 5984 --- [gestao_restaurante] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/gestao_restaurante]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.3
+	Default catalog/schema: gestao_restaurante/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-09T00:19:57.338+01:00  INFO 5984 --- [gestao_restaurante] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-09T00:19:57.657+01:00  INFO 5984 --- [gestao_restaurante] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-09T00:19:57.767+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-09T00:19:58.479+01:00  WARN 5984 --- [gestao_restaurante] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-09T00:19:58.994+01:00  INFO 5984 --- [gestao_restaurante] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-06-09T00:19:58.999+01:00  INFO 5984 --- [gestao_restaurante] [           main] c.e.g.GestaoRestauranteApplication       : Started GestaoRestauranteApplication in 9.111 seconds (process running for 9.706)
+2026-06-09T00:20:18.599+01:00  INFO 5984 --- [gestao_restaurante] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-09T00:20:18.600+01:00  INFO 5984 --- [gestao_restaurante] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-09T00:20:18.602+01:00  INFO 5984 --- [gestao_restaurante] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0 where p1_0.id_produto=?
+Hibernate: update produto set disponivel=?,nome=?,preco=?,sem_gluten=?,sem_lactose=?,tipo=?,url_imagem=?,vegetariano=? where id_produto=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0 where p1_0.id_produto=?
+Hibernate: update produto set disponivel=?,nome=?,preco=?,sem_gluten=?,sem_lactose=?,tipo=?,url_imagem=?,vegetariano=? where id_produto=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select coalesce(sum(f1_0.valor),0) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: select count(distinct f1_0.id_pedido) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: SELECT DATE(f.data_hora) AS dia, COALESCE(SUM(f.valor), 0) AS total
+FROM fatura f
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY DATE(f.data_hora)
+ORDER BY dia
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: SELECT
+    p.id_produto,
+    p.nome,
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade), 0) AS quantidade_vendida,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY p.id_produto, p.nome, p.tipo
+ORDER BY quantidade_vendida DESC, valor_total DESC fetch first ? rows only
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(COALESCE(s.quant, 0) * COALESCE(i.preco, 0)), 0) AS valor_total
+FROM stock s
+JOIN ingrediente i ON i.id_ingred = s.id_ingred
+GROUP BY COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: select s1_0.id_ingred,s1_0.estado,s1_0.quant from stock s1_0
+Hibernate: select i1_0.id_ingred,i1_0.nome,i1_0.preco,s1_0.id_ingred,s1_0.estado,s1_0.quant,i1_0.unidade from ingrediente i1_0 left join stock s1_0 on i1_0.id_ingred=s1_0.id_ingred where i1_0.id_ingred=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select coalesce(sum(f1_0.valor),0) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: select count(distinct f1_0.id_pedido) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: SELECT DATE(f.data_hora) AS dia, COALESCE(SUM(f.valor), 0) AS total
+FROM fatura f
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY DATE(f.data_hora)
+ORDER BY dia
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: SELECT
+    p.id_produto,
+    p.nome,
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade), 0) AS quantidade_vendida,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY p.id_produto, p.nome, p.tipo
+ORDER BY quantidade_vendida DESC, valor_total DESC fetch first ? rows only
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(COALESCE(s.quant, 0) * COALESCE(i.preco, 0)), 0) AS valor_total
+FROM stock s
+JOIN ingrediente i ON i.id_ingred = s.id_ingred
+GROUP BY COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select s1_0.id_ingred,s1_0.estado,s1_0.quant from stock s1_0
+Hibernate: select i1_0.id_ingred,i1_0.nome,i1_0.preco,s1_0.id_ingred,s1_0.estado,s1_0.quant,i1_0.unidade from ingrediente i1_0 left join stock s1_0 on i1_0.id_ingred=s1_0.id_ingred where i1_0.id_ingred=?
+Hibernate: select coalesce(sum(f1_0.valor),0) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: select count(distinct f1_0.id_pedido) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: SELECT DATE(f.data_hora) AS dia, COALESCE(SUM(f.valor), 0) AS total
+FROM fatura f
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY DATE(f.data_hora)
+ORDER BY dia
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: SELECT
+    p.id_produto,
+    p.nome,
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade), 0) AS quantidade_vendida,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY p.id_produto, p.nome, p.tipo
+ORDER BY quantidade_vendida DESC, valor_total DESC fetch first ? rows only
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(COALESCE(s.quant, 0) * COALESCE(i.preco, 0)), 0) AS valor_total
+FROM stock s
+JOIN ingrediente i ON i.id_ingred = s.id_ingred
+GROUP BY COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select s1_0.id_ingred,s1_0.estado,s1_0.quant from stock s1_0
+Hibernate: select i1_0.id_ingred,i1_0.nome,i1_0.preco,s1_0.id_ingred,s1_0.estado,s1_0.quant,i1_0.unidade from ingrediente i1_0 left join stock s1_0 on i1_0.id_ingred=s1_0.id_ingred where i1_0.id_ingred=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select coalesce(sum(f1_0.valor),0) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: select count(distinct f1_0.id_pedido) from fatura f1_0 where f1_0.data_hora>=? and f1_0.data_hora<?
+Hibernate: SELECT DATE(f.data_hora) AS dia, COALESCE(SUM(f.valor), 0) AS total
+FROM fatura f
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY DATE(f.data_hora)
+ORDER BY dia
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: SELECT
+    p.id_produto,
+    p.nome,
+    COALESCE(NULLIF(TRIM(p.tipo), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(lp.quantidade), 0) AS quantidade_vendida,
+    COALESCE(SUM(lp.quantidade * lp.preco_unit_venda), 0) AS valor_total
+FROM fatura f
+JOIN pedido ped ON ped.id_pedido = f.id_pedido
+JOIN linha_pedido lp ON lp.id_pedido = ped.id_pedido
+JOIN produto p ON p.id_produto = lp.id_produto
+WHERE f.data_hora >= ? AND f.data_hora < ?
+GROUP BY p.id_produto, p.nome, p.tipo
+ORDER BY quantidade_vendida DESC, valor_total DESC fetch first ? rows only
+
+Hibernate: SELECT
+    COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria') AS categoria,
+    COALESCE(SUM(COALESCE(s.quant, 0) * COALESCE(i.preco, 0)), 0) AS valor_total
+FROM stock s
+JOIN ingrediente i ON i.id_ingred = s.id_ingred
+GROUP BY COALESCE(NULLIF(TRIM(i.unidade), ''), 'Sem categoria')
+ORDER BY valor_total DESC
+
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0
+Hibernate: select s1_0.id_ingred,s1_0.estado,s1_0.quant from stock s1_0
+Hibernate: select i1_0.id_ingred,i1_0.nome,i1_0.preco,s1_0.id_ingred,s1_0.estado,s1_0.quant,i1_0.unidade from ingrediente i1_0 left join stock s1_0 on i1_0.id_ingred=s1_0.id_ingred where i1_0.id_ingred=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0 join reserva ir1_0 on ir1_0.id_reserva=p1_0.id_reserva where ir1_0.num_mesa=? and p1_0.estado in (?,?,?,?,?,?) order by p1_0.data_hora desc
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select p1_0.id_pedido,p1_0.data_hora,p1_0.estado,p1_0.id_reserva from pedido p1_0
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select f1_0.id_fatura,f1_0.data_hora,f1_0.id_pedido,f1_0.metodo,f1_0.valor from fatura f1_0 where f1_0.id_pedido=?
+Hibernate: select p1_0.id_pagamento,p1_0.id_pedido,p1_0.valor from pagamento p1_0 where p1_0.id_pedido=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select r1_0.id_reserva,r1_0.data_hora,r1_0.estado,r1_0.id_utilizador,r1_0.num_mesa from reserva r1_0 where r1_0.id_reserva=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0 where m1_0.num_mesa=?
+Hibernate: select m1_0.num_mesa,m1_0.estado,m1_0.num_lugares from mesa m1_0
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: update utilizador set contacto=?,email=?,estado_conta=?,nome=?,password=?,tipo=? where id_utilizador=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where u1_0.id_utilizador=?
+Hibernate: update utilizador set contacto=?,email=?,estado_conta=?,nome=?,password=?,tipo=? where id_utilizador=?
+Hibernate: select u1_0.id_utilizador,u1_0.contacto,u1_0.email,u1_0.estado_conta,u1_0.nome,u1_0.password,u1_0.tipo from utilizador u1_0 where upper(u1_0.email)=upper(?)
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0
+Hibernate: select p1_0.id_produto,p1_0.disponivel,p1_0.nome,p1_0.preco,p1_0.sem_gluten,p1_0.sem_lactose,p1_0.tipo,p1_0.url_imagem,p1_0.vegetariano from produto p1_0

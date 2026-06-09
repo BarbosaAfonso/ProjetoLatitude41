@@ -29,6 +29,7 @@
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="pesquisaField" onKeyReleased="#onPesquisar" promptText="Pesquisar stock..." styleClass="pesquisa-field"/>
+                <Button accessibleText="Atualizar lista" mnemonicParsing="false" onAction="#onAtualizar" styleClass="refresh-list-button" text="&#8635;"/>
                 <Button fx:id="btnNovoStock" mnemonicParsing="false" onAction="#onNovoStock" styleClass="novo-registo-button" text="+ Nova Encomenda"/>
             </children>
         </HBox>
