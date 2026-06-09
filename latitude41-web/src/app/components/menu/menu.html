@@ -107,11 +107,11 @@
             <div>
               <p class="text-xs font-bold uppercase tracking-[0.24em] text-gold">Gest&atilde;o do Menu</p>
               <h3 class="mt-2 font-serif text-3xl font-bold text-white">
-                {{ editingProductId ? 'Editar produto' : 'Adicionar produto' }}
+                {{ isEditing ? 'Editar produto' : 'Adicionar produto' }}
               </h3>
             </div>
 
-            @if (editingProductId) {
+            @if (isEditing) {
               <button
                 type="button"
                 (click)="cancelarEdicao()"
@@ -122,62 +122,95 @@
             }
           </div>
 
-          <form class="grid gap-4 lg:grid-cols-[1fr_0.8fr_0.45fr_auto] lg:items-end" (ngSubmit)="guardarProduto()">
-            <label class="block">
-              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Nome do Produto</span>
-              <input
-                name="nome"
-                type="text"
-                [(ngModel)]="form.nome"
-                placeholder="Ex: Bacalhau a Latitude"
-                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
-              />
-            </label>
-
-            <label class="block">
-              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Tipo</span>
-              <select
-                name="tipo"
-                [(ngModel)]="form.tipo"
-                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
-              >
-                @for (tipo of tiposProduto; track tipo) {
-                  <option [value]="tipo">{{ tipo }}</option>
-                }
-              </select>
-            </label>
-
-            <label class="block">
-              <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Pre&ccedil;o</span>
-              <input
-                name="preco"
-                type="number"
-                min="0"
-                step="0.01"
-                [(ngModel)]="form.preco"
-                placeholder="0.00"
-                class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
-              />
-            </label>
-
-            <div class="flex flex-col gap-4">
-              <label class="flex items-center gap-3 text-sm text-white/70">
+          <form class="space-y-5" (ngSubmit)="guardarProduto()">
+            <div class="grid gap-4 lg:grid-cols-[1fr_0.8fr_0.45fr] lg:items-end">
+              <label class="block">
+                <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Nome do Produto</span>
                 <input
-                  name="disponivel"
-                  type="checkbox"
-                  [(ngModel)]="form.disponivel"
-                  class="h-4 w-4 accent-gold"
+                  name="nome"
+                  type="text"
+                  [(ngModel)]="form.nome"
+                  placeholder="Ex: Bacalhau a Latitude"
+                  class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
                 />
-                Dispon&iacute;vel
               </label>
 
-              <button
-                type="submit"
-                [disabled]="isSaving"
-                class="rounded-sm bg-gold px-6 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {{ isSaving ? 'A guardar...' : editingProductId ? 'Guardar' : 'Adicionar' }}
-              </button>
+              <label class="block">
+                <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Tipo</span>
+                <select
+                  name="tipo"
+                  [(ngModel)]="form.tipo"
+                  class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+                >
+                  @for (tipo of tiposProduto; track tipo) {
+                    <option [value]="tipo">{{ tipo }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="block">
+                <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">Pre&ccedil;o</span>
+                <input
+                  name="preco"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [(ngModel)]="form.preco"
+                  placeholder="0.00"
+                  class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+                />
+              </label>
+
+              <label class="block lg:col-span-3">
+                <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-gold">URL da Imagem</span>
+                <input
+                  name="urlImagem"
+                  type="url"
+                  [(ngModel)]="form.urlImagem"
+                  placeholder="https://exemplo.com/imagem.jpg"
+                  class="w-full rounded-sm border border-gold/25 bg-slate-950/55 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-gold focus:bg-slate-950/80 focus:ring-1 focus:ring-gold/40"
+                />
+              </label>
+            </div>
+
+            <div class="flex flex-col gap-5 border-t border-gold/15 pt-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-gold">Prefer&ecirc;ncias e alerg&eacute;nios</p>
+                <div class="flex flex-wrap gap-3">
+                  <label class="flex items-center gap-3 rounded-sm border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
+                    <input name="vegetariano" type="checkbox" [(ngModel)]="form.vegetariano" class="h-4 w-4 accent-emerald-400" />
+                    VEG
+                  </label>
+                  <label class="flex items-center gap-3 rounded-sm border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-300">
+                    <input name="semGluten" type="checkbox" [(ngModel)]="form.semGluten" class="h-4 w-4 accent-amber-400" />
+                    Sem Gl&uacute;ten
+                  </label>
+                  <label class="flex items-center gap-3 rounded-sm border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-blue-300">
+                    <input name="semLactose" type="checkbox" [(ngModel)]="form.semLactose" class="h-4 w-4 accent-blue-400" />
+                    Sem Lactose
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-4 sm:min-w-48">
+                <label class="flex items-center gap-3 text-sm text-white/70">
+                  <input
+                    name="disponivel"
+                    type="checkbox"
+                    [(ngModel)]="form.disponivel"
+                    class="h-4 w-4 accent-gold"
+                  />
+                  Dispon&iacute;vel
+                </label>
+
+                <button
+                  type="submit"
+                  [disabled]="isSaving"
+                  class="rounded-sm bg-gold px-6 py-4 text-xs font-bold uppercase tracking-widest text-navy shadow-2xl shadow-gold/20 transition hover:bg-[#d8b677] hover:shadow-gold/35 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {{ isSaving ? 'A guardar...' : isEditing ? 'Guardar' : 'Adicionar' }}
+                </button>
+              </div>
             </div>
           </form>
         </section>
@@ -232,31 +265,39 @@
                 <div class="space-y-4 border-t border-gold/20 p-6">
                   @for (produto of grupo.produtos; track produto.id ?? produto.nome) {
                     <div class="border border-white/8 bg-slate-950/30 p-4 transition hover:border-gold/25 hover:bg-slate-950/55">
-                      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <div class="flex flex-wrap items-center gap-3">
-                            <h4 class="text-lg font-semibold text-white">{{ produto.nome }}</h4>
-
-                            @if (obterTags(produto.nome).veg) {
-                              <span class="rounded-sm bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-400 select-none">🌱 VEG</span>
-                            }
-                            @if (obterTags(produto.nome).semGluten) {
-                              <span class="rounded-sm bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[9px] font-bold text-amber-400 select-none">🌾 SEM GLÚTEN</span>
-                            }
-                            @if (obterTags(produto.nome).semLactose) {
-                              <span class="rounded-sm bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold text-blue-400 select-none">🥛 SEM LACTOSE</span>
-                            }
-
-                            @if (isAdmin && produto.disponivel === false) {
-                              <span class="rounded-full bg-red-400/12 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-red-200">
-                                Indispon&iacute;vel
-                              </span>
-                            }
+                      <div class="flex flex-col gap-4 lg:flex-row">
+                        @if (produto.urlImagem) {
+                          <div class="h-32 w-full overflow-hidden rounded-sm border border-gold/15 bg-navy/70 lg:w-44 lg:shrink-0">
+                            <img [src]="produto.urlImagem" [alt]="produto.nome" class="h-full w-full object-cover" loading="lazy" />
                           </div>
-                          <p class="mt-2 text-sm text-white/45">{{ produto.tipo }}</p>
-                        </div>
+                        }
 
-                        <p class="font-serif text-2xl font-bold text-gold">{{ formatPrice(produto.preco) }}</p>
+                        <div class="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <div class="flex flex-wrap items-center gap-3">
+                              <h4 class="text-lg font-semibold text-white">{{ produto.nome }}</h4>
+
+                              @if (produto.vegetariano === true) {
+                                <span class="rounded-sm bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-400 select-none">VEG</span>
+                              }
+                              @if (produto.semGluten === true) {
+                                <span class="rounded-sm bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[9px] font-bold text-amber-400 select-none">SEM GL&Uacute;TEN</span>
+                              }
+                              @if (produto.semLactose === true) {
+                                <span class="rounded-sm bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold text-blue-400 select-none">SEM LACTOSE</span>
+                              }
+
+                              @if (isAdmin && produto.disponivel === false) {
+                                <span class="rounded-full bg-red-400/12 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-red-200">
+                                  Indispon&iacute;vel
+                                </span>
+                              }
+                            </div>
+                            <p class="mt-2 text-sm text-white/45">{{ produto.tipo }}</p>
+                          </div>
+
+                          <p class="font-serif text-2xl font-bold text-gold">{{ formatPrice(produto.preco) }}</p>
+                        </div>
                       </div>
 
                       @if (isAdmin) {

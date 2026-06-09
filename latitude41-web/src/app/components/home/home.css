@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.about-story-card {
+  isolation: isolate;
+  background-color: #072344;
+  background-image:
+    linear-gradient(135deg, rgba(4, 22, 43, 0.22), rgba(3, 15, 31, 0.64)),
+    url("/images/bglogin.png");
+  background-position: center 44%;
+  background-size: cover;
+}
+
+.about-story-card::before,
+.about-story-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.about-story-card::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(205, 164, 94, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(2, 10, 22, 0.08), rgba(2, 10, 22, 0.58));
+}
+
+.about-story-card::after {
+  right: -4rem;
+  bottom: -4rem;
+  height: 13rem;
+  width: 13rem;
+  border-radius: 9999px;
+  background: rgba(205, 164, 94, 0.22);
+  filter: blur(42px);
+}

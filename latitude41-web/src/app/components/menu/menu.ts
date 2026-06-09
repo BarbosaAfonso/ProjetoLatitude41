@@ -18,6 +18,10 @@ interface ProdutoForm {
   tipo: string;
   preco: number | null;
   disponivel: boolean;
+  urlImagem: string;
+  vegetariano: boolean;
+  semGluten: boolean;
+  semLactose: boolean;
 }
 
 interface GrupoMenu {
@@ -42,7 +46,7 @@ export class Menu implements OnInit {
   public successMessage = '';
   public editingProductId: number | null = null;
 
-  // Estados dos novos filtros dinâmicos
+  // Estados dos filtros de preferencias e alergenios.
   public categoriaSelecionada = 'Todos';
   public filtroVegetariano = false;
   public filtroSemGluten = false;
@@ -63,14 +67,8 @@ export class Menu implements OnInit {
     return this.user?.tipo.toUpperCase() === 'ADMIN';
   }
 
-  // Mapeamento dinâmico de alergénios baseado no nome do produto
-  public obterTags(nome: string): { veg: boolean; semGluten: boolean; semLactose: boolean } {
-    const n = nome.toLowerCase();
-    return {
-      veg: n.includes('salada') || n.includes('sopa') || n.includes('vegetariano') || n.includes('sobremesa') || n.includes('pudim') || n.includes('mousse') || n.includes('fruta'),
-      semGluten: !n.includes('pão') && !n.includes('massa') && !n.includes('francesinha') && !n.includes('croquete') && !n.includes('crepe'),
-      semLactose: !n.includes('queijo') && !n.includes('natas') && !n.includes('gelado') && !n.includes('manteiga') && !n.includes('creme')
-    };
+  public get isEditing(): boolean {
+    return this.editingProductId !== null;
   }
 
   public get produtosVisiveis(): Produto[] {
@@ -81,27 +79,17 @@ export class Menu implements OnInit {
       produtosPermitidos = produtosPermitidos.filter((p) => p.tipo === this.categoriaSelecionada);
     }
 
-    // Filtros por Preferências e Alergénios
+    // Filtros por preferencias e alergenios.
     if (this.filtroVegetariano || this.filtroSemGluten || this.filtroSemLactose) {
       produtosPermitidos = produtosPermitidos.filter((p) => {
-        const tags = this.obterTags(p.nome);
-        if (this.filtroVegetariano && !tags.veg) return false;
-        if (this.filtroSemGluten && !tags.semGluten) return false;
-        if (this.filtroSemLactose && !tags.semLactose) return false;
+        if (this.filtroVegetariano && p.vegetariano !== true) return false;
+        if (this.filtroSemGluten && p.semGluten !== true) return false;
+        if (this.filtroSemLactose && p.semLactose !== true) return false;
         return true;
       });
     }
 
-    const produtosPorNome = new Map<string, Produto>();
-
-    for (const produto of produtosPermitidos) {
-      const nomeNormalizado = produto.nome.trim().toLocaleLowerCase('pt-PT');
-      if (!produtosPorNome.has(nomeNormalizado)) {
-        produtosPorNome.set(nomeNormalizado, produto);
-      }
-    }
-
-    return Array.from(produtosPorNome.values());
+    return this.deduplicarProdutosPorNome(produtosPermitidos);
   }
 
   public get gruposMenu(): GrupoMenu[] {
@@ -179,18 +167,20 @@ export class Menu implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const request = this.editingProductId
-      ? this.produtoService.atualizarProduto(this.editingProductId, payload)
+    const produtoIdEmEdicao = this.editingProductId;
+    const request = produtoIdEmEdicao !== null
+      ? this.produtoService.atualizarProduto(produtoIdEmEdicao, payload)
       : this.produtoService.criarProduto(payload);
 
     request.subscribe({
-      next: () => {
-        this.successMessage = this.editingProductId ? 'Produto atualizado no menu.' : 'Produto adicionado ao menu.';
+      next: (produtoGuardado) => {
+        this.aplicarProdutoGuardado(produtoGuardado);
+        this.successMessage = produtoIdEmEdicao !== null ? 'Produto atualizado no menu.' : 'Produto adicionado ao menu.';
+        this.abrirGrupo(produtoGuardado.tipo);
         this.cancelarEdicao();
-        this.carregarProdutos();
       },
-      error: () => {
-        this.errorMessage = 'Nao foi possivel guardar o produto. Verifique os campos e tente novamente.';
+      error: (error: unknown) => {
+        this.errorMessage = this.getErrorMessage(error);
       },
       complete: () => {
         this.isSaving = false;
@@ -199,7 +189,7 @@ export class Menu implements OnInit {
   }
 
   public editarProduto(produto: Produto): void {
-    if (!this.isAdmin || !produto.id) {
+    if (!this.isAdmin || produto.id == null) {
       return;
     }
 
@@ -211,11 +201,15 @@ export class Menu implements OnInit {
       tipo: produto.tipo || this.tiposProduto[0],
       preco: produto.preco,
       disponivel: produto.disponivel !== false,
+      urlImagem: produto.urlImagem ?? '',
+      vegetariano: produto.vegetariano === true,
+      semGluten: produto.semGluten === true,
+      semLactose: produto.semLactose === true,
     };
   }
 
   public apagarProduto(produto: Produto): void {
-    if (!this.isAdmin || !produto.id) {
+    if (!this.isAdmin || produto.id == null) {
       return;
     }
 
@@ -228,7 +222,7 @@ export class Menu implements OnInit {
       next: () => {
         this.successMessage = 'Produto removido do menu.';
         this.cancelarEdicao();
-        this.carregarProdutos();
+        this.produtos = this.produtos.filter((produtoAtual) => produtoAtual.id !== produto.id);
       },
       error: () => {
         this.errorMessage = 'Nao foi possivel remover o produto.';
@@ -269,6 +263,7 @@ export class Menu implements OnInit {
   private buildPayload(): ProdutoPayload | null {
     const nome = this.form.nome.trim();
     const tipo = this.form.tipo.trim();
+    const urlImagem = this.form.urlImagem.trim();
 
     if (!nome || !tipo || this.form.preco === null || this.form.preco <= 0) {
       this.errorMessage = 'Preencha nome, tipo e preco com valores validos.';
@@ -279,7 +274,11 @@ export class Menu implements OnInit {
       nome,
       tipo,
       preco: Number(this.form.preco),
-      disponivel: this.form.disponivel,
+      disponivel: Boolean(this.form.disponivel),
+      urlImagem: urlImagem || null,
+      vegetariano: Boolean(this.form.vegetariano),
+      semGluten: Boolean(this.form.semGluten),
+      semLactose: Boolean(this.form.semLactose),
     };
   }
 
@@ -289,6 +288,10 @@ export class Menu implements OnInit {
       tipo: 'Prato Principal',
       preco: null,
       disponivel: true,
+      urlImagem: '',
+      vegetariano: false,
+      semGluten: false,
+      semLactose: false,
     };
   }
 
@@ -299,8 +302,61 @@ export class Menu implements OnInit {
 
     const [primeiroGrupo] = this.gruposMenu;
     if (primeiroGrupo) {
-      this.gruposAbertos.add(primeiroGrupo.tipo);
+      this.abrirGrupo(primeiroGrupo.tipo);
     }
+  }
+
+  private abrirGrupo(tipo: string): void {
+    this.gruposAbertos.add(tipo?.trim() || 'Outros');
+  }
+
+  private aplicarProdutoGuardado(produtoGuardado: Produto): void {
+    if (produtoGuardado.id == null) {
+      this.produtos = [produtoGuardado, ...this.produtos];
+      return;
+    }
+
+    const index = this.produtos.findIndex((produto) => produto.id === produtoGuardado.id);
+    if (index === -1) {
+      this.produtos = [produtoGuardado, ...this.produtos];
+      return;
+    }
+
+    this.produtos = this.produtos.map((produto, produtoIndex) =>
+      produtoIndex === index ? produtoGuardado : produto
+    );
+  }
+
+  private deduplicarProdutosPorNome(produtos: Produto[]): Produto[] {
+    const nomesVistos = new Set<string>();
+
+    return produtos.filter((produto) => {
+      const nomeNormalizado = produto.nome.trim().toLocaleLowerCase('pt-PT');
+
+      if (!nomeNormalizado) {
+        return true;
+      }
+
+      if (nomesVistos.has(nomeNormalizado)) {
+        return false;
+      }
+
+      nomesVistos.add(nomeNormalizado);
+      return true;
+    });
+  }
+
+  private getErrorMessage(error: unknown): string {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'error' in error &&
+      typeof error.error === 'string'
+    ) {
+      return error.error;
+    }
+
+    return 'Nao foi possivel guardar o produto. Verifique os campos e tente novamente.';
   }
 
   // MÉTODOS PRIVADOS REPOSTOS CORRETAMENTE
