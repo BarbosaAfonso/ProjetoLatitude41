@@ -3,21 +3,24 @@ package com.example.gestao_restaurante.Services;
 import com.example.gestao_restaurante.Modules.Utilizador;
 import com.example.gestao_restaurante.Repositories.UtilizadorRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UtilizadorService {
 
     private final UtilizadorRepository utilizadorRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UtilizadorService(UtilizadorRepository utilizadorRepository) {
+    // Construtor atualizado para injetar a dependência do codificador de segurança
+    public UtilizadorService(UtilizadorRepository utilizadorRepository, BCryptPasswordEncoder passwordEncoder) {
         this.utilizadorRepository = utilizadorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // GET - listar todos os utilizadores
@@ -35,6 +38,10 @@ public class UtilizadorService {
         validarUtilizador(utilizador, true);
         utilizador.setTipo(normalizarTipo(utilizador.getTipo()));
         utilizador.setEstadoConta(normalizarEstadoConta(utilizador.getEstadoConta()));
+
+        // Encripta a password recebida antes de salvar o registo no PostgreSQL
+        utilizador.setPassword(passwordEncoder.encode(utilizador.getPassword()));
+
         return utilizadorRepository.save(utilizador);
     }
 
@@ -52,7 +59,7 @@ public class UtilizadorService {
         novoUtilizador.setTipo("CLIENTE");
         novoUtilizador.setEstadoConta("ATIVO");
 
-        // Reutiliza o metodo criar para rodar as validacoes estruturais e salvar na BD
+        // Reutiliza o metodo criar, aplicando as validações e a cifra de segurança uniformemente
         return criar(novoUtilizador);
     }
 
@@ -63,9 +70,12 @@ public class UtilizadorService {
             utilizador.setNome(utilizadorAtualizado.getNome());
             utilizador.setContacto(utilizadorAtualizado.getContacto());
             utilizador.setEmail(utilizadorAtualizado.getEmail());
+
+            // Se uma nova password válida for enviada, gera uma nova hash criptográfica
             if (utilizadorAtualizado.getPassword() != null && !utilizadorAtualizado.getPassword().isBlank()) {
-                utilizador.setPassword(utilizadorAtualizado.getPassword());
+                utilizador.setPassword(passwordEncoder.encode(utilizadorAtualizado.getPassword()));
             }
+
             utilizador.setTipo(normalizarTipo(utilizadorAtualizado.getTipo()));
             utilizador.setEstadoConta(normalizarEstadoConta(utilizadorAtualizado.getEstadoConta()));
             return utilizadorRepository.save(utilizador);
@@ -87,8 +97,9 @@ public class UtilizadorService {
             return Optional.empty();
         }
 
+        // Procura pelo e-mail e recorre ao método passwordEncoder.matches para validar de forma segura
         return utilizadorRepository.findByEmailIgnoreCase(email.trim())
-                .filter(utilizador -> Objects.equals(utilizador.getPassword(), password))
+                .filter(utilizador -> passwordEncoder.matches(password, utilizador.getPassword()))
                 .filter(utilizador -> "ATIVO".equalsIgnoreCase(normalizarEstadoConta(utilizador.getEstadoConta())));
     }
 
