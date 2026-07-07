@@ -1,10 +1,13 @@
 package com.example.gestao_restaurante.Controllers;
 
+import com.example.gestao_restaurante.Config.JwtUtil;
 import com.example.gestao_restaurante.Modules.Utilizador;
 import com.example.gestao_restaurante.Services.UtilizadorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -12,9 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UtilizadorService utilizadorService;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UtilizadorService utilizadorService) {
+    // Injeção por construtor adaptada para incluir o utilitário de tokens
+    public AuthController(UtilizadorService utilizadorService, JwtUtil jwtUtil) {
         this.utilizadorService = utilizadorService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -23,13 +29,16 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
+        // Autentica através do serviço e, se o utilizador existir, gera o token JWT
         return utilizadorService.autenticar(request.email(), request.password())
-                .map(this::toResponse)
+                .map(utilizador -> {
+                    String token = jwtUtil.gerarToken(utilizador.getEmail(), utilizador.getTipo());
+                    return toResponse(utilizador, token);
+                })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
-    // 1. NOVO ENDPOINT: Criar Conta
     @PostMapping("/registar")
     public ResponseEntity<?> registar(@RequestBody RegisterRequest request) {
         if (request == null || request.nome() == null || request.email() == null || request.password() == null) {
@@ -37,16 +46,18 @@ public class AuthController {
         }
 
         try {
-            // Nota: Garante que tens um método no teu utilizadorService para criar/salvar
             Utilizador novo = utilizadorService.registarNovoUtilizador(request.nome(), request.email(), request.password());
-            return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(novo));
+            String token = jwtUtil.gerarToken(novo.getEmail(), novo.getTipo());
+            return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(novo, token));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao criar conta: " + e.getMessage());
         }
     }
 
-    private LoginResponse toResponse(Utilizador utilizador) {
+    // Método utilitário atualizado para acoplar o token gerado ao record de resposta
+    private LoginResponse toResponse(Utilizador utilizador, String token) {
         return new LoginResponse(
+                token,
                 utilizador.getId(),
                 utilizador.getNome(),
                 utilizador.getEmail(),
@@ -57,8 +68,8 @@ public class AuthController {
 
     public record LoginRequest(String email, String password) {}
 
-    // 2. NOVO RECORD: Para receber os dados de registo
     public record RegisterRequest(String nome, String email, String password) {}
 
-    public record LoginResponse(Integer id, String nome, String email, String tipo, String estadoConta) {}
+    // Record de resposta atualizado para incluir o token recebido pelo frontend/desktop
+    public record LoginResponse(String token, Integer id, String nome, String email, String tipo, String estadoConta) {}
 }
